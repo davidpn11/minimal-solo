@@ -65,4 +65,11 @@ export const THEME = {
     high: 64,
     highest: 96,
   },
+  radius: {
+    small: 4,
+    base: 8,
+    board: 16,
+  },
 } as const;
+
+export type MinimalSoloTheme = typeof THEME;
