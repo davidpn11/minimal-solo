@@ -64,5 +64,5 @@ export const THEME = {
     huge: 48,
     high: 64,
     highest: 96,
-  }
+  },
 } as const;
