@@ -1,9 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.css';
-import RoomSelect from './views/RoomSelect';
-import NameSelect from './views/NameSelect';
-import GameRoom from './views/GameRoom';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import "./App.css";
+import RoomSelect from "./views/RoomSelect";
+import NameSelect from "./views/NameSelect";
+import GameRoom from "./views/GameRoom";
 
 function App() {
   return (

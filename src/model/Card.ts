@@ -1,7 +1,7 @@
 import * as A from "fp-ts/lib/Array";
 
 export type Color = "GREEN" | "GOLD" | "RED" | "BLUE" | "BLACK";
-type Value =
+export type Value =
   | "ONE"
   | "TWO"
   | "THREE"
@@ -19,14 +19,14 @@ type Value =
   | "PLUS_FOUR"
   | "SWAP_ALL";
 
-type CommonCard = {
+export type CommonCard = {
   color: Omit<Color, "BLACK">;
   value: Omit<Value, "PLUS_FOR" | "SWAP_ALL">;
   createdAt: number;
   status: Status;
 };
 
-type ActionCard = {
+export type ActionCard = {
   color: "BLACK";
   value: "PLUS_FOUR" | "SWAP_ALL";
   createdAt: number;
@@ -51,11 +51,9 @@ const commonValues: Value[] = [
   "SWAP",
 ];
 
-type Card = CommonCard | ActionCard;
+export type Card = CommonCard | ActionCard;
 
-type Status = "HAND" | "DECK" | "GAME" | "PLAY";
-
-type Deck = Card[];
+export type Status = "HAND" | "DECK" | "GAME" | "PLAY";
 
 function buildCommon(color: Color): CommonCard[] {
   return commonValues.map((value) => {
@@ -85,7 +83,7 @@ const buildSpecial = (): ActionCard[] => {
   ];
 };
 
-export function buildOne(): Deck {
+export function buildOne(): Card[] {
   const cs = colors.map((c) => {
     if (c === "BLACK") {
       return [
