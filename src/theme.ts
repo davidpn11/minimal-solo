@@ -54,7 +54,7 @@ export const THEME = {
   },
   colors: COLORS,
   gradients: GRADIENTS,
-  padding: {
+  spacing: {
     none: 0,
     small: 4,
     base: 8,
