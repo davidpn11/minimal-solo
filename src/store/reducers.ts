@@ -1,16 +1,22 @@
 import { combineReducers } from "redux";
 import { Action } from "redux";
-import { Session } from "../model/Session";
+import { Session, SessionWithId } from "../model/Session";
 import * as O from "fp-ts/lib/Option";
+import { SessionActionTypes } from "./actions";
 
-const initialState: Session = {
+const initialState: SessionWithId = {
   id: "",
   code: "",
-  status: "NONE",
+  status: "INITIAL",
+  players: {},
+  deck: {},
+  admin: "",
 };
 
-function sessionReducer(state = initialState, action: Action) {
+function sessionReducer(state = initialState, action: SessionActionTypes) {
   switch (action.type) {
+    case "CREATE_SESSION":
+      return { ...state, ...action.payload };
     default:
       return state;
   }
