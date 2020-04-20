@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { RoomSelectWrapper, Title, RoomInput, SubmitRoom } from "./styles";
+import { RoomSelectWrapper, Title, RoomInput } from "./styles";
 import { requestCreateSession } from "../../api/db/session";
+import { Button } from "../../components/Button";
 
 export default function Lobby() {
   const [name, setName] = useState("");
@@ -16,10 +17,10 @@ export default function Lobby() {
       <Title>JOIN A ROOM</Title>
       <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <SubmitRoom>JOIN</SubmitRoom>
+      <Button>JOIN</Button>
       <h2>OR CREATE A NEW ONE</h2>
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <SubmitRoom>CREATE</SubmitRoom>
+      <Button variant="secondary">CREATE</Button>
     </RoomSelectWrapper>
   );
 }
