@@ -19,7 +19,7 @@ export const COLORS = {
   yellowShadow: "#F0C02E",
   white: "#FFFFFF",
   border: "#F0EFF0",
-} as const;
+};
 
 export const GRADIENTS = {
   blackGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.blackBase} 0%, ${COLORS.blackLight} 100%)`,
@@ -29,7 +29,7 @@ export const GRADIENTS = {
   redGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.redBase} 0%, ${COLORS.redLight} 100%)`,
   whiteGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.border} 0%, ${COLORS.white} 100%)`,
   yellowGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.yellowBase} 0%, ${COLORS.yellowLight} 100%)`,
-} as const;
+};
 
 export const THEME = {
   backgrounds: {
@@ -41,8 +41,8 @@ export const THEME = {
     winner: GRADIENTS.greenGradient,
     closest: GRADIENTS.blueGradient,
     others: COLORS.white,
-    primaryButton: GRADIENTS.blueGradient,
-    secondaryButton: GRADIENTS.greenGradient,
+    primaryButton: COLORS.blueBase,
+    secondaryButton: COLORS.greenBase,
   },
   playingCards: {
     back: GRADIENTS.blackestGradient,
@@ -70,6 +70,6 @@ export const THEME = {
     base: 8,
     board: 16,
   },
-} as const;
+};
 
 export type MinimalSoloTheme = typeof THEME;
