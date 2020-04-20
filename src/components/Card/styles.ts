@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 const cardColors = {
   green: css`
@@ -26,7 +26,7 @@ const cardColors = {
   `,
 };
 
-export type Colors = 'green' | 'red' | 'blue' | 'yellow' | 'neutral';
+export type Colors = "green" | "red" | "blue" | "yellow" | "neutral";
 
 export const CardWrapper = styled.div<{ color: Colors }>`
   width: 120px;
