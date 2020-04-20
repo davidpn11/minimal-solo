@@ -1,3 +1,4 @@
+import {select, text, withKnobs} from "@storybook/addon-knobs";
 import styled, { createGlobalStyle } from "styled-components";
 import React from "react";
 import { Button } from "./index";
@@ -24,10 +25,20 @@ const Global = createGlobalStyle`
 `;
 
 export function ButtonStory() {
+  const textKnob = text("Text", "Start a New Room");
+  const variantKnob = select(
+    "Variant",
+    {
+      Primary: "primary",
+      Secondary: "secondary",
+    },
+    "primary"
+  );
+
   return (
     <Container>
       <Global />
-      <Button>START A NEW ROOM</Button>
+      <Button variant={variantKnob}>{textKnob}</Button>
     </Container>
   );
 }
@@ -35,5 +46,5 @@ export function ButtonStory() {
 export default {
   title: "MinimalSolo/Components/Button",
   component: ButtonStory,
-  decorators: [],
+  decorators: [withKnobs],
 };
