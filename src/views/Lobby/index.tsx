@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { RoomSelectWrapper, Title, RoomInput, SubmitRoom } from "./styles";
-import { createGameSession } from "../../store/actions";
+import { RoomSelectWrapper, Title, RoomInput } from "./styles";
+import { Button } from "../../components/Button";
 import { useDispatch } from "react-redux";
+import { createGameSession } from "../../store/actions";
 
 export default function Lobby() {
   const [name, setName] = useState("");
@@ -11,7 +12,6 @@ export default function Lobby() {
     setName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
-  // const [name, setName] = useState('')
 
   const createRoom = async () => {
     console.log("creating");
@@ -23,10 +23,10 @@ export default function Lobby() {
       <Title>JOIN A ROOM</Title>
       <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <SubmitRoom>JOIN</SubmitRoom>
+      <Button>JOIN</Button>
       <h2>OR CREATE A NEW ONE</h2>
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <SubmitRoom onClick={() => createRoom()}>CREATE</SubmitRoom>
+      <Button variant="secondary">CREATE</Button>
     </RoomSelectWrapper>
   );
 }
