@@ -34,18 +34,19 @@ function mapCards(
 
 export const CardWrapper = styled.div<CardWrapperProps>`
   align-items: center;
-  border-radius: ${props => props.theme.radius.base}px;
-  box-shadow: ${props => props.theme.shadows.base};
+  border-radius: ${(props) => props.theme.radius.base}px;
+  box-shadow: ${(props) => props.theme.shadows.base};
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  height: 180px;
+  height: 300px;
   justify-content: space-between;
   max-height: 300px;
   max-width: 200px;
-  padding: ${props => props.theme.spacing.medium}px;
-  width: 120px;
-  
+  padding: ${(props) => props.theme.spacing.medium}px;
+  position: relative;
+  width: 200px;
+
   ${mapCards}
 
   > * {
@@ -53,14 +54,53 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   }
 `;
 
-export const CardValue = styled.h1`
+export const CardValue = styled.span`
+  align-items: center;
+  display: flex;
+  height: 128px;
+  justify-content: center;
+  left: calc(50% - 64px);
   margin: 0;
   padding: 0;
-  text-align: center;
+  position: absolute;
+  top: calc(50% - 64px);
+  width: 128px;
+
+  svg {
+    max-width: 96px;
+    max-height: 96px;
+  }
 `;
 
-export const CardUpper = styled.span``;
+export const CardUpper = styled.span`
+  align-items: center;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  left: 16px;
+  position: absolute;
+  top: 16px;
+  width: 32px;
+
+  svg {
+    max-width: 16px;
+    max-height: 16px;
+  }
+`;
 
 export const CardLower = styled.span`
+  align-items: center;
+  bottom: 16px;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  position: absolute;
+  right: 16px;
   transform: rotate(180deg);
+  width: 32px;
+
+  svg {
+    max-width: 16px;
+    max-height: 16px;
+  }
 `;
