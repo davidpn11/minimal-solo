@@ -1,7 +1,5 @@
 import { combineReducers } from "redux";
-import { Action } from "redux";
-import { Session, SessionWithId } from "../model/Session";
-import * as O from "fp-ts/lib/Option";
+import { SessionWithId } from "../model/Session";
 import { SessionActionTypes } from "./actions";
 
 const initialState: SessionWithId = {
@@ -23,3 +21,4 @@ function sessionReducer(state = initialState, action: SessionActionTypes) {
 }
 
 export const rootReducer = combineReducers({ session: sessionReducer });
+export type ReduxStore = ReturnType<typeof rootReducer>;

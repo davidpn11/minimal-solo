@@ -33,23 +33,7 @@ export type GameSession = {
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
 
-// export type Game = GameOff | GameOn;
-
-// export type GameOn = {
-//   players: Player[];
-//   round: Round;
-//   deck: Card[];
-//   activeCard: Card;
-//   cemetery: Card[];
-//   progression: Round[];
-//   winner: Option<Player>;
-// };
-
-// export type GameOff = {
-//   players: Player[];
-//   deck: Card[];
-// };
-
+// TODO: RETHINK ROUND/PLAY CONCEPT
 export type Round = {
   plays: Play[];
   currentPlayer: Player;
