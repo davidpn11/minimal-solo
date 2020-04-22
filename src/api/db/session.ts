@@ -86,6 +86,7 @@ export async function requestCreateSession(
   };
 }
 
+//TODO
 export async function requestSetSession(
   session: SessionWithId
 ): Promise<SessionWithId> {
@@ -95,6 +96,7 @@ export async function requestSetSession(
   return session;
 }
 
+//TODO
 export async function requestAddPlayer(
   sessionId: string,
   player: Player
@@ -107,6 +109,7 @@ export async function requestAddPlayer(
   return { id: res.id, ...player };
 }
 
+//TODO
 export async function requestGetSession(sessionId: string) {
   const res = await database.collection("session").doc(sessionId).get();
   return res;
