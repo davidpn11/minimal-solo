@@ -10,35 +10,46 @@ function mapCards(
   if (props.status === "DECK") {
     return css`
       background: ${props.theme.gradients.blackestGradient};
+      border-color: ${props.theme.colors.blackBase};
+    `;
+  } else if (props.status === "GAME") {
+    return css`
+      display: none;
     `;
   }
   switch (props.color) {
     case "BLUE":
       return css`
         background: ${props.theme.gradients.blueGradient};
+        border-color: ${props.theme.colors.blueShadow};
       `;
     case "GOLD":
       return css`
         background: ${props.theme.gradients.yellowGradient};
+        border-color: ${props.theme.colors.yellowShadow};
       `;
     case "GREEN":
       return css`
         background: ${props.theme.gradients.greenGradient};
+        border-color: ${props.theme.colors.greenShadow};
       `;
     case "RED":
       return css`
         background: ${props.theme.gradients.redGradient};
+        border-color: ${props.theme.colors.redShadow};
       `;
     case "BLACK":
     default:
       return css`
         background: ${props.theme.gradients.blackGradient};
+        border-color: ${props.theme.colors.blackShadow};
       `;
   }
 }
 
 export const CardWrapper = styled.div<CardWrapperProps>`
   align-items: center;
+  border: 1px solid;
   border-radius: ${(props) => props.theme.radius.base}px;
   box-shadow: ${(props) => props.theme.shadows.base};
   display: flex;
