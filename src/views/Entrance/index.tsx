@@ -16,6 +16,7 @@ export default function Entrance() {
     setCode(event.currentTarget.value);
 
   const createRoom = () => {
+    //TODO pass sessionID to path
     const sessionId = dispatch(createGameSession(name));
     history.push("/lobby");
   };

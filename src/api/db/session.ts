@@ -11,7 +11,7 @@ import { Player, PlayerWithId } from "../../model/Player";
 import { buildOne } from "../../model/Card";
 
 const codeGenerator = () => {
-  return "XXXX";
+  return String(Math.round(Math.random() * 100000));
 };
 
 function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
