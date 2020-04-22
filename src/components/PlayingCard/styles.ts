@@ -2,6 +2,57 @@ import styled, { css, FlattenSimpleInterpolation } from "styled-components";
 import { Color, Status } from "../../model/Card";
 import { WithMinimalSoloTheme } from "../../theme";
 
+export const CardValue = styled.span`
+  align-items: center;
+  display: flex;
+  height: 128px;
+  justify-content: center;
+  left: calc(50% - 64px);
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: calc(50% - 64px);
+  width: 128px;
+
+  svg {
+    max-width: 96px;
+    max-height: 96px;
+  }
+`;
+
+export const CardUpper = styled.span`
+  align-items: center;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  left: 16px;
+  position: absolute;
+  top: 16px;
+  width: 32px;
+
+  svg {
+    max-width: 16px;
+    max-height: 16px;
+  }
+`;
+
+export const CardLower = styled.span`
+  align-items: center;
+  bottom: 16px;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  position: absolute;
+  right: 16px;
+  transform: rotate(180deg);
+  width: 32px;
+
+  svg {
+    max-width: 16px;
+    max-height: 16px;
+  }
+`;
+
 type CardWrapperProps = { color: Color; status: Status };
 
 function mapCards(
@@ -11,6 +62,17 @@ function mapCards(
     return css`
       background: ${props.theme.gradients.blackestGradient};
       border-color: ${props.theme.colors.blackBase};
+      padding: ${props.theme.spacing.base}px;
+
+      ${CardValue} {
+        left: 0;
+        width: 100%;
+      }
+
+      svg {
+          max-width: 80%;
+          max-height: 144px;
+        }
     `;
   } else if (props.status === "GAME") {
     return css`
@@ -64,59 +126,4 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   width: 200px;
 
   ${mapCards}
-
-  > * {
-    width: 100%;
-  }
-`;
-
-export const CardValue = styled.span`
-  align-items: center;
-  display: flex;
-  height: 128px;
-  justify-content: center;
-  left: calc(50% - 64px);
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: calc(50% - 64px);
-  width: 128px;
-
-  svg {
-    max-width: 96px;
-    max-height: 96px;
-  }
-`;
-
-export const CardUpper = styled.span`
-  align-items: center;
-  display: flex;
-  height: 32px;
-  justify-content: center;
-  left: 16px;
-  position: absolute;
-  top: 16px;
-  width: 32px;
-
-  svg {
-    max-width: 16px;
-    max-height: 16px;
-  }
-`;
-
-export const CardLower = styled.span`
-  align-items: center;
-  bottom: 16px;
-  display: flex;
-  height: 32px;
-  justify-content: center;
-  position: absolute;
-  right: 16px;
-  transform: rotate(180deg);
-  width: 32px;
-
-  svg {
-    max-width: 16px;
-    max-height: 16px;
-  }
 `;

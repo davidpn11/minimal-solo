@@ -1,5 +1,6 @@
 import React from "react";
 import { CardWrapper, CardValue, CardUpper, CardLower } from "./styles";
+import { Logo } from "../Logo";
 import { Color, Status, Value } from "../../model/Card";
 
 import { ReactComponent as One } from "../../assets/svg/One.svg";
@@ -31,8 +32,8 @@ type Icons = { main: React.ReactNode; corner: React.ReactNode };
 function mapIcons({ value, status }: Props): Icons {
   if (status === "DECK" || status === "GAME") {
     return {
-      main: <div />, //TODO: Add the Logo later
-      corner: '',
+      main: <Logo variant="COLOR" />,
+      corner: "",
     };
   }
 
