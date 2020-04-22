@@ -4,9 +4,8 @@ import {
   Session,
   NoGameSession,
   SessionWithId,
-  DocumentSnapshot,
-  QuerySnapshot,
 } from "../../model/Session";
+import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
 import { Player, PlayerWithId } from "../../model/Player";
 import { buildOne } from "../../model/Card";
 
