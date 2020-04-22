@@ -10,7 +10,9 @@ export const ButtonWrapper = styled.button<ButtonWrapperProps>`
       ? props.theme.backgrounds.primaryButton
       : props.theme.backgrounds.secondaryButton};
   border-radius: ${({ theme }) => theme.radius.small}px;
+  border: none;
   color: ${(props) => props.theme.colors.white};
+  cursor: pointer;
   display: flex;
   font-size: 14px;
   font-weight: bold;
