@@ -27,9 +27,15 @@ type Props = {
   status: Status;
 };
 
-function mapIcons(
-  value: Value
-): { main: React.ReactNode; corner: React.ReactNode } {
+type Icons = { main: React.ReactNode; corner: React.ReactNode };
+function mapIcons({ value, status }: Props): Icons {
+  if (status === "DECK" || status === "GAME") {
+    return {
+      main: <div />, //TODO: Add the Logo later
+      corner: '',
+    };
+  }
+
   switch (value) {
     case "ONE":
       return {
@@ -112,15 +118,15 @@ function mapIcons(
         corner: <ColorIcon />,
       };
     default:
-      throw new Error("Not a card")
+      throw new Error("Not a card");
   }
 }
 
 export function PlayingCard(props: Props) {
-  const { main, corner } = mapIcons(props.value);
+  const { main, corner } = mapIcons(props);
 
   return (
-    <CardWrapper color={props.color}>
+    <CardWrapper status={props.status} color={props.color}>
       <CardUpper>{corner}</CardUpper>
       <CardValue>{main}</CardValue>
       <CardLower>{corner}</CardLower>

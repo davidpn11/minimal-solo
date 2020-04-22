@@ -1,12 +1,17 @@
 import styled, { css, FlattenSimpleInterpolation } from "styled-components";
-import { Color } from "../../model/Card";
+import { Color, Status } from "../../model/Card";
 import { WithMinimalSoloTheme } from "../../theme";
 
-type CardWrapperProps = { color: Color };
+type CardWrapperProps = { color: Color; status: Status };
 
 function mapCards(
   props: WithMinimalSoloTheme & CardWrapperProps
 ): FlattenSimpleInterpolation {
+  if (props.status === "DECK") {
+    return css`
+      background: ${props.theme.gradients.blackestGradient};
+    `;
+  }
   switch (props.color) {
     case "BLUE":
       return css`
