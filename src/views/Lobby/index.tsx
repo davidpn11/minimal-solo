@@ -13,7 +13,7 @@ export default function Lobby() {
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
 
-  const createRoom = async () => {
+  const createRoom = () => {
     console.log("creating");
     dispatch(createGameSession(name));
   };
@@ -26,6 +26,7 @@ export default function Lobby() {
       <Button>JOIN</Button>
       <h2>OR CREATE A NEW ONE</h2>
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
+      <button onClick={createRoom}>MICHEL VIADO</button>
       <Button variant="secondary">CREATE</Button>
     </RoomSelectWrapper>
   );

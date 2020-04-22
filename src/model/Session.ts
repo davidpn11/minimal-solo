@@ -78,5 +78,3 @@ export type DocumentReference = firebase.firestore.DocumentReference<
 export type CollectionReference = firebase.firestore.CollectionReference<
   firebase.firestore.DocumentData
 >;
-
-// export type Document = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>

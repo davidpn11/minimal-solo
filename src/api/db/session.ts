@@ -40,6 +40,7 @@ function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   }
 }
 
+//TODO: IMPROVE THIS CODE
 export async function requestCreateSession(
   adminName: string
 ): Promise<SessionWithId> {
@@ -49,6 +50,7 @@ export async function requestCreateSession(
     admin: adminName,
   };
 
+  console.log("go");
   const session = await database.collection("session").add(s);
   const generateCards = buildOne();
 
