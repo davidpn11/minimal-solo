@@ -16,10 +16,7 @@ export default function Entrance() {
     setCode(event.currentTarget.value);
 
   const createRoom = () => {
-    console.log("creating");
     const sessionId = dispatch(createGameSession(name));
-
-    console.log(sessionId);
     history.push("/lobby");
   };
 
@@ -31,8 +28,9 @@ export default function Entrance() {
       <Button>JOIN</Button>
       <h2>OR CREATE A NEW ONE</h2>
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <button onClick={createRoom}>MICHEL VIADO</button>
-      <Button variant="secondary">CREATE</Button>
+      <Button onClick={createRoom} variant="secondary">
+        CREATE
+      </Button>
     </RoomSelectWrapper>
   );
 }
