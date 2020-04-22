@@ -25,23 +25,7 @@ export function createGameSession(name: string) {
     try {
       const session = await requestCreateSession(name);
       dispatch(setGameSession(session));
-      // const player = await requestAddPlayer(session.id, {
-      //   name,
-      //   hand: [],
-      //   uno: false,
-      // });
-
-      // console.log({ session });
-
-      // dispatch(setPlayer(player))
-      // const player2 = await requestSetPlayer(session.id, {
-      //   name: "name",
-      //   hand: [],
-      //   uno: false,
-      // });
-      // console.log({ player });
-      // const result = await requestGetSession(session.id);
-      // console.log(result.data());
+      return session;
     } catch (error) {
       console.error(error);
     }

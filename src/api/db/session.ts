@@ -50,7 +50,6 @@ export async function requestCreateSession(
     admin: adminName,
   };
 
-  console.log("go");
   const session = await database.collection("session").add(s);
   const generateCards = buildOne();
 
