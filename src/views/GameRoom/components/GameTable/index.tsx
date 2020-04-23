@@ -1,8 +1,10 @@
 import React from 'react';
-import { TableWrapper, TableCenter } from './styles';
+import { TableWrapper, TableCenter, CardPlaceholder } from './styles';
 import TablePlayer from '../TablePlayer';
 import { Player } from '../../../../model/Player';
 import { Logo } from '../../../../components/Logo';
+import CardDeck from '../CardDeck';
+import CurrentCard from '../CurrentCard';
 
 const players: Player[] = [
   {
@@ -162,6 +164,12 @@ export default function GameTable() {
     <TableWrapper>
       <TableCenter>
         <Logo variant="WHITE" />
+        <CardPlaceholder>
+          <CurrentCard />
+        </CardPlaceholder>
+        <CardPlaceholder>
+          <CardDeck />
+        </CardPlaceholder>
       </TableCenter>
       {players.map((player, i) => (
         <TablePlayer player={player} playerPosition={i} />
