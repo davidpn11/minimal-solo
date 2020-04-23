@@ -1,7 +1,7 @@
 import React from "react";
-import {select, withKnobs} from "@storybook/addon-knobs";
+import { select, withKnobs } from "@storybook/addon-knobs";
 
-import {Pass, PassButtonStates} from "./";
+import { Pass, PassButtonStates } from "./";
 
 const STATES: Record<string, PassButtonStates> = {
   CanPass: "CAN_PASS",
@@ -12,7 +12,7 @@ const STATES: Record<string, PassButtonStates> = {
 export function PassStory() {
   const statesKnob = select("State", STATES, "CAN_PASS");
 
-  return <Pass state={statesKnob}/>;
+  return <Pass state={statesKnob} onClick={() => {}} />;
 }
 
 export default {

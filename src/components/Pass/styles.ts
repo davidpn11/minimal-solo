@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 export type PassButtonProps = { isActive: boolean; isPassable: boolean };
-export const Wrapper = styled.button<PassButtonProps>`
+export const PassButton = styled.button<PassButtonProps>`
   background-color: ${(props) => props.theme.colors.blackest};
   border-radius: ${(props) => props.theme.radius.base}px;
   border: 1px solid ${(props) => props.theme.colors.blackShadow};
