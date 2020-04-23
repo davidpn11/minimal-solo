@@ -1,7 +1,7 @@
 import { Card } from "./Card";
 export type Player = {
-  id: string;
+  id?: string;
   name: string;
   hand: Card[];
-  uno: boolean;
+  uno?: boolean;
 };

@@ -1,18 +1,28 @@
 import styled from 'styled-components';
 
 export const TableWrapper = styled.div`
-  background: #cfd8dc;
+  background: #272627;
+  height: 80vh;
+
   display: grid;
+  grid-gap: 16px;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
   grid-template-areas:
-    'blank player player player blank'
-    'player blank active deck player'
-    'player blank blank blank player'
-    'blank player you player blank';
-  padding: 8px;
+    'corner-1 player-4  player-5  player-6  corner-2'
+    'player-3 center    center    center    player-7'
+    'player-2 center    center    center    player-8'
+    'coner-4  player-1  player-0  player-9  corner-3';
+  padding: 12px 24px;
 
   border-radius: 6px;
   margin: 8px 0;
   flex: 1;
+`;
+
+export const TableCenter = styled.div`
+  background: linear-gradient(334.22deg, #363436 0%, #444144 100%);
+  border-radius: 8px;
+  grid-area: center;
+  margin: 20px;
 `;
