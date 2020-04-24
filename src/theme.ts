@@ -1,3 +1,5 @@
+import { rgba } from "polished";
+
 const GRADIENT_ROTATION = "315deg" as const;
 
 export const COLORS = {
@@ -70,6 +72,11 @@ export const THEME = {
     base: 8,
     board: 16,
   },
+  shadows: {
+    base: `0 1px 8px ${rgba(COLORS.blackest, 0.14)}`,
+  },
 };
 
 export type MinimalSoloTheme = typeof THEME;
+
+export type WithMinimalSoloTheme = { theme: MinimalSoloTheme };

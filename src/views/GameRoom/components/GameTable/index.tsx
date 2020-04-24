@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableWrapper } from './styles';
-import Card from '../../../../components/Card';
+import {Card} from '../../../../components/PlayingCard';
 
 export default function GameTable() {
   return (

@@ -7,7 +7,6 @@ export type Value =
   | "THREE"
   | "FOUR"
   | "FIVE"
-  | "ZERO"
   | "SIX"
   | "SEVEN"
   | "EIGHT"
@@ -15,9 +14,10 @@ export type Value =
   | "BLOCK"
   | "REVERSE"
   | "PLUS_TWO"
-  | "SWAP"
   | "PLUS_FOUR"
-  | "SWAP_ALL";
+  | "SWAP"
+  | "SWAP_ALL"
+  | "COLOR";
 
 export type CommonCard = {
   color: Omit<Color, "BLACK">;
@@ -28,7 +28,7 @@ export type CommonCard = {
 
 export type ActionCard = {
   color: "BLACK";
-  value: "PLUS_FOUR" | "SWAP_ALL";
+  value: "PLUS_FOUR" | "SWAP_ALL" | "COLOR";
   createdAt: number;
   status: Status;
 };

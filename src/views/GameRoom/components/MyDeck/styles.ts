@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardWrapper } from '../../../../components/Card/styles';
+import { CardWrapper } from '../../../../components/PlayingCard/styles';
 
 export const DeckWrapper = styled.div`
   display: grid;
