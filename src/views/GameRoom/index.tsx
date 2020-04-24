@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { GameWrapper } from './styles';
-import MyDeck from './components/MyDeck';
+import MyHand from './components/MyHand';
 import GameTable from './components/GameTable';
 
 export default function GameRoom() {
@@ -14,7 +14,7 @@ export default function GameRoom() {
   return (
     <GameWrapper>
       <GameTable />
-      <MyDeck />
+      <MyHand />
     </GameWrapper>
   );
 }

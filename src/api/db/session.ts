@@ -78,7 +78,7 @@ export async function requestCreateSession(
       [player.id]: {
         name: adminName,
         uno: false,
-        hand: {},
+        hand: [],
       },
     },
     ...s,
