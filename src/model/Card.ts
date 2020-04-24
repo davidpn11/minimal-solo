@@ -40,7 +40,6 @@ const commonValues: Value[] = [
   "THREE",
   "FOUR",
   "FIVE",
-  "ZERO",
   "SIX",
   "SEVEN",
   "EIGHT",

@@ -1,24 +1,26 @@
-import React from 'react';
-import { DeckWrapper } from './styles';
-import {Card} from '../../../../components/PlayingCard';
+import React from "react";
+import { DeckWrapper } from "./styles";
+import { PlayingCard } from "../../../../components/PlayingCard";
 
 export default function MyDeck() {
-  return <DeckWrapper>
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="blue" />
-      <Card value="1" color="yellow" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-  </DeckWrapper>;
+  return (
+    <DeckWrapper>
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="GOLD" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+    </DeckWrapper>
+  );
 }

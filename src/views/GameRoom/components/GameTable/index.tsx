@@ -1,14 +1,14 @@
-import React from 'react';
-import { TableWrapper } from './styles';
-import {Card} from '../../../../components/PlayingCard';
+import React from "react";
+import { TableWrapper } from "./styles";
+import { PlayingCard } from "../../../../components/PlayingCard";
 
 export default function GameTable() {
   return (
     <TableWrapper>
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
-      <Card value="1" color="red" />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
+      <PlayingCard value="ONE" color="RED" status={"DECK"} />
     </TableWrapper>
   );
 }
