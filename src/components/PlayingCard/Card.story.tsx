@@ -57,7 +57,7 @@ export function CardStory() {
 }
 
 export default {
-  title: "MinimalSolo/Components/Card",
+  title: "MinimalSolo/Components/Game",
   component: CardStory,
   decorators: [withKnobs],
 };
