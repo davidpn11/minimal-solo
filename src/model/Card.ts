@@ -22,7 +22,7 @@ export type Value =
 export type CommonCard = {
   color: Omit<Color, "BLACK">;
   value: Omit<Value, "PLUS_FOR" | "SWAP_ALL">;
-  createdAt: number;
+  createdAt?: number;
   status: Status;
 };
 
