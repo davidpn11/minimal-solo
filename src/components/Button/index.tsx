@@ -4,6 +4,7 @@ import { ButtonVariant, ButtonWrapper } from "./styles";
 type Props = {
   children: React.ReactNode;
   variant: ButtonVariant;
+  onClick?: () => void;
 };
 
 export function Button(props: Props) {

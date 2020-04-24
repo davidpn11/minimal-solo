@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { RoomSelectWrapper, Title, RoomInput } from "./styles";
-import { requestCreateSession } from "../../api/db/session";
-import { Button } from "../../components/Button";
+import React from "react";
+import { useSelector } from "react-redux";
+import { SessionWithId } from "../../model/Session";
+import { ReduxStore } from "../../store/reducers";
+//TODO
+
+const getSession = (state: ReduxStore): SessionWithId => state.session;
 
 export default function Lobby() {
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
+  const session = useSelector(getSession);
+  console.log(session);
 
-  const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setName(event.currentTarget.value);
-  const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCode(event.currentTarget.value);
-  // const [name, setName] = useState('')
+  const hasSession = !!session.code;
+
   return (
-    <RoomSelectWrapper>
-      <Title>JOIN A ROOM</Title>
-      <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
-      <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <Button>JOIN</Button>
-      <h2>OR CREATE A NEW ONE</h2>
-      <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <Button variant="secondary">CREATE</Button>
-    </RoomSelectWrapper>
+    <div>
+      {hasSession ? (
+        <>
+          <h2>Admin: {session.admin}</h2>
+          <h2>CODE: {session.code} </h2>
+        </>
+      ) : (
+        <h1>Loading...</h1>
+      )}
+    </div>
   );
 }

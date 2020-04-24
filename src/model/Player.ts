@@ -1,7 +1,10 @@
 import { Card } from "./Card";
+import { ID, Normalized } from "./Session";
+
 export type Player = {
-  id: string;
   name: string;
-  hand: Card[];
+  hand: Normalized<Card>;
   uno: boolean;
 };
+
+export type PlayerWithId = Player & ID;

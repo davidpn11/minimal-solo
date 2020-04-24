@@ -3,41 +3,45 @@ import { Card } from "./Card";
 import { Option } from "fp-ts/lib/Option";
 
 export type SessionStatus = "INITIAL" | "STARTED" | "FINISHED";
+export type ID = { id: string };
+
+export type Normalized<T> = {
+  [id: string]: T;
+};
 
 export type NoGameSession = {
-  id: string;
   code: string;
-  status: "NONE";
+  status: "INITIAL";
+  admin: string;
+  deck: Normalized<Card>;
+  players: Normalized<Player>;
 };
 
 export type GameSession = {
-  id: string;
   code: string;
-  status: SessionStatus;
-  game: Game;
-  admin: Player;
-};
-
-export type Session = GameSession | NoGameSession;
-
-type Game = {
-  players: Player[];
+  status: Omit<SessionStatus, "INITIAL">;
+  admin: string;
+  deck: Normalized<Card>;
+  players: Normalized<Player>;
   round: Round;
-  deck: Card[];
   activeCard: Card;
-  cemetery: Card[];
-  progression: Round[];
+  cemetery: Normalized<Card>;
+  progression: Normalized<Round>;
   winner: Option<Player>;
 };
 
-type Round = {
+export type Session = GameSession | NoGameSession;
+export type SessionWithId = (GameSession | NoGameSession) & ID;
+
+// TODO: RETHINK ROUND/PLAY CONCEPT
+export type Round = {
   plays: Play[];
   currentPlayer: Player;
   queue: Player[];
   direction: "LEFT" | "RIGHT";
 };
 
-type Play = {
+export type Play = {
   player: Player;
   type: "PLAY_CARD" | "DRAW_CARD" | "ACTION";
   card: Option<Card>;

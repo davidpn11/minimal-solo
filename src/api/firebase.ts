@@ -7,6 +7,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-const database = firebase.firestore();
-
-export { database };
+export const database = firebase.firestore();
+export const getSessionRef = (id: string) =>
+  database.collection("session").doc(id);
+export const getUniqueId = () => database.collection("session").doc().id;
