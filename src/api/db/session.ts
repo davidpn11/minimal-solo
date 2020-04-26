@@ -1,14 +1,23 @@
-import { database, getSessionRef, getUniqueId } from "../firebase";
+import {
+  database,
+  getSessionRef,
+  getUniqueId,
+  getSessionRefByCode,
+} from "../firebase";
 import {
   Normalized,
   Session,
   NoGameSession,
   SessionWithId,
   LocalSessionWithId,
+  LocalGameSession,
+  ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
 import { Player, PlayerWithId } from "../../model/Player";
 import { buildOne } from "../../model/Card";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
@@ -40,6 +49,20 @@ function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   }
 }
 
+function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
+  if (!doc.empty && doc.size === 1) {
+    const head = doc.docs[0];
+
+    const data = {
+      id: head.id,
+      ...head.data(),
+    };
+    return head.exists ? O.some(data as T & ID) : O.none;
+  } else {
+    return O.none;
+  }
+}
+
 //TODO: IMPROVE THIS CODE
 export async function requestCreateSession(
   adminName: string
@@ -55,13 +78,9 @@ export async function requestCreateSession(
 
   const player = await getSessionRef(session.id).collection("players").add({
     name: adminName,
-    uno: false,
+    isReady: false,
+    hand: [],
   });
-
-  const playerR = await getSessionRef(session.id)
-    .collection("players")
-    .doc(player.id)
-    .get();
 
   const batch = database.batch();
   const deckRef = getSessionRef(session.id).collection("deck");
@@ -69,8 +88,6 @@ export async function requestCreateSession(
     batch.set(deckRef.doc(getUniqueId()), card);
   });
   await batch.commit();
-
-  const deck = await getSessionRef(session.id).collection("deck").get();
 
   return {
     id: session.id,
@@ -94,6 +111,22 @@ export async function requestSetSession(
 
   return session;
 }
+
+export async function getSession(sessionCode: string) {
+  const sessionRef = await getSessionRefByCode(sessionCode).get();
+  const session = getQueryHead<LocalGameSession>(sessionRef);
+  return pipe(
+    session,
+    O.fold(
+      () => {
+        throw new Error();
+      },
+      (s: LocalSessionWithId) => s
+    )
+  );
+}
+
+// export async function sessionPlayersListener(sessionId) {}
 
 //TODO
 export async function requestAddPlayer(

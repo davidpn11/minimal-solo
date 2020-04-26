@@ -10,4 +10,8 @@ if (!firebase.apps.length) {
 export const database = firebase.firestore();
 export const getSessionRef = (id: string) =>
   database.collection("session").doc(id);
+
+export const getSessionRefByCode = (code: string) =>
+  database.collection("session").where("code", "==", code);
+
 export const getUniqueId = () => database.collection("session").doc().id;

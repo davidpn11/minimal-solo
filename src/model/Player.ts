@@ -3,7 +3,7 @@ import { Card } from "./Card";
 
 export type Player = {
   name: string;
-  hand: Card[];
+  hand: string[];
   isReady: boolean;
 };
 

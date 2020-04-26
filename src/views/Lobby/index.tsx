@@ -1,10 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { SessionWithId } from "../../model/Session";
-import { ReduxStore } from "../../store/reducers";
-//TODO
+import { LocalSessionWithId } from "../../model/Session";
+import { ReduxStore } from "../../store/rootReducer";
 
-const getSession = (state: ReduxStore): SessionWithId => state.session;
+const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
 export default function Lobby() {
   const session = useSelector(getSession);
