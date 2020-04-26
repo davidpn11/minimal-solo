@@ -6,7 +6,8 @@ import {
   createGameSession,
   joinGameSession,
 } from "../../store/session/actions";
-import { RoomInput, RoomSelectWrapper, Title } from "./styles";
+import { RoomInput, CardWrapper, Title, Page } from "./styles";
+import { Logo } from "../../components/Logo";
 
 export default function Entrance() {
   const [name, setName] = useState("");
@@ -32,16 +33,19 @@ export default function Entrance() {
   };
 
   return (
-    <RoomSelectWrapper>
-      <Title>JOIN A ROOM</Title>
-      <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
-      <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <Button onClick={getRoom}>JOIN</Button>
-      <h2>OR CREATE A NEW ONE</h2>
-      <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <Button onClick={createRoom} variant="secondary">
-        CREATE
-      </Button>
-    </RoomSelectWrapper>
+    <Page>
+      <CardWrapper>
+        <Logo variant="COLOR" />
+        <Title>Join an existing Room</Title>
+        <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
+        <RoomInput placeholder="Your name" value={name} onChange={changeName} />
+        <Button onClick={getRoom}>JOIN</Button>
+        <Title>Create a new Room</Title>
+        <RoomInput placeholder="Your name" value={name} onChange={changeName} />
+        <Button onClick={createRoom} variant="secondary">
+          CREATE
+        </Button>
+      </CardWrapper>
+    </Page>
   );
 }

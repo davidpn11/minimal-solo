@@ -8,7 +8,11 @@ type Props = {
 };
 
 export function Button(props: Props) {
-  return <ButtonWrapper {...props}>{props.children}</ButtonWrapper>;
+  return (
+    <ButtonWrapper {...props}>
+      <span>{props.children}</span>
+    </ButtonWrapper>
+  );
 }
 
 Button.defaultProps = {

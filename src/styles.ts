@@ -17,7 +17,7 @@ export const GlobalStyles = createGlobalStyle`
 
 body {
   margin: 0;
-  background: ${(props) => props.theme.colors.blackBase};
+  background: ${(props) => props.theme.backgrounds.base};
   font-family: ${(props) => props.theme.fonts.Ubuntu};
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
