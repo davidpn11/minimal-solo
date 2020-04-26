@@ -7,156 +7,156 @@ import CardDeck from "../CardDeck";
 import CurrentCard from "../CurrentCard";
 
 const players: Player[] = [
-  {
-    name: "kevin",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "michel",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
-  {
-    name: "david",
-    hand: [
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-      {
-        status: "GAME",
-        color: "RED",
-        value: "ONE",
-      },
-    ],
-  },
+  // {
+  //   name: "kevin",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "michel",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "david",
+  //   hand: [
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //     {
+  //       status: "GAME",
+  //       color: "RED",
+  //       value: "ONE",
+  //     },
+  //   ],
+  // },
 ];
 
 export default function GameTable() {

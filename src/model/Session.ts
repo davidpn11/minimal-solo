@@ -17,29 +17,31 @@ export type NoGameSession = {
   players: Normalized<Player>;
 };
 
+export type LocalNoGameSession = Omit<NoGameSession, "deck">;
+
 export type GameSession = {
   code: string;
   status: Omit<SessionStatus, "INITIAL">;
   admin: string;
   deck: Normalized<Card>;
-  players: Normalized<Player>;
-  round: Round;
-  activeCard: Card;
+  activeCards: Normalized<Card>;
   cemetery: Normalized<Card>;
-  progression: Normalized<Round>;
+  currentCard: Card;
+  players: Normalized<Player>;
+  currentPlayer: string;
+  direction: "LEFT" | "RIGHT";
+  progression: Play[];
   winner: Option<Player>;
 };
 
+export type LocalGameSession = Omit<
+  GameSession,
+  "deck" | "activeCards" | "cemetery"
+>;
+
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
-
-// TODO: RETHINK ROUND/PLAY CONCEPT
-export type Round = {
-  plays: Play[];
-  currentPlayer: Player;
-  queue: Player[];
-  direction: "LEFT" | "RIGHT";
-};
+export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
 
 export type Play = {
   player: Player;

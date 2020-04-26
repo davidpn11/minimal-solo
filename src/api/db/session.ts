@@ -4,6 +4,7 @@ import {
   Session,
   NoGameSession,
   SessionWithId,
+  LocalSessionWithId,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
 import { Player, PlayerWithId } from "../../model/Player";
@@ -42,7 +43,7 @@ function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
 //TODO: IMPROVE THIS CODE
 export async function requestCreateSession(
   adminName: string
-): Promise<SessionWithId> {
+): Promise<LocalSessionWithId> {
   const s = {
     code: codeGenerator(),
     status: "INITIAL" as NoGameSession["status"],
@@ -73,12 +74,11 @@ export async function requestCreateSession(
 
   return {
     id: session.id,
-    deck: normalizeQuery(deck),
     players: {
       [player.id]: {
         name: adminName,
-        uno: false,
         hand: [],
+        isReady: false,
       },
     },
     ...s,
