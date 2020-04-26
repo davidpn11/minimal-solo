@@ -12,7 +12,7 @@ import {
   ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { Player } from "../../model/Player";
+import { Player, PlayerStatus } from "../../model/Player";
 import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -121,16 +121,35 @@ export async function requestJoinSession(sessionCode: string) {
   );
 }
 
+export async function requestTogglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus
+) {
+  if (playerStatus === "ADMIN") throw new Error("IsAdmin");
+
+  return await getSessionRef(sessionId)
+    .collection("players")
+    .doc(playerId)
+    .set({
+      status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
+    });
+}
+
 export async function requestSessionPlayersListener(
   sessionId: string,
   addFn: (p: Normalized<Player>) => void
 ) {
-  await getSessionRef(sessionId)
-    .collection("players")
-    .onSnapshot((querySnapshot) => {
-      const players = normalizeQuery<Player>(querySnapshot);
-      addFn(players);
-    });
+  try {
+    await getSessionRef(sessionId)
+      .collection("players")
+      .onSnapshot((querySnapshot) => {
+        const players = normalizeQuery<Player>(querySnapshot);
+        addFn(players);
+      });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function requestAddPlayer(

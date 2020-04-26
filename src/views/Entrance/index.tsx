@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "../../components/Button";
@@ -6,6 +6,7 @@ import {
   createGameSession,
   joinGameSession,
   SessionThunkDispatch,
+  clearSession,
 } from "../../store/session/actions";
 import { RoomInput, RoomSelectWrapper, Title } from "./styles";
 
@@ -18,6 +19,10 @@ export default function Entrance() {
     setName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
+
+  useEffect(() => {
+    dispatch(clearSession());
+  }, []);
 
   const createRoom = async () => {
     //TODO pass sessionID to path

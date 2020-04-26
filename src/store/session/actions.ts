@@ -1,9 +1,9 @@
-import { Dispatch } from "redux";
-import { Player } from "../../model/Player";
+import { Player, PlayerWithId, PlayerStatus } from "../../model/Player";
 import {
   requestCreateSession,
   requestJoinSession,
   requestAddPlayer,
+  requestTogglePlayerStatus,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkDispatch } from "redux-thunk";
@@ -12,6 +12,7 @@ import { ThunkResult } from "./utils";
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const SET_PLAYER = "SET_PLAYER" as const;
 export const CLEAR_SESSION = "CLEAR_SESSION" as const;
+export const SET_PLAYER_STATUS = "SET_PLAYER_STATUS" as const;
 
 export type SessionThunkDispatch = ThunkDispatch<
   LocalSessionWithId,
@@ -31,6 +32,13 @@ function setGameSession(session: LocalSessionWithId) {
   };
 }
 
+function setPlayer(player: PlayerWithId) {
+  return {
+    type: SET_PLAYER_STATUS,
+    payload: player,
+  };
+}
+
 export function clearSession() {
   return {
     type: CLEAR_SESSION,
@@ -45,7 +53,7 @@ function addPlayers(player: Normalized<Player>) {
 }
 
 export function createGameSession(name: string) {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestCreateSession(name);
       dispatch(setGameSession(session));
@@ -57,7 +65,7 @@ export function createGameSession(name: string) {
 }
 
 export function addNewPlayer(player: Normalized<Player>) {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: SessionThunkDispatch) => {
     dispatch(addPlayers(player));
   };
 }
@@ -79,6 +87,22 @@ export function joinGameSession(
   };
 }
 
+export async function togglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus
+) {
+  const result = await requestTogglePlayerStatus(
+    sessionId,
+    playerId,
+    playerStatus
+  );
+  console.log({ result });
+}
+
 export type SessionActionTypes = ReturnType<
-  typeof setGameSession | typeof addPlayers | typeof clearSession
+  | typeof setGameSession
+  | typeof addPlayers
+  | typeof clearSession
+  | typeof setPlayer
 >;
