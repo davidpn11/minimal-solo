@@ -76,6 +76,9 @@ export const THEME = {
     base: `0 1px 8px ${rgba(COLORS.blackest, 0.14)}`,
     lighter: `0 2px 8px ${rgba(COLORS.blackShadow, 0.24)}`,
   },
+  fonts: {
+    Ubuntu: '"Ubuntu", "Roboto", "Helvetica Neue", sans-serif',
+  },
 };
 
 export type MinimalSoloTheme = typeof THEME;
