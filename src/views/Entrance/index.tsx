@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
@@ -10,6 +10,7 @@ import {
   createGameSession,
   joinGameSession,
   SessionThunkDispatch,
+  clearSession,
 } from "../../store/session/actions";
 
 const BASE_ERROR_STATE = {
@@ -33,6 +34,10 @@ export default function Entrance() {
     setAdminName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
+
+  useEffect(() => {
+    dispatch(clearSession());
+  }, []);
 
   const createRoom = async () => {
     if (adminName.length === 0) {
