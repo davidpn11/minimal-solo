@@ -9,6 +9,8 @@ import { ReduxStore } from "../../store/rootReducer";
 import { addNewPlayer, clearSession } from "../../store/session/actions";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus } from "../../model/Player";
+import { Code, Page, PlayersWrapper, Title } from "./styles";
+import { Button } from "../../components/Button";
 
 const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
@@ -39,40 +41,35 @@ export default function Lobby() {
   };
 
   //TODO: IMPROVE TOOGLE STATUS LOGIC
-  const players = Object.keys(currentSession.players).reduce(
-    (acc: JSX.Element[], id) => {
-      const player = currentSession.players[id];
-      const isAdmin = player.status === "ADMIN";
-      return [
-        ...acc,
-        <span key={id} style={{ display: "flex" }}>
-          <LobbyPlayerCard {...player} avatar={""} />
-          {!isAdmin && (
-            <button onClick={toggleStatus(id, player.status)}>
-              {player.status === "READY" ? "NOT READY" : "READY"}
-            </button>
-          )}
-        </span>,
-      ];
-    },
-    []
-  );
+  const players = Object.entries(currentSession.players);
+  const isAdmin =
+    currentSession.players[0] && currentSession.players[0].status === "ADMIN";
 
   const hasSession = !!currentSession.code;
   return (
-    <div>
+    <Page>
       {hasSession ? (
         <>
-          <h3>Admin: {currentSession.admin}</h3>
-          <h3>CODE: {currentSession.code} </h3>
-          <hr />
-          <h2>Players</h2>
-
-          {players}
+          <Title>Player Code</Title>
+          <Code>{currentSession.code}</Code>
+          <Title>Players</Title>
+          <PlayersWrapper>
+            {players.map(([id, player]) => {
+              return (
+                <LobbyPlayerCard
+                  key={id}
+                  name={player.name}
+                  avatar={"http://placekitten.com/32/32"}
+                  status={player.status}
+                />
+              );
+            })}
+          </PlayersWrapper>
+          {isAdmin ? <Button>Start Game</Button> : <Button>Ready</Button>}
         </>
       ) : (
-        <h1>Loading...</h1>
+        <Title>Loading...</Title>
       )}
-    </div>
+    </Page>
   );
 }
