@@ -21,8 +21,9 @@ export const CardWrapper = styled.div`
   width: 384px;
 
   svg {
-    width: 128px;
-    height: 128px;
+    width: 144px;
+    height: 144px;
+    margin-bottom: ${(props) => props.theme.spacing.medium}px;
   }
 
   ${ButtonWrapper} {
