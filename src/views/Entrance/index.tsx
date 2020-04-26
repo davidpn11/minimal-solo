@@ -25,10 +25,12 @@ export default function Entrance() {
   };
 
   const getRoom = async () => {
-    //TODO: CHECK if session Creation was sucessful - Type Issue
+    //TODO: Redux thunk is ruining the typing =(
     const result = await dispatch(joinGameSession(code, name));
-    console.log({ result });
-    history.push("/lobby");
+    // @ts-ignore
+    if (result) {
+      history.push("/lobby");
+    }
   };
 
   return (
