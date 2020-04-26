@@ -70,10 +70,13 @@ export const CardWrapper = styled.div`
 
   .MuiFormHelperText-root {
     color: ${(props) => props.theme.colors.redBase};
+    font-family: ${(props) => props.theme.fonts.Ubuntu};
+    font-weight: 600;
+    margin-bottom: ${(props) => props.theme.spacing.small}px;
     margin: 0;
     padding: 0;
     position: relative;
-    top: -8px;
+    top: -12px;
   }
 `;
 
