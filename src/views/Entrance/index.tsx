@@ -1,27 +1,32 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import TextField from "@material-ui/core/TextField";
+
+import { CardWrapper, Title, Page } from "./styles";
 import { Button } from "../../components/Button";
+import { Logo } from "../../components/Logo";
 import {
   createGameSession,
   joinGameSession,
 } from "../../store/session/actions";
-import { RoomInput, CardWrapper, Title, Page } from "./styles";
-import { Logo } from "../../components/Logo";
 
 export default function Entrance() {
   const [name, setName] = useState("");
+  const [adminName, setAdminName] = useState("");
   const [code, setCode] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value);
+  const changeAdminName = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setAdminName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
 
   const createRoom = async () => {
     //TODO pass sessionID to path
-    await dispatch(createGameSession(name));
+    await dispatch(createGameSession(adminName));
     history.push("/lobby");
   };
 
@@ -37,11 +42,35 @@ export default function Entrance() {
       <CardWrapper>
         <Logo variant="COLOR" />
         <Title>Join an existing Room</Title>
-        <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
-        <RoomInput placeholder="Your name" value={name} onChange={changeName} />
+        <TextField
+          name="RoomCode"
+          variant="outlined"
+          fullWidth
+          label="Room Code"
+          value={code}
+          onChange={changeCode}
+          required
+        />
+        <TextField
+          name="YourName"
+          variant="outlined"
+          fullWidth
+          label="Your name"
+          value={name}
+          onChange={changeName}
+          required
+        />
         <Button onClick={getRoom}>JOIN</Button>
         <Title>Create a new Room</Title>
-        <RoomInput placeholder="Your name" value={name} onChange={changeName} />
+        <TextField
+          name="AdminName"
+          variant="outlined"
+          fullWidth
+          label="Your name"
+          value={adminName}
+          onChange={changeAdminName}
+          required
+        />
         <Button onClick={createRoom} variant="secondary">
           CREATE
         </Button>

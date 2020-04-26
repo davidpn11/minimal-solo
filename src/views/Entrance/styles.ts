@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { rgba } from "polished";
 import { ButtonWrapper } from "../../components/Button/styles";
 
 export const Page = styled.main`
@@ -23,23 +24,48 @@ export const CardWrapper = styled.div`
   svg {
     width: 144px;
     height: 144px;
-    margin-bottom: ${(props) => props.theme.spacing.medium}px;
+    margin-bottom: ${(props) => props.theme.spacing.base}px;
   }
 
   ${ButtonWrapper} {
     width: 100%;
     margin-bottom: ${(props) => props.theme.spacing.medium}px;
   }
-`;
 
-export const RoomInput = styled.input`
-  background: none;
-  border: none;
-  border-bottom: 1px solid white;
-  font-size: 20px;
-  padding: 1rem 0;
-  width: 100%;
-  margin-bottom: 16px;
+  .MuiFormLabel-root {
+    color: ${(props) => rgba(props.theme.colors.white, 0.67)};
+    font-family: ${(props) => props.theme.fonts.Ubuntu};
+
+    &.Mui-focused {
+      color: ${(props) => props.theme.colors.redBase};
+    }
+  }
+
+  .MuiOutlinedInput-root {
+    color: ${(props) => props.theme.colors.white};
+    font-family: ${(props) => props.theme.fonts.Ubuntu};
+    border-radius: ${(props) => props.theme.radius.base}px;
+    margin-bottom: ${(props) => props.theme.spacing.medium}px;
+
+    .MuiOutlinedInput-notchedOutline {
+      border-color: ${(props) => rgba(props.theme.colors.white, 0.67)};
+      border-width: 2px;
+    }
+
+    :hover {
+      .MuiOutlinedInput-notchedOutline {
+        border-color: ${(props) => props.theme.colors.white};
+      }
+    }
+  }
+
+  && {
+    .Mui-focused {
+      .MuiOutlinedInput-notchedOutline {
+        border-color: ${(props) => props.theme.colors.redBase};
+      }
+    }
+  }
 `;
 
 export const Title = styled.h2`
@@ -49,5 +75,5 @@ export const Title = styled.h2`
   line-height: 14px;
   width: 100%;
   padding: 0;
-  margin-bottom: ${(props) => props.theme.spacing.base}px;
+  margin-bottom: ${(props) => props.theme.spacing.medium}px;
 `;
