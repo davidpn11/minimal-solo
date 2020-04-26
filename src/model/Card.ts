@@ -97,3 +97,7 @@ export function buildOne(): Card[] {
   });
   return A.flatten(cs);
 }
+
+export function sortDeck(deck: Card[]): Card[] {
+  return deck.sort(() => Math.random() - 0.5);
+}

@@ -1,4 +1,4 @@
-import { Dispatch, Action } from "redux";
+import { Dispatch } from "redux";
 import { Player } from "../../model/Player";
 import {
   requestCreateSession,
@@ -6,7 +6,7 @@ import {
   requestAddPlayer,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch } from "redux-thunk";
 import { ThunkResult } from "./utils";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;

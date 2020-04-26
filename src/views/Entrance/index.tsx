@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button } from "../../components/Button";
@@ -8,6 +8,7 @@ import {
   SessionThunkDispatch,
 } from "../../store/session/actions";
 import { RoomInput, RoomSelectWrapper, Title } from "./styles";
+import { buildOne, sortDeck } from "../../model/Card";
 
 export default function Entrance() {
   const [name, setName] = useState("");
@@ -33,6 +34,11 @@ export default function Entrance() {
       //TODO: HANDLE ERROR ON UI
     }
   };
+
+  useEffect(() => {
+    const deck = buildOne();
+    sortDeck(deck);
+  });
 
   return (
     <RoomSelectWrapper>
