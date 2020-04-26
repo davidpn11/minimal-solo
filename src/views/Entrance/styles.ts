@@ -67,6 +67,14 @@ export const CardWrapper = styled.div`
       }
     }
   }
+
+  .MuiFormHelperText-root {
+    color: ${(props) => props.theme.colors.redBase};
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -8px;
+  }
 `;
 
 export const Title = styled.h2`

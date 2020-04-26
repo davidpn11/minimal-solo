@@ -12,9 +12,16 @@ import {
   SessionThunkDispatch,
 } from "../../store/session/actions";
 
+const BASE_ERROR_STATE = {
+  status: false,
+  message: "",
+};
+
 export default function Entrance() {
   const [name, setName] = useState("");
   const [adminName, setAdminName] = useState("");
+  // TODO: Actual error handling
+  const [roomError, setRoomError] = useState(BASE_ERROR_STATE);
   const [code, setCode] = useState("");
   const dispatch = useDispatch<SessionThunkDispatch>();
   const history = useHistory();
@@ -32,11 +39,16 @@ export default function Entrance() {
   };
 
   const getRoom = async () => {
+    setRoomError(BASE_ERROR_STATE);
     const result = await dispatch(joinGameSession(code, name));
+
     if (result) {
       history.push("/lobby");
     } else {
-      //TODO: HANDLE ERROR ON UI
+      setRoomError({
+        status: true,
+        message: "Couldn't find this room. Please check it's name.",
+      });
     }
   };
 
@@ -54,6 +66,8 @@ export default function Entrance() {
           onChange={changeCode}
           required
           autoComplete="off"
+          error={roomError.status}
+          helperText={roomError.message}
         />
         <TextField
           name="YourName"
