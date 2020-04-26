@@ -6,9 +6,7 @@ import {
 } from "../firebase";
 import {
   Normalized,
-  Session,
   NoGameSession,
-  SessionWithId,
   LocalSessionWithId,
   LocalGameSession,
   ID,
@@ -19,6 +17,7 @@ import { buildOne } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 
+const MAX_ROOM_SIZE = 8;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
@@ -101,16 +100,6 @@ export async function requestCreateSession(
   };
 }
 
-//TODO
-export async function requestSetSession(
-  session: SessionWithId
-): Promise<SessionWithId> {
-  const { id, ...rest } = session;
-  const res = await database.collection("session").doc(id).set(rest);
-
-  return session;
-}
-
 export async function requestJoinSession(sessionCode: string) {
   const sessionRef = await getSessionRefByCode(sessionCode).get();
   const session = getQueryHead<LocalGameSession>(sessionRef);
@@ -118,9 +107,16 @@ export async function requestJoinSession(sessionCode: string) {
     session,
     O.fold(
       () => {
-        throw new Error();
+        throw new Error("SESSION NOT FOUND");
       },
-      (s: LocalSessionWithId) => s
+      async (s: LocalSessionWithId) => {
+        const size = (await getSessionRef(s.id).collection("players").get())
+          .size;
+        if (size >= MAX_ROOM_SIZE) {
+          throw new Error("ROOM IS FULL");
+        }
+        return s;
+      }
     )
   );
 }

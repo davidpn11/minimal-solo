@@ -26,7 +26,8 @@ export default function Entrance() {
 
   const getRoom = async () => {
     //TODO: CHECK if session Creation was sucessful - Type Issue
-    await dispatch(joinGameSession(code, name));
+    const result = await dispatch(joinGameSession(code, name));
+    console.log({ result });
     history.push("/lobby");
   };
 

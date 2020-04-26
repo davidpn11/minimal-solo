@@ -6,13 +6,21 @@ import {
   requestAddPlayer,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
+
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const SET_PLAYER = "SET_PLAYER" as const;
+export const CLEAR_SESSION = "CLEAR_SESSION" as const;
 
 function setGameSession(session: LocalSessionWithId) {
   return {
     type: CREATE_SESSION,
     payload: session,
+  };
+}
+
+export function clearSession() {
+  return {
+    type: CLEAR_SESSION,
   };
 }
 
@@ -44,8 +52,8 @@ export function joinGameSession(sessionCode: string, name: string) {
   return async (dispatch: Dispatch) => {
     try {
       const session = await requestJoinSession(sessionCode);
-      dispatch(setGameSession(session));
       const player = await requestAddPlayer(session.id, name);
+      dispatch(setGameSession(session));
       dispatch(addPlayers(player));
       return true;
     } catch (error) {
@@ -56,5 +64,5 @@ export function joinGameSession(sessionCode: string, name: string) {
 }
 
 export type SessionActionTypes = ReturnType<
-  typeof setGameSession | typeof addPlayers
+  typeof setGameSession | typeof addPlayers | typeof clearSession
 >;

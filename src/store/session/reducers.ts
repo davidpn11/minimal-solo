@@ -16,6 +16,8 @@ export function sessionReducer(
   switch (action.type) {
     case "CREATE_SESSION":
       return { ...state, ...action.payload };
+    case "CLEAR_SESSION":
+      return initialState;
     case "SET_PLAYER":
       return {
         ...state,

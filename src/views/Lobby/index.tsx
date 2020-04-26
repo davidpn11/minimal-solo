@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { requestSessionPlayersListener } from "../../api/db/session";
 import { LocalSessionWithId } from "../../model/Session";
 import { ReduxStore } from "../../store/rootReducer";
-import { addNewPlayer } from "../../store/session/actions";
+import { addNewPlayer, clearSession } from "../../store/session/actions";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 
 const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
@@ -21,7 +21,11 @@ export default function Lobby() {
         dispatch(addNewPlayer(p))
       );
     }
-  }, [currentSession.id]);
+
+    return () => {
+      dispatch(clearSession);
+    };
+  }, [currentSession.id, hasListener, dispatch]);
   const players = Object.keys(currentSession.players).reduce(
     (acc: JSX.Element[], id) => {
       const player = currentSession.players[id];

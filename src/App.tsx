@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 import Entrance from "./views/Entrance";
-import NameSelect from "./views/NameSelect";
 import GameRoom from "./views/GameRoom";
 import Lobby from "./views/Lobby";
 
