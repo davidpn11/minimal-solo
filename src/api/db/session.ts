@@ -14,7 +14,7 @@ import {
   ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { Player, PlayerWithId } from "../../model/Player";
+import { Player } from "../../model/Player";
 import { buildOne } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -23,7 +23,7 @@ const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
 
-function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
+export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
   if (doc.exists) {
     const data = doc.data() as T;
     return {
@@ -34,7 +34,7 @@ function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
   }
 }
 
-function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
+export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   if (!doc.empty) {
     let data = {};
     doc.forEach((el) => {
@@ -63,24 +63,27 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   }
 }
 
-//TODO: IMPROVE THIS CODE
 export async function requestCreateSession(
   adminName: string
 ): Promise<LocalSessionWithId> {
-  const s = {
+  const sessionData = {
     code: codeGenerator(),
     status: "INITIAL" as NoGameSession["status"],
     admin: adminName,
   };
 
-  const session = await database.collection("session").add(s);
+  const playerData: Player = {
+    name: adminName,
+    hand: [],
+    status: "ADMIN",
+  };
+
+  const session = await database.collection("session").add(sessionData);
   const generateCards = buildOne();
 
-  const player = await getSessionRef(session.id).collection("players").add({
-    name: adminName,
-    isReady: false,
-    hand: [],
-  });
+  const player = await getSessionRef(session.id)
+    .collection("players")
+    .add(playerData);
 
   const batch = database.batch();
   const deckRef = getSessionRef(session.id).collection("deck");
@@ -92,13 +95,9 @@ export async function requestCreateSession(
   return {
     id: session.id,
     players: {
-      [player.id]: {
-        name: adminName,
-        hand: [],
-        isReady: false,
-      },
+      [player.id]: playerData,
     },
-    ...s,
+    ...sessionData,
   };
 }
 
@@ -142,9 +141,9 @@ export async function requestAddPlayer(
   sessionId: string,
   name: string
 ): Promise<Normalized<Player>> {
-  const initialPlayerData = {
+  const initialPlayerData: Player = {
     name,
-    isReady: false,
+    status: "NOT_READY" as const,
     hand: [],
   };
   const player = await database
@@ -153,10 +152,4 @@ export async function requestAddPlayer(
     .collection("players")
     .add(initialPlayerData);
   return { [player.id]: initialPlayerData };
-}
-
-//TODO
-export async function requestGetSession(sessionId: string) {
-  const res = await database.collection("session").doc(sessionId).get();
-  return res;
 }

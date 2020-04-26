@@ -1,10 +1,10 @@
 import { ID } from "./Session";
-import { Card } from "./Card";
 
+export type PlayerStatus = "READY" | "NOT_READY" | "ADMIN";
 export type Player = {
   name: string;
   hand: string[];
-  isReady: boolean;
+  status: PlayerStatus;
 };
 
 export type PlayerWithId = Player & ID;

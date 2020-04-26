@@ -18,15 +18,15 @@ export default function Entrance() {
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
 
-  const createRoom = () => {
+  const createRoom = async () => {
     //TODO pass sessionID to path
-    const sessionId = dispatch(createGameSession(name));
+    await dispatch(createGameSession(name));
     history.push("/lobby");
   };
 
   const getRoom = async () => {
     //TODO: CHECK if session Creation was sucessful - Type Issue
-    const sessionfinal = await dispatch(joinGameSession(code, name));
+    await dispatch(joinGameSession(code, name));
     history.push("/lobby");
   };
 

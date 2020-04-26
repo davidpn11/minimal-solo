@@ -4,6 +4,7 @@ import { requestSessionPlayersListener } from "../../api/db/session";
 import { LocalSessionWithId } from "../../model/Session";
 import { ReduxStore } from "../../store/rootReducer";
 import { addNewPlayer } from "../../store/session/actions";
+import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 
 const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
@@ -15,6 +16,7 @@ export default function Lobby() {
   useEffect(() => {
     if (currentSession.id && !hasListener) {
       setHasListener(true);
+
       requestSessionPlayersListener(currentSession.id, (p) =>
         dispatch(addNewPlayer(p))
       );
@@ -23,13 +25,7 @@ export default function Lobby() {
   const players = Object.keys(currentSession.players).reduce(
     (acc: JSX.Element[], id) => {
       const player = currentSession.players[id];
-      return [
-        ...acc,
-        <div key={id}>
-          <h4>{player.name}</h4>
-          <span>Is Ready: {String(player.isReady)}</span>
-        </div>,
-      ];
+      return [...acc, <LobbyPlayerCard key={id} {...player} avatar={""} />];
     },
     []
   );
