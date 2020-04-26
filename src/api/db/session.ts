@@ -65,10 +65,12 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
 export async function requestCreateSession(
   adminName: string
 ): Promise<LocalSessionWithId> {
-  const sessionData = {
+  const playerId = getUniqueId();
+
+  const initialSession = {
     code: codeGenerator(),
     status: "INITIAL" as NoGameSession["status"],
-    admin: adminName,
+    admin: playerId,
   };
 
   const playerData: Player = {
@@ -77,15 +79,17 @@ export async function requestCreateSession(
     status: "ADMIN",
   };
 
-  const session = await database.collection("session").add(sessionData);
+  const session = await database.collection("session").add(initialSession);
+  const sessionRef = getSessionRef(session.id);
+  const player = await sessionRef
+    .collection("players")
+    .doc(playerId)
+    .set(playerData);
+
   const generateCards = sortDeck(buildOne());
 
-  const player = await getSessionRef(session.id)
-    .collection("players")
-    .add(playerData);
-
   const batch = database.batch();
-  const deckRef = getSessionRef(session.id).collection("deck");
+  const deckRef = sessionRef.collection("deck");
   generateCards.forEach(async (card) => {
     batch.set(deckRef.doc(getUniqueId()), card);
   });
@@ -94,9 +98,9 @@ export async function requestCreateSession(
   return {
     id: session.id,
     players: {
-      [player.id]: playerData,
+      [playerId]: playerData,
     },
-    ...sessionData,
+    ...initialSession,
   };
 }
 
