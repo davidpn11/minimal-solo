@@ -5,13 +5,14 @@ import { Button } from "../../components/Button";
 import {
   createGameSession,
   joinGameSession,
+  SessionThunkDispatch,
 } from "../../store/session/actions";
 import { RoomInput, RoomSelectWrapper, Title } from "./styles";
 
 export default function Entrance() {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<SessionThunkDispatch>();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value);
@@ -25,11 +26,11 @@ export default function Entrance() {
   };
 
   const getRoom = async () => {
-    //TODO: Redux thunk is ruining the typing =(
     const result = await dispatch(joinGameSession(code, name));
-    // @ts-ignore
     if (result) {
       history.push("/lobby");
+    } else {
+      //TODO: HANDLE ERROR ON UI
     }
   };
 
