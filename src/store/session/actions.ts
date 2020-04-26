@@ -6,11 +6,24 @@ import {
   requestAddPlayer,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
+import { ThunkDispatch } from "redux-thunk";
+import { ThunkResult } from "./utils";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const SET_PLAYER = "SET_PLAYER" as const;
 export const CLEAR_SESSION = "CLEAR_SESSION" as const;
 
+export type SessionThunkDispatch = ThunkDispatch<
+  LocalSessionWithId,
+  {},
+  SessionActionTypes
+>;
+export type SessionThunkResult<T> = ThunkResult<
+  T,
+  LocalSessionWithId,
+  SessionActionTypes
+>;
+// export type SessionThunkResult = ThunkResult
 function setGameSession(session: LocalSessionWithId) {
   return {
     type: CREATE_SESSION,
@@ -48,8 +61,11 @@ export function addNewPlayer(player: Normalized<Player>) {
     dispatch(addPlayers(player));
   };
 }
-export function joinGameSession(sessionCode: string, name: string) {
-  return async (dispatch: Dispatch) => {
+export function joinGameSession(
+  sessionCode: string,
+  name: string
+): SessionThunkResult<boolean> {
+  return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestJoinSession(sessionCode);
       const player = await requestAddPlayer(session.id, name);

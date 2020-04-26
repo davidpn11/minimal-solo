@@ -13,7 +13,7 @@ import {
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
 import { Player } from "../../model/Player";
-import { buildOne } from "../../model/Card";
+import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 
@@ -78,7 +78,7 @@ export async function requestCreateSession(
   };
 
   const session = await database.collection("session").add(sessionData);
-  const generateCards = buildOne();
+  const generateCards = sortDeck(buildOne());
 
   const player = await getSessionRef(session.id)
     .collection("players")

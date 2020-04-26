@@ -9,13 +9,14 @@ import { Logo } from "../../components/Logo";
 import {
   createGameSession,
   joinGameSession,
+  SessionThunkDispatch,
 } from "../../store/session/actions";
 
 export default function Entrance() {
   const [name, setName] = useState("");
   const [adminName, setAdminName] = useState("");
   const [code, setCode] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<SessionThunkDispatch>();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value);
@@ -31,10 +32,12 @@ export default function Entrance() {
   };
 
   const getRoom = async () => {
-    //TODO: CHECK if session Creation was sucessful - Type Issue
     const result = await dispatch(joinGameSession(code, name));
-    console.log({ result });
-    history.push("/lobby");
+    if (result) {
+      history.push("/lobby");
+    } else {
+      //TODO: HANDLE ERROR ON UI
+    }
   };
 
   return (
