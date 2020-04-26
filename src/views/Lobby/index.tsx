@@ -1,22 +1,50 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { requestSessionPlayersListener } from "../../api/db/session";
 import { LocalSessionWithId } from "../../model/Session";
 import { ReduxStore } from "../../store/rootReducer";
+import { addNewPlayer } from "../../store/session/actions";
 
 const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
 export default function Lobby() {
-  const session = useSelector(getSession);
-  console.log(session);
+  const currentSession = useSelector(getSession);
+  const dispatch = useDispatch();
+  const [hasListener, setHasListener] = useState<boolean>(false);
 
-  const hasSession = !!session.code;
+  useEffect(() => {
+    if (currentSession.id && !hasListener) {
+      setHasListener(true);
+      requestSessionPlayersListener(currentSession.id, (p) =>
+        dispatch(addNewPlayer(p))
+      );
+    }
+  }, [currentSession.id]);
+  const players = Object.keys(currentSession.players).reduce(
+    (acc: JSX.Element[], id) => {
+      const player = currentSession.players[id];
+      return [
+        ...acc,
+        <div key={id}>
+          <h4>{player.name}</h4>
+          <span>Is Ready: {String(player.isReady)}</span>
+        </div>,
+      ];
+    },
+    []
+  );
 
+  const hasSession = !!currentSession.code;
   return (
     <div>
       {hasSession ? (
         <>
-          <h2>Admin: {session.admin}</h2>
-          <h2>CODE: {session.code} </h2>
+          <h3>Admin: {currentSession.admin}</h3>
+          <h3>CODE: {currentSession.code} </h3>
+          <hr />
+          <h2>Players</h2>
+
+          {players}
         </>
       ) : (
         <h1>Loading...</h1>

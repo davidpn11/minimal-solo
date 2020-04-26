@@ -112,7 +112,7 @@ export async function requestSetSession(
   return session;
 }
 
-export async function getSession(sessionCode: string) {
+export async function requestJoinSession(sessionCode: string) {
   const sessionRef = await getSessionRefByCode(sessionCode).get();
   const session = getQueryHead<LocalGameSession>(sessionRef);
   return pipe(
@@ -126,19 +126,33 @@ export async function getSession(sessionCode: string) {
   );
 }
 
-// export async function sessionPlayersListener(sessionId) {}
+export async function requestSessionPlayersListener(
+  sessionId: string,
+  addFn: (p: Normalized<Player>) => void
+) {
+  await getSessionRef(sessionId)
+    .collection("players")
+    .onSnapshot((querySnapshot) => {
+      const players = normalizeQuery<Player>(querySnapshot);
+      addFn(players);
+    });
+}
 
-//TODO
 export async function requestAddPlayer(
   sessionId: string,
-  player: Player
-): Promise<PlayerWithId> {
-  const res = await database
+  name: string
+): Promise<Normalized<Player>> {
+  const initialPlayerData = {
+    name,
+    isReady: false,
+    hand: [],
+  };
+  const player = await database
     .collection("session")
     .doc(sessionId)
     .collection("players")
-    .add(player);
-  return { id: res.id, ...player };
+    .add(initialPlayerData);
+  return { [player.id]: initialPlayerData };
 }
 
 //TODO

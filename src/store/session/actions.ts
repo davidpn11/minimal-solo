@@ -1,7 +1,11 @@
 import { Dispatch } from "redux";
-import { Player, PlayerWithId } from "../../model/Player";
-import { requestCreateSession, requestAddPlayer } from "../../api/db/session";
-import { SessionWithId, LocalSessionWithId } from "../../model/Session";
+import { Player } from "../../model/Player";
+import {
+  requestCreateSession,
+  requestJoinSession,
+  requestAddPlayer,
+} from "../../api/db/session";
+import { LocalSessionWithId, Normalized } from "../../model/Session";
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const SET_PLAYER = "SET_PLAYER" as const;
 
@@ -12,7 +16,7 @@ function setGameSession(session: LocalSessionWithId) {
   };
 }
 
-function setPlayer(player: PlayerWithId) {
+function addPlayers(player: Normalized<Player>) {
   return {
     type: SET_PLAYER,
     payload: player,
@@ -31,4 +35,26 @@ export function createGameSession(name: string) {
   };
 }
 
-export type SessionActionTypes = ReturnType<typeof setGameSession>;
+export function addNewPlayer(player: Normalized<Player>) {
+  return async (dispatch: Dispatch) => {
+    dispatch(addPlayers(player));
+  };
+}
+export function joinGameSession(sessionCode: string, name: string) {
+  return async (dispatch: Dispatch) => {
+    try {
+      const session = await requestJoinSession(sessionCode);
+      dispatch(setGameSession(session));
+      const player = await requestAddPlayer(session.id, name);
+      dispatch(addPlayers(player));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+}
+
+export type SessionActionTypes = ReturnType<
+  typeof setGameSession | typeof addPlayers
+>;

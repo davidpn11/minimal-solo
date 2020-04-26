@@ -16,6 +16,14 @@ export function sessionReducer(
   switch (action.type) {
     case "CREATE_SESSION":
       return { ...state, ...action.payload };
+    case "SET_PLAYER":
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          ...action.payload,
+        },
+      };
     default:
       return state;
   }

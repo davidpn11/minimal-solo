@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { RoomSelectWrapper, Title, RoomInput } from "./styles";
-import { Button } from "../../components/Button";
 import { useDispatch } from "react-redux";
-import { createGameSession } from "../../store/session/actions";
 import { useHistory } from "react-router-dom";
-import { getSession } from "../../api/db/session";
+import { Button } from "../../components/Button";
+import {
+  createGameSession,
+  joinGameSession,
+} from "../../store/session/actions";
+import { RoomInput, RoomSelectWrapper, Title } from "./styles";
 
 export default function Entrance() {
   const [name, setName] = useState("");
-  const [code, setCode] = useState("25427");
+  const [code, setCode] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -23,8 +25,9 @@ export default function Entrance() {
   };
 
   const getRoom = async () => {
-    const session = await getSession(code);
-    console.log({ session });
+    //TODO: CHECK if session Creation was sucessful - Type Issue
+    const sessionfinal = await dispatch(joinGameSession(code, name));
+    history.push("/lobby");
   };
 
   return (
