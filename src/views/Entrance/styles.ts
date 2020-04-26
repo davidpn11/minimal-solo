@@ -20,6 +20,7 @@ export const CardWrapper = styled.div`
   height: 560px;
   padding: ${(props) => props.theme.spacing.medium}px;
   width: 384px;
+  box-shadow: ${(props) => props.theme.shadows.darker};
 
   svg {
     width: 144px;

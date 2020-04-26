@@ -50,6 +50,7 @@ export default function Entrance() {
           value={code}
           onChange={changeCode}
           required
+          autoComplete="off"
         />
         <TextField
           name="YourName"
@@ -59,6 +60,7 @@ export default function Entrance() {
           value={name}
           onChange={changeName}
           required
+          autoComplete="off"
         />
         <Button onClick={getRoom}>JOIN</Button>
         <Title>Create a new Room</Title>
@@ -70,6 +72,7 @@ export default function Entrance() {
           value={adminName}
           onChange={changeAdminName}
           required
+          autoComplete="off"
         />
         <Button onClick={createRoom} variant="secondary">
           CREATE
