@@ -22,6 +22,8 @@ export default function Entrance() {
   const [adminName, setAdminName] = useState("");
   // TODO: Actual error handling
   const [roomError, setRoomError] = useState(BASE_ERROR_STATE);
+  const [nameError, setNameError] = useState(BASE_ERROR_STATE);
+  const [adminNameError, setAdminNameError] = useState(BASE_ERROR_STATE);
   const [code, setCode] = useState("");
   const dispatch = useDispatch<SessionThunkDispatch>();
   const history = useHistory();
@@ -33,12 +35,27 @@ export default function Entrance() {
     setCode(event.currentTarget.value);
 
   const createRoom = async () => {
+    if (adminName.length === 0) {
+      return setAdminNameError({
+        status: true,
+        message: "Please input your name.",
+      });
+    }
+    setAdminNameError(BASE_ERROR_STATE);
+
     //TODO pass sessionID to path
     await dispatch(createGameSession(adminName));
     history.push("/lobby");
   };
 
   const getRoom = async () => {
+    if (name.length === 0) {
+      return setNameError({
+        status: true,
+        message: "Please input your name.",
+      });
+    }
+    setNameError(BASE_ERROR_STATE);
     setRoomError(BASE_ERROR_STATE);
     const result = await dispatch(joinGameSession(code, name));
 
@@ -78,6 +95,8 @@ export default function Entrance() {
           onChange={changeName}
           required
           autoComplete="off"
+          error={nameError.status}
+          helperText={nameError.message}
         />
         <Button onClick={getRoom}>JOIN</Button>
         <Title>Create a new Room</Title>
@@ -90,6 +109,8 @@ export default function Entrance() {
           onChange={changeAdminName}
           required
           autoComplete="off"
+          error={adminNameError.status}
+          helperText={adminNameError.message}
         />
         <Button onClick={createRoom} variant="secondary">
           CREATE
