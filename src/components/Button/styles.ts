@@ -11,15 +11,19 @@ export const ButtonWrapper = styled.button<ButtonWrapperProps>`
       : props.theme.backgrounds.secondaryButton};
   border-radius: ${({ theme }) => theme.radius.small}px;
   border: none;
-  color: ${(props) => props.theme.colors.white};
   cursor: pointer;
   display: flex;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 16px;
-  text-align: center;
   text-transform: uppercase;
   padding: ${({ theme }) =>
     `${theme.spacing.base}px ${theme.spacing.highest}px`};
   outline: none;
+
+  span {
+    color: ${(props) => props.theme.colors.white};
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    width: 100%;
+  }
 `;

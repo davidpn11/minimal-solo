@@ -75,6 +75,10 @@ export const THEME = {
   shadows: {
     base: `0 1px 8px ${rgba(COLORS.blackest, 0.14)}`,
     lighter: `0 2px 8px ${rgba(COLORS.blackShadow, 0.24)}`,
+    darker: `0px 0px 16px ${COLORS.blackShadow}`,
+  },
+  fonts: {
+    Ubuntu: '"Ubuntu", "Roboto", "Helvetica Neue", sans-serif',
   },
 };
 
