@@ -12,12 +12,16 @@ import {
   ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { SessionPlayer, PlayerStatus } from "../../model/Player";
+import {
+  SessionPlayer,
+  PlayerStatus,
+  SessionPlayerWithId,
+} from "../../model/Player";
 import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 
-const MAX_ROOM_SIZE = 8;
+const MAX_ROOM_SIZE = 10;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
@@ -65,10 +69,12 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
 export async function requestCreateSession(
   adminName: string
 ): Promise<LocalSessionWithId> {
-  const sessionData = {
+  const playerId = getUniqueId();
+
+  const initialSession = {
     code: codeGenerator(),
     status: "INITIAL" as NoGameSession["status"],
-    admin: adminName,
+    admin: playerId,
   };
 
   const playerData: SessionPlayer = {
@@ -77,15 +83,17 @@ export async function requestCreateSession(
     status: "ADMIN",
   };
 
-  const session = await database.collection("session").add(sessionData);
+  const session = await database.collection("session").add(initialSession);
+  const sessionRef = getSessionRef(session.id);
+  const player = await sessionRef
+    .collection("players")
+    .doc(playerId)
+    .set(playerData);
+
   const generateCards = sortDeck(buildOne());
 
-  const player = await getSessionRef(session.id)
-    .collection("players")
-    .add(playerData);
-
   const batch = database.batch();
-  const deckRef = getSessionRef(session.id).collection("deck");
+  const deckRef = sessionRef.collection("deck");
   generateCards.forEach(async (card) => {
     batch.set(deckRef.doc(getUniqueId()), card);
   });
@@ -94,9 +102,9 @@ export async function requestCreateSession(
   return {
     id: session.id,
     players: {
-      [player.id]: playerData,
+      [playerId]: playerData,
     },
-    ...sessionData,
+    ...initialSession,
   };
 }
 
@@ -131,9 +139,12 @@ export async function requestTogglePlayerStatus(
   return await getSessionRef(sessionId)
     .collection("players")
     .doc(playerId)
-    .set({
-      status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
-    });
+    .set(
+      {
+        status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
+      },
+      { merge: true }
+    );
 }
 
 export async function requestSessionPlayersListener(
@@ -155,16 +166,18 @@ export async function requestSessionPlayersListener(
 export async function requestAddPlayer(
   sessionId: string,
   name: string
-): Promise<Normalized<SessionPlayer>> {
+): Promise<SessionPlayerWithId> {
   const initialPlayerData: SessionPlayer = {
     name,
     status: "NOT_READY" as const,
     hand: [],
   };
+
   const player = await database
     .collection("session")
     .doc(sessionId)
     .collection("players")
     .add(initialPlayerData);
-  return { [player.id]: initialPlayerData };
+
+  return { ...initialPlayerData, id: player.id };
 }

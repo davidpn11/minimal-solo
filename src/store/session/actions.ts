@@ -1,7 +1,11 @@
+import { ThunkDispatch } from "redux-thunk";
+import * as E from "fp-ts/lib/Either";
+
 import {
   SessionPlayer,
   SessionPlayerWithId,
   PlayerStatus,
+  Player,
 } from "../../model/Player";
 import {
   requestCreateSession,
@@ -10,8 +14,8 @@ import {
   requestTogglePlayerStatus,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
-import { ThunkDispatch } from "redux-thunk";
 import { ThunkResult } from "../types";
+import { PlayerActionTypes } from "../playerHand/actions";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const ADD_PLAYER = "ADD_PLAYER" as const;
@@ -56,14 +60,17 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-export function createGameSession(name: string) {
+export function createGameSession(
+  name: string
+): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestCreateSession(name);
       dispatch(setGameSession(session));
-      return session;
+      return E.right(session);
     } catch (error) {
       console.error(error);
+      return E.left(error);
     }
   };
 }
@@ -73,20 +80,25 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
     dispatch(addPlayers(player));
   };
 }
+
+export type JoinGameSessionReturn = {
+  session: LocalSessionWithId;
+  player: SessionPlayerWithId;
+};
 export function joinGameSession(
   sessionCode: string,
   name: string
-): SessionThunkResult<boolean> {
+): SessionThunkResult<E.Either<JoinGameSessionReturn, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestJoinSession(sessionCode);
       const player = await requestAddPlayer(session.id, name);
       dispatch(setGameSession(session));
-      dispatch(addPlayers(player));
-      return true;
+      dispatch(addPlayers({ [player.id]: player }));
+      return E.right({ player, session });
     } catch (error) {
       console.error(error);
-      return false;
+      return E.left(error);
     }
   };
 }

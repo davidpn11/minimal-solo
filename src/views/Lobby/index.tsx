@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as O from "fp-ts/lib/Option";
+
+import { ActionWrapper, Code, Page, PlayersWrapper, Title } from "./styles";
 import {
   requestSessionPlayersListener,
   requestTogglePlayerStatus,
 } from "../../api/db/session";
-import { addNewPlayer, clearSession } from "../../store/session/actions";
+import { Button } from "../../components/Button";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus } from "../../model/Player";
-import { setPlayer } from "../../store/playerHand/actions";
-import { getSession } from "../../store/session/selectors";
+import { addNewPlayer, clearSession } from "../../store/session/actions";
+import {
+  getCurrentSessionPlayer,
+  getSession,
+} from "../../store/session/selectors";
+import {
+  getPlayerId,
+  isCurrentPlayerAdmin,
+} from "../../store/playerHand/selector";
 
 export default function Lobby() {
   const currentSession = useSelector(getSession);
+  const currentPlayerId = useSelector(getPlayerId);
+  const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
+  const isAdmin = useSelector(isCurrentPlayerAdmin);
   const dispatch = useDispatch();
   const [hasListener, setHasListener] = useState<boolean>(false);
 
   useEffect(() => {
     if (currentSession.id && !hasListener) {
       setHasListener(true);
-      dispatch(setPlayer({ id: currentSession.admin, hand: {} }));
       requestSessionPlayersListener(currentSession.id, (p) =>
         dispatch(addNewPlayer(p))
       );
@@ -36,41 +49,41 @@ export default function Lobby() {
     await requestTogglePlayerStatus(currentSession.id, playerId, playerStatus);
   };
 
-  //TODO: IMPROVE TOOGLE STATUS LOGIC
-  const players = Object.keys(currentSession.players).reduce(
-    (acc: JSX.Element[], id) => {
-      const player = currentSession.players[id];
-      const isAdmin = player.status === "ADMIN";
-      return [
-        ...acc,
-        <span key={id} style={{ display: "flex" }}>
-          <LobbyPlayerCard {...player} avatar={""} />
-          {!isAdmin && (
-            <button onClick={toggleStatus(id, player.status)}>
-              {player.status === "READY" ? "NOT READY" : "READY"}
-            </button>
-          )}
-        </span>,
-      ];
-    },
-    []
-  );
-
-  const hasSession = !!currentSession.code;
-  return (
-    <div>
-      {hasSession ? (
-        <>
-          <h3>Admin: {currentSession.admin}</h3>
-          <h3>CODE: {currentSession.code} </h3>
-          <hr />
-          <h2>Players</h2>
-
-          {players}
-        </>
-      ) : (
-        <h1>Loading...</h1>
-      )}
-    </div>
+  return pipe(
+    currentSessionPlayer,
+    O.fold(
+      () => <div />,
+      (player) => (
+        <Page>
+          <Title>Player Code</Title>
+          <Code>{currentSession.code}</Code>
+          <Title>Players</Title>
+          <PlayersWrapper>
+            {Object.entries(currentSession.players).map(([id, player]) => {
+              return (
+                <LobbyPlayerCard
+                  key={id}
+                  name={player.name}
+                  avatar={"http://placekitten.com/32/32"}
+                  status={player.status}
+                />
+              );
+            })}
+          </PlayersWrapper>
+          <ActionWrapper>
+            {isAdmin ? (
+              <Button>Start Game</Button>
+            ) : (
+              <Button
+                variant={player.status === "READY" ? "secondary" : "primary"}
+                onClick={toggleStatus(currentPlayerId, player.status)}
+              >
+                {player.status === "READY" ? "Ready" : "Not Ready"}
+              </Button>
+            )}
+          </ActionWrapper>
+        </Page>
+      )
+    )
   );
 }
