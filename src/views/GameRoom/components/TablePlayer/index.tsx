@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 import {
   PlayerWrapper,
   PlayerName,
   PlayerCardsCount,
   PlayerDeck,
-} from './style';
-import { Player } from '../../../../model/Player';
-import { PlayingCard } from '../../../../components/PlayingCard';
+} from "./style";
+import { SessionPlayer } from "../../../../model/Player";
+import { PlayingCard } from "../../../../components/PlayingCard";
 
 type Props = {
   playerPosition: number;
-  player: Player;
+  player: SessionPlayer;
 };
 
 export default function TablePlayer(props: Props) {

@@ -1,12 +1,12 @@
 import React from "react";
 import { TableWrapper, TableCenter, CardPlaceholder } from "./styles";
 import TablePlayer from "../TablePlayer";
-import { Player } from "../../../../model/Player";
+import { SessionPlayer } from "../../../../model/Player";
 import { Logo } from "../../../../components/Logo";
 import CardDeck from "../CardDeck";
 import CurrentCard from "../CurrentCard";
 
-const players: Player[] = [
+const players: SessionPlayer[] = [
   // {
   //   name: "kevin",
   //   hand: [

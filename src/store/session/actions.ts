@@ -1,4 +1,8 @@
-import { Player, PlayerWithId, PlayerStatus } from "../../model/Player";
+import {
+  SessionPlayer,
+  SessionPlayerWithId,
+  PlayerStatus,
+} from "../../model/Player";
 import {
   requestCreateSession,
   requestJoinSession,
@@ -7,10 +11,10 @@ import {
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkDispatch } from "redux-thunk";
-import { ThunkResult } from "./utils";
+import { ThunkResult } from "../types";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
-export const SET_PLAYER = "SET_PLAYER" as const;
+export const ADD_PLAYER = "ADD_PLAYER" as const;
 export const CLEAR_SESSION = "CLEAR_SESSION" as const;
 export const SET_PLAYER_STATUS = "SET_PLAYER_STATUS" as const;
 
@@ -32,7 +36,7 @@ function setGameSession(session: LocalSessionWithId) {
   };
 }
 
-function setPlayer(player: PlayerWithId) {
+function setPlayer(player: SessionPlayerWithId) {
   return {
     type: SET_PLAYER_STATUS,
     payload: player,
@@ -45,9 +49,9 @@ export function clearSession() {
   };
 }
 
-function addPlayers(player: Normalized<Player>) {
+function addPlayers(player: Normalized<SessionPlayer>) {
   return {
-    type: SET_PLAYER,
+    type: ADD_PLAYER,
     payload: player,
   };
 }
@@ -64,7 +68,7 @@ export function createGameSession(name: string) {
   };
 }
 
-export function addNewPlayer(player: Normalized<Player>) {
+export function addNewPlayer(player: Normalized<SessionPlayer>) {
   return async (dispatch: SessionThunkDispatch) => {
     dispatch(addPlayers(player));
   };

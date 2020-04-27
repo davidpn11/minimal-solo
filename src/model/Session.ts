@@ -1,4 +1,4 @@
-import { Player } from "./Player";
+import { SessionPlayer } from "./Player";
 import { Card } from "./Card";
 import { Option } from "fp-ts/lib/Option";
 
@@ -14,7 +14,7 @@ export type NoGameSession = {
   status: "INITIAL";
   admin: string;
   deck: Normalized<Card>;
-  players: Normalized<Player>;
+  players: Normalized<SessionPlayer>;
 };
 
 export type LocalNoGameSession = Omit<NoGameSession, "deck">;
@@ -27,11 +27,11 @@ export type GameSession = {
   activeCards: Normalized<Card>;
   cemetery: Normalized<Card>;
   currentCard: Card;
-  players: Normalized<Player>;
+  players: Normalized<SessionPlayer>;
   currentPlayer: string;
   direction: "LEFT" | "RIGHT";
   progression: Play[];
-  winner: Option<Player>;
+  winner: Option<SessionPlayer>;
 };
 
 export type LocalGameSession = Omit<
@@ -44,8 +44,8 @@ export type SessionWithId = (GameSession | NoGameSession) & ID;
 export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
 
 export type Play = {
-  player: Player;
+  player: SessionPlayer;
   type: "PLAY_CARD" | "DRAW_CARD" | "ACTION";
   card: Option<Card>;
-  target: Option<Player>;
+  target: Option<SessionPlayer>;
 };

@@ -12,7 +12,7 @@ import {
   ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { Player, PlayerStatus } from "../../model/Player";
+import { SessionPlayer, PlayerStatus } from "../../model/Player";
 import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -73,7 +73,7 @@ export async function requestCreateSession(
     admin: playerId,
   };
 
-  const playerData: Player = {
+  const playerData: SessionPlayer = {
     name: adminName,
     hand: [],
     status: "ADMIN",
@@ -142,13 +142,13 @@ export async function requestTogglePlayerStatus(
 
 export async function requestSessionPlayersListener(
   sessionId: string,
-  addFn: (p: Normalized<Player>) => void
+  addFn: (p: Normalized<SessionPlayer>) => void
 ) {
   try {
     await getSessionRef(sessionId)
       .collection("players")
       .onSnapshot((querySnapshot) => {
-        const players = normalizeQuery<Player>(querySnapshot);
+        const players = normalizeQuery<SessionPlayer>(querySnapshot);
         addFn(players);
       });
   } catch (error) {
@@ -159,8 +159,8 @@ export async function requestSessionPlayersListener(
 export async function requestAddPlayer(
   sessionId: string,
   name: string
-): Promise<Normalized<Player>> {
-  const initialPlayerData: Player = {
+): Promise<Normalized<SessionPlayer>> {
+  const initialPlayerData: SessionPlayer = {
     name,
     status: "NOT_READY" as const,
     hand: [],
