@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
 
 import { CardWrapper, Title, Page } from "./styles";
 import { Button } from "../../components/Button";
@@ -11,11 +12,11 @@ import {
   createGameSession,
   joinGameSession,
   clearSession,
+  JoinGameSessionReturn,
 } from "../../store/session/actions";
-import { pipe } from "fp-ts/lib/pipeable";
-import { SessionPlayerWithId } from "../../model/Player";
 import { setPlayer } from "../../store/playerHand/actions";
 import { ReduxThunkDispatch } from "../../store/rootReducer";
+import { LocalSessionWithId } from "../../model/Session";
 
 const BASE_ERROR_STATE = {
   status: false,
@@ -55,11 +56,11 @@ export default function Entrance() {
     //TODO pass sessionID to path
     return pipe(
       await dispatch(createGameSession(adminName)),
-      E.fold(
+      E.fold<any, LocalSessionWithId, void>(
         () => {},
         async (session) => {
           await dispatch(setPlayer({ id: session.admin, hand: {} }));
-          history.push("/lobby");
+          history.push(`/room/${session.id}`);
         }
       )
     );
@@ -77,16 +78,16 @@ export default function Entrance() {
 
     return pipe(
       await dispatch(joinGameSession(code, name)),
-      E.fold<any, SessionPlayerWithId, void>(
+      E.fold<any, JoinGameSessionReturn, void>(
         () => {
           setRoomError({
             status: true,
             message: "Couldn't find this room. Please check it's name.",
           });
         },
-        async (player) => {
+        async ({ player, session }) => {
           await dispatch(setPlayer({ id: player.id, hand: {} }));
-          history.push("/lobby");
+          history.push(`/room/:${session.id}`);
         }
       )
     );

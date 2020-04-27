@@ -41,33 +41,26 @@ export default function Lobby() {
   const isAdmin =
     currentSession.players[0] && currentSession.players[0].status === "ADMIN";
 
-  const hasSession = !!currentSession.code;
   return (
     <Page>
-      {hasSession ? (
-        <>
-          <Title>Player Code</Title>
-          <Code>{currentSession.code}</Code>
-          <Title>Players</Title>
-          <PlayersWrapper>
-            {players.map(([id, player]) => {
-              return (
-                <LobbyPlayerCard
-                  key={id}
-                  name={player.name}
-                  avatar={"http://placekitten.com/32/32"}
-                  status={player.status}
-                />
-              );
-            })}
-          </PlayersWrapper>
-          <ActionWrapper>
-            {isAdmin ? <Button>Start Game</Button> : <Button>Ready</Button>}
-          </ActionWrapper>
-        </>
-      ) : (
-        <Title>Loading...</Title>
-      )}
+      <Title>Player Code</Title>
+      <Code>{currentSession.code}</Code>
+      <Title>Players</Title>
+      <PlayersWrapper>
+        {players.map(([id, player]) => {
+          return (
+            <LobbyPlayerCard
+              key={id}
+              name={player.name}
+              avatar={"http://placekitten.com/32/32"}
+              status={player.status}
+            />
+          );
+        })}
+      </PlayersWrapper>
+      <ActionWrapper>
+        {isAdmin ? <Button>Start Game</Button> : <Button>Ready</Button>}
+      </ActionWrapper>
     </Page>
   );
 }

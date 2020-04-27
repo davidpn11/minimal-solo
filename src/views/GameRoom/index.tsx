@@ -1,20 +1,32 @@
-import React, { useEffect } from 'react';
-import { GameWrapper } from './styles';
-import MyHand from './components/MyHand';
-import GameTable from './components/GameTable';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+
+import { GameWrapper } from "./styles";
+import MyHand from "./components/MyHand";
+import GameTable from "./components/GameTable";
+import { getSession } from "../../store/session/selectors";
+import { Title } from "../Lobby/styles";
+import Lobby from "../Lobby";
 
 export default function GameRoom() {
-  useEffect(() => {
-    return () => {
-      alert(123);
-      window.confirm('Are you sure?');
-    }
-  }, [])
+  const currentSession = useSelector(getSession);
+  const hasSession = !!currentSession.code;
 
-  return (
-    <GameWrapper>
-      <GameTable />
-      <MyHand />
-    </GameWrapper>
-  );
+  if (!hasSession) {
+    return <Title>Loading...</Title>;
+  }
+
+  switch (currentSession.status) {
+    case "INITIAL":
+      return <Lobby />;
+    case "STARTED":
+      return (
+        <GameWrapper>
+          <GameTable />
+          <MyHand />
+        </GameWrapper>
+      );
+    default:
+      throw new Error("Not a valid session status");
+  }
 }

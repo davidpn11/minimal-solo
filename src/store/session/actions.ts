@@ -80,17 +80,22 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
     dispatch(addPlayers(player));
   };
 }
+
+export type JoinGameSessionReturn = {
+  session: LocalSessionWithId;
+  player: SessionPlayerWithId;
+};
 export function joinGameSession(
   sessionCode: string,
   name: string
-): SessionThunkResult<E.Either<SessionPlayerWithId, any>> {
+): SessionThunkResult<E.Either<JoinGameSessionReturn, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestJoinSession(sessionCode);
       const player = await requestAddPlayer(session.id, name);
       dispatch(setGameSession(session));
       dispatch(addPlayers({ [player.id]: player }));
-      return E.right(player);
+      return E.right({ player, session });
     } catch (error) {
       console.error(error);
       return E.left(error);
