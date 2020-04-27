@@ -29,3 +29,10 @@ export const PlayersWrapper = styled.div`
   flex-flow: row wrap;
   width: 80%;
 `;
+
+export const ActionWrapper = styled.div`
+  width: 40%;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: ${(props) => props.theme.spacing.large}px;
+`;

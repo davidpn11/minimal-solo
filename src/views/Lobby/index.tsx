@@ -9,7 +9,7 @@ import { ReduxStore } from "../../store/rootReducer";
 import { addNewPlayer, clearSession } from "../../store/session/actions";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus } from "../../model/Player";
-import { Code, Page, PlayersWrapper, Title } from "./styles";
+import { ActionWrapper, Code, Page, PlayersWrapper, Title } from "./styles";
 import { Button } from "../../components/Button";
 
 const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
@@ -65,7 +65,9 @@ export default function Lobby() {
               );
             })}
           </PlayersWrapper>
-          {isAdmin ? <Button>Start Game</Button> : <Button>Ready</Button>}
+          <ActionWrapper>
+            {isAdmin ? <Button>Start Game</Button> : <Button>Ready</Button>}
+          </ActionWrapper>
         </>
       ) : (
         <Title>Loading...</Title>
