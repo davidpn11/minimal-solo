@@ -139,9 +139,12 @@ export async function requestTogglePlayerStatus(
   return await getSessionRef(sessionId)
     .collection("players")
     .doc(playerId)
-    .set({
-      status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
-    });
+    .set(
+      {
+        status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
+      },
+      { merge: true }
+    );
 }
 
 export async function requestSessionPlayersListener(

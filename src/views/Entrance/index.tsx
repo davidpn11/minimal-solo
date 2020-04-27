@@ -60,7 +60,7 @@ export default function Entrance() {
         () => {},
         async (session) => {
           await dispatch(setPlayer({ id: session.admin, hand: {} }));
-          history.push(`/room/${session.id}`);
+          history.push(`/room/${session.code}`);
         }
       )
     );
@@ -87,7 +87,7 @@ export default function Entrance() {
         },
         async ({ player, session }) => {
           await dispatch(setPlayer({ id: player.id, hand: {} }));
-          history.push(`/room/:${session.id}`);
+          history.push(`/room/${session.code}`);
         }
       )
     );
