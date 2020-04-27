@@ -12,7 +12,11 @@ import {
   ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { SessionPlayer, PlayerStatus } from "../../model/Player";
+import {
+  SessionPlayer,
+  PlayerStatus,
+  SessionPlayerWithId,
+} from "../../model/Player";
 import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -159,16 +163,18 @@ export async function requestSessionPlayersListener(
 export async function requestAddPlayer(
   sessionId: string,
   name: string
-): Promise<Normalized<SessionPlayer>> {
+): Promise<SessionPlayerWithId> {
   const initialPlayerData: SessionPlayer = {
     name,
     status: "NOT_READY" as const,
     hand: [],
   };
+
   const player = await database
     .collection("session")
     .doc(sessionId)
     .collection("players")
     .add(initialPlayerData);
-  return { [player.id]: initialPlayerData };
+
+  return { ...initialPlayerData, id: player.id };
 }

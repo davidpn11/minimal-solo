@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
+import * as E from "fp-ts/lib/Either";
 
 import { CardWrapper, Title, Page } from "./styles";
 import { Button } from "../../components/Button";
@@ -9,9 +10,12 @@ import { Logo } from "../../components/Logo";
 import {
   createGameSession,
   joinGameSession,
-  SessionThunkDispatch,
   clearSession,
 } from "../../store/session/actions";
+import { pipe } from "fp-ts/lib/pipeable";
+import { SessionPlayerWithId } from "../../model/Player";
+import { setPlayer } from "../../store/playerHand/actions";
+import { ReduxThunkDispatch } from "../../store/rootReducer";
 
 const BASE_ERROR_STATE = {
   status: false,
@@ -26,7 +30,7 @@ export default function Entrance() {
   const [nameError, setNameError] = useState(BASE_ERROR_STATE);
   const [adminNameError, setAdminNameError] = useState(BASE_ERROR_STATE);
   const [code, setCode] = useState("");
-  const dispatch = useDispatch<SessionThunkDispatch>();
+  const dispatch = useDispatch<ReduxThunkDispatch>();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value);
@@ -49,8 +53,16 @@ export default function Entrance() {
     setAdminNameError(BASE_ERROR_STATE);
 
     //TODO pass sessionID to path
-    await dispatch(createGameSession(adminName));
-    history.push("/lobby");
+    return pipe(
+      await dispatch(createGameSession(adminName)),
+      E.fold(
+        () => {},
+        async (session) => {
+          await dispatch(setPlayer({ id: session.admin, hand: {} }));
+          history.push("/lobby");
+        }
+      )
+    );
   };
 
   const getRoom = async () => {
@@ -62,16 +74,22 @@ export default function Entrance() {
     }
     setNameError(BASE_ERROR_STATE);
     setRoomError(BASE_ERROR_STATE);
-    const result = await dispatch(joinGameSession(code, name));
 
-    if (result) {
-      history.push("/lobby");
-    } else {
-      setRoomError({
-        status: true,
-        message: "Couldn't find this room. Please check it's name.",
-      });
-    }
+    return pipe(
+      await dispatch(joinGameSession(code, name)),
+      E.fold<any, SessionPlayerWithId, void>(
+        () => {
+          setRoomError({
+            status: true,
+            message: "Couldn't find this room. Please check it's name.",
+          });
+        },
+        async (player) => {
+          await dispatch(setPlayer({ id: player.id, hand: {} }));
+          history.push("/lobby");
+        }
+      )
+    );
   };
 
   return (

@@ -7,7 +7,6 @@ import {
 import { addNewPlayer, clearSession } from "../../store/session/actions";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus } from "../../model/Player";
-import { setPlayer } from "../../store/playerHand/actions";
 import { ActionWrapper, Code, Page, PlayersWrapper, Title } from "./styles";
 import { Button } from "../../components/Button";
 import { getSession } from "../../store/session/selectors";
@@ -20,7 +19,6 @@ export default function Lobby() {
   useEffect(() => {
     if (currentSession.id && !hasListener) {
       setHasListener(true);
-      dispatch(setPlayer({ id: currentSession.admin, hand: {} }));
       requestSessionPlayersListener(currentSession.id, (p) =>
         dispatch(addNewPlayer(p))
       );
