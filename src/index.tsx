@@ -7,12 +7,13 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./store";
 import { THEME } from "./theme";
-import "./index.css";
+import { GlobalStyles } from "./styles";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={THEME}>
+        <GlobalStyles />
         <App />
       </ThemeProvider>
     </Provider>
