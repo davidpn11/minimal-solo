@@ -28,6 +28,10 @@ export const PlayersWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   width: 80%;
+
+  div + div {
+    margin-left: ${(props) => props.theme.spacing.medium}px;
+  }
 `;
 
 export const ActionWrapper = styled.div`
