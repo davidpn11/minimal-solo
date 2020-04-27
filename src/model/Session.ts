@@ -1,4 +1,4 @@
-import { Player } from "./Player";
+import { SessionPlayer } from "./Player";
 import { Card } from "./Card";
 import { Option } from "fp-ts/lib/Option";
 
@@ -14,36 +14,38 @@ export type NoGameSession = {
   status: "INITIAL";
   admin: string;
   deck: Normalized<Card>;
-  players: Normalized<Player>;
+  players: Normalized<SessionPlayer>;
 };
+
+export type LocalNoGameSession = Omit<NoGameSession, "deck">;
 
 export type GameSession = {
   code: string;
   status: Omit<SessionStatus, "INITIAL">;
   admin: string;
   deck: Normalized<Card>;
-  players: Normalized<Player>;
-  round: Round;
-  activeCard: Card;
+  activeCards: Normalized<Card>;
   cemetery: Normalized<Card>;
-  progression: Normalized<Round>;
-  winner: Option<Player>;
+  currentCard: Card;
+  players: Normalized<SessionPlayer>;
+  currentPlayer: string;
+  direction: "LEFT" | "RIGHT";
+  progression: Play[];
+  winner: Option<SessionPlayer>;
 };
+
+export type LocalGameSession = Omit<
+  GameSession,
+  "deck" | "activeCards" | "cemetery"
+>;
 
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
-
-// TODO: RETHINK ROUND/PLAY CONCEPT
-export type Round = {
-  plays: Play[];
-  currentPlayer: Player;
-  queue: Player[];
-  direction: "LEFT" | "RIGHT";
-};
+export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
 
 export type Play = {
-  player: Player;
+  player: SessionPlayer;
   type: "PLAY_CARD" | "DRAW_CARD" | "ACTION";
   card: Option<Card>;
-  target: Option<Player>;
+  target: Option<SessionPlayer>;
 };

@@ -1,19 +1,28 @@
-import { database, getSessionRef, getUniqueId } from "../firebase";
+import {
+  database,
+  getSessionRef,
+  getUniqueId,
+  getSessionRefByCode,
+} from "../firebase";
 import {
   Normalized,
-  Session,
   NoGameSession,
-  SessionWithId,
+  LocalSessionWithId,
+  LocalGameSession,
+  ID,
 } from "../../model/Session";
 import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
-import { Player, PlayerWithId } from "../../model/Player";
-import { buildOne } from "../../model/Card";
+import { SessionPlayer, PlayerStatus } from "../../model/Player";
+import { buildOne, sortDeck } from "../../model/Card";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 
+const MAX_ROOM_SIZE = 8;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
 
-function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
+export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
   if (doc.exists) {
     const data = doc.data() as T;
     return {
@@ -24,7 +33,7 @@ function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
   }
 }
 
-function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
+export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   if (!doc.empty) {
     let data = {};
     doc.forEach((el) => {
@@ -39,28 +48,41 @@ function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   }
 }
 
-//TODO: IMPROVE THIS CODE
+function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
+  if (!doc.empty && doc.size === 1) {
+    const head = doc.docs[0];
+
+    const data = {
+      id: head.id,
+      ...head.data(),
+    };
+    return head.exists ? O.some(data as T & ID) : O.none;
+  } else {
+    return O.none;
+  }
+}
+
 export async function requestCreateSession(
   adminName: string
-): Promise<SessionWithId> {
-  const s = {
+): Promise<LocalSessionWithId> {
+  const sessionData = {
     code: codeGenerator(),
     status: "INITIAL" as NoGameSession["status"],
     admin: adminName,
   };
 
-  const session = await database.collection("session").add(s);
-  const generateCards = buildOne();
-
-  const player = await getSessionRef(session.id).collection("players").add({
+  const playerData: SessionPlayer = {
     name: adminName,
-    uno: false,
-  });
+    hand: [],
+    status: "ADMIN",
+  };
 
-  const playerR = await getSessionRef(session.id)
+  const session = await database.collection("session").add(sessionData);
+  const generateCards = sortDeck(buildOne());
+
+  const player = await getSessionRef(session.id)
     .collection("players")
-    .doc(player.id)
-    .get();
+    .add(playerData);
 
   const batch = database.batch();
   const deckRef = getSessionRef(session.id).collection("deck");
@@ -69,47 +91,80 @@ export async function requestCreateSession(
   });
   await batch.commit();
 
-  const deck = await getSessionRef(session.id).collection("deck").get();
-
   return {
     id: session.id,
-    deck: normalizeQuery(deck),
     players: {
-      [player.id]: {
-        name: adminName,
-        uno: false,
-        hand: [],
-      },
+      [player.id]: playerData,
     },
-    ...s,
+    ...sessionData,
   };
 }
 
-//TODO
-export async function requestSetSession(
-  session: SessionWithId
-): Promise<SessionWithId> {
-  const { id, ...rest } = session;
-  const res = await database.collection("session").doc(id).set(rest);
-
-  return session;
+export async function requestJoinSession(sessionCode: string) {
+  const sessionRef = await getSessionRefByCode(sessionCode).get();
+  const session = getQueryHead<LocalGameSession>(sessionRef);
+  return pipe(
+    session,
+    O.fold(
+      () => {
+        throw new Error("SESSION NOT FOUND");
+      },
+      async (s: LocalSessionWithId) => {
+        const size = (await getSessionRef(s.id).collection("players").get())
+          .size;
+        if (size >= MAX_ROOM_SIZE) {
+          throw new Error("ROOM IS FULL");
+        }
+        return s;
+      }
+    )
+  );
 }
 
-//TODO
+export async function requestTogglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus
+) {
+  if (playerStatus === "ADMIN") throw new Error("IsAdmin");
+
+  return await getSessionRef(sessionId)
+    .collection("players")
+    .doc(playerId)
+    .set({
+      status: playerStatus === "NOT_READY" ? "READY" : "NOT_READY",
+    });
+}
+
+export async function requestSessionPlayersListener(
+  sessionId: string,
+  addFn: (p: Normalized<SessionPlayer>) => void
+) {
+  try {
+    await getSessionRef(sessionId)
+      .collection("players")
+      .onSnapshot((querySnapshot) => {
+        const players = normalizeQuery<SessionPlayer>(querySnapshot);
+        addFn(players);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function requestAddPlayer(
   sessionId: string,
-  player: Player
-): Promise<PlayerWithId> {
-  const res = await database
+  name: string
+): Promise<Normalized<SessionPlayer>> {
+  const initialPlayerData: SessionPlayer = {
+    name,
+    status: "NOT_READY" as const,
+    hand: [],
+  };
+  const player = await database
     .collection("session")
     .doc(sessionId)
     .collection("players")
-    .add(player);
-  return { id: res.id, ...player };
-}
-
-//TODO
-export async function requestGetSession(sessionId: string) {
-  const res = await database.collection("session").doc(sessionId).get();
-  return res;
+    .add(initialPlayerData);
+  return { [player.id]: initialPlayerData };
 }

@@ -1,3 +1,5 @@
+import { ReduxStore } from "./rootReducer";
+
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem("state");
@@ -11,12 +13,11 @@ export const loadState = () => {
   }
 };
 
-// export const saveState = (state) => {
-//   try {
-//     const newState = { todos: state.todos };
-//     const serializedState = JSON.stringify(newState);
-//     localStorage.setItem("state", serializedState);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+export const saveState = (state: ReduxStore) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem("state", serializedState);
+  } catch (error) {
+    console.error(error);
+  }
+};

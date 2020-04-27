@@ -1,10 +1,16 @@
-import { Card } from "./Card";
 import { ID, Normalized } from "./Session";
+import { Card } from "./Card";
 
-export type Player = {
+export type PlayerStatus = "READY" | "NOT_READY" | "ADMIN";
+export type SessionPlayer = {
   name: string;
-  hand: Card[];
-  uno?: boolean;
+  hand: string[];
+  status: PlayerStatus;
 };
 
-export type PlayerWithId = Player & ID;
+export type SessionPlayerWithId = SessionPlayer & ID;
+
+export type Player = {
+  id: string;
+  hand: Normalized<Card>;
+};

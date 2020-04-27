@@ -1,24 +1,42 @@
-import React, { useState } from "react";
-import { RoomSelectWrapper, Title, RoomInput } from "./styles";
-import { Button } from "../../components/Button";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { createGameSession } from "../../store/actions";
 import { useHistory } from "react-router-dom";
+import { Button } from "../../components/Button";
+import {
+  createGameSession,
+  joinGameSession,
+  SessionThunkDispatch,
+  clearSession,
+} from "../../store/session/actions";
+import { RoomInput, RoomSelectWrapper, Title } from "./styles";
 
 export default function Entrance() {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<SessionThunkDispatch>();
   const history = useHistory();
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCode(event.currentTarget.value);
 
-  const createRoom = () => {
+  useEffect(() => {
+    dispatch(clearSession());
+  }, []);
+
+  const createRoom = async () => {
     //TODO pass sessionID to path
-    const sessionId = dispatch(createGameSession(name));
+    await dispatch(createGameSession(name));
     history.push("/lobby");
+  };
+
+  const getRoom = async () => {
+    const result = await dispatch(joinGameSession(code, name));
+    if (result) {
+      history.push("/lobby");
+    } else {
+      //TODO: HANDLE ERROR ON UI
+    }
   };
 
   return (
@@ -26,7 +44,7 @@ export default function Entrance() {
       <Title>JOIN A ROOM</Title>
       <RoomInput placeholder="Room code" value={code} onChange={changeCode} />
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
-      <Button>JOIN</Button>
+      <Button onClick={getRoom}>JOIN</Button>
       <h2>OR CREATE A NEW ONE</h2>
       <RoomInput placeholder="Your name" value={name} onChange={changeName} />
       <Button onClick={createRoom} variant="secondary">
