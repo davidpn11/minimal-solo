@@ -21,7 +21,7 @@ import { buildOne, sortDeck } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 
-const MAX_ROOM_SIZE = 8;
+const MAX_ROOM_SIZE = 10;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
