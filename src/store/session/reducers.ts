@@ -18,7 +18,7 @@ export function sessionReducer(
       return { ...state, ...action.payload };
     case "CLEAR_SESSION":
       return initialState;
-    case "SET_PLAYER":
+    case "ADD_PLAYER":
       return {
         ...state,
         players: {
