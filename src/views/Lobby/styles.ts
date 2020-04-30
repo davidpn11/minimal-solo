@@ -25,13 +25,10 @@ export const Code = styled.h2`
 
 export const PlayersWrapper = styled.div`
   margin-top: ${(props) => props.theme.spacing.medium}px;
-  display: flex;
-  flex-flow: row wrap;
-  width: 80%;
-
-  div + div {
-    margin-left: ${(props) => props.theme.spacing.medium}px;
-  }
+  display: grid;
+  grid-template-columns: 400px 400px;
+  grid-template-rows: repeat(6, 1fr);
+  gap: 5px;
 `;
 
 export const ActionWrapper = styled.div`
