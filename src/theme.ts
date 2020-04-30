@@ -20,6 +20,7 @@ export const COLORS = {
   yellowLight: "#F4D167",
   yellowShadow: "#F0C02E",
   white: "#FFFFFF",
+  whiteSmoke: "#CCC",
   border: "#F0EFF0",
 };
 
@@ -37,6 +38,7 @@ export const THEME = {
   backgrounds: {
     base: COLORS.blackBase,
     card: COLORS.white,
+    whiteSmoke: COLORS.whiteSmoke,
     admin: GRADIENTS.blueGradient,
     ready: GRADIENTS.greenGradient,
     notReady: GRADIENTS.redGradient,

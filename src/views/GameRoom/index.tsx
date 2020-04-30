@@ -37,7 +37,7 @@ export default function GameRoom() {
 
   switch (currentSession.status) {
     case "INITIAL":
-      return <Lobby isTest={TEST_MODE} />;
+      return <Lobby />;
     case "STARTED":
       return (
         <GameWrapper>

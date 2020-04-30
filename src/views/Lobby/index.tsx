@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
@@ -12,33 +12,22 @@ import {
 import { Button } from "../../components/Button";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus, SessionPlayer } from "../../model/Player";
-import { addNewPlayer, clearSession } from "../../store/session/actions";
-import {
-  getCurrentSessionPlayer,
-  getSession,
-} from "../../store/session/selectors";
-import {
-  getPlayerId,
-  isCurrentPlayerAdmin,
-} from "../../store/playerHand/selector";
+import { allPlayersReady } from "../../store/session/selectors";
+import { isCurrentPlayerAdmin } from "../../store/playerHand/selector";
 import { LocalSessionWithId } from "../../model/Session";
-
-type Props = {
-  isTest: boolean;
-};
 
 const SESSION: LocalSessionWithId = {
   id: "ACeKB3PFRXkvv6QdyCHw",
   code: "42886",
   status: "INITIAL",
   players: {
-    "2": { status: "NOT_READY", hand: [], name: "John" },
-    "3": { status: "NOT_READY", hand: [], name: "Kevin" },
-    "4": { status: "NOT_READY", hand: [], name: "Max" },
-    "6": { status: "NOT_READY", hand: [], name: "Rob" },
-    "7": { status: "NOT_READY", hand: [], name: "Alex" },
+    "2": { status: "READY", hand: [], name: "John" },
+    "3": { status: "READY", hand: [], name: "Kevin" },
+    "4": { status: "READY", hand: [], name: "Max" },
+    "6": { status: "READY", hand: [], name: "Rob" },
+    "7": { status: "READY", hand: [], name: "Alex" },
     "2zqR87wtl8zrzXwW43HH": { status: "READY", hand: [], name: "Jamie" },
-    "8": { status: "NOT_READY", hand: [], name: "Bruce" },
+    "8": { status: "READY", hand: [], name: "Bruce" },
     "30gHNPYwsVUOQOW2ovDr": { hand: [], status: "ADMIN", name: "David" },
     DQ9QotLCW2AwX9jfcMHy: { hand: [], status: "NOT_READY", name: "Pedro" },
   },
@@ -51,17 +40,22 @@ const PLAYER = O.some({
   status: "ADMIN",
 } as SessionPlayer);
 
-export default function Lobby(props: Props) {
+export default function Lobby() {
   const currentSession = SESSION; //props.isTest ? SESSION : useSelector(getSession);
   const currentPlayerId = "2zqR87wtl8zrzXwW43HH"; //useSelector(getPlayerId);
   const currentSessionPlayer = PLAYER; //useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
+  const isAllPlayersReady = useSelector(allPlayersReady);
 
   const toggleStatus = (
     playerId: string,
     playerStatus: PlayerStatus
   ) => async () => {
     await requestTogglePlayerStatus(currentSession.id, playerId, playerStatus);
+  };
+
+  const startGame = () => {
+    console.log("start");
   };
 
   const getPlayersGrid = () => {
@@ -143,7 +137,9 @@ export default function Lobby(props: Props) {
           {getPlayersGrid()}
           <ActionWrapper>
             {isAdmin ? (
-              <Button>Start Game</Button>
+              <Button onClick={startGame} disabled={!isAllPlayersReady}>
+                Start Game
+              </Button>
             ) : (
               <Button
                 variant={player.status === "READY" ? "secondary" : "primary"}
