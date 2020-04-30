@@ -4,7 +4,15 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import * as R from "fp-ts/lib/Record";
 
-import { ActionWrapper, Code, Page, PlayersWrapper, Title } from "./styles";
+import {
+  ActionWrapper,
+  Code,
+  Page,
+  PlayersWrapper,
+  Title,
+  AdminPlayer,
+  CurrentPlayer,
+} from "./styles";
 import {
   requestSessionPlayersListener,
   requestTogglePlayerStatus,
@@ -12,8 +20,15 @@ import {
 import { Button } from "../../components/Button";
 import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
 import { PlayerStatus, SessionPlayer } from "../../model/Player";
-import { allPlayersReady } from "../../store/session/selectors";
-import { isCurrentPlayerAdmin } from "../../store/playerHand/selector";
+import {
+  allPlayersReady,
+  getSession,
+  getCurrentSessionPlayer,
+} from "../../store/session/selectors";
+import {
+  isCurrentPlayerAdmin,
+  getPlayerId,
+} from "../../store/playerHand/selector";
 import { LocalSessionWithId } from "../../model/Session";
 
 const SESSION: LocalSessionWithId = {
@@ -41,9 +56,12 @@ const PLAYER = O.some({
 } as SessionPlayer);
 
 export default function Lobby() {
-  const currentSession = SESSION; //props.isTest ? SESSION : useSelector(getSession);
-  const currentPlayerId = "2zqR87wtl8zrzXwW43HH"; //useSelector(getPlayerId);
-  const currentSessionPlayer = PLAYER; //useSelector(getCurrentSessionPlayer);
+  const currentSession = SESSION;
+  const currentPlayerId = "2zqR87wtl8zrzXwW43HH";
+  const currentSessionPlayer = PLAYER;
+  // const currentSession = useSelector(getSession);
+  // const currentPlayerId = useSelector(getPlayerId);
+  // const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const isAllPlayersReady = useSelector(allPlayersReady);
 
@@ -60,14 +78,14 @@ export default function Lobby() {
 
   const getPlayersGrid = () => {
     const isCurrentPlayer = (id: string) => currentPlayerId === id;
-    const isAdmin = (player: SessionPlayer) => player.status === "ADMIN";
+    const isAdminPlayer = (player: SessionPlayer) => player.status === "ADMIN";
 
     const filterCurrentPlayer = (key: string) => isCurrentPlayer(key);
     const filterAdminPlayer = (key: string, value: SessionPlayer) =>
-      isAdmin(value);
+      isAdminPlayer(value);
 
     const filterCommonPlayers = (key: string, value: SessionPlayer) => {
-      if (isCurrentPlayer(key) || isAdmin(value)) return O.none;
+      if (isCurrentPlayer(key) || isAdminPlayer(value)) return O.none;
       return O.fromNullable(value);
     };
 
@@ -118,8 +136,9 @@ export default function Lobby() {
 
     return (
       <PlayersWrapper>
-        {currentPlayer}
-        {adminPlayer}
+        {/* Checks if current player is admin */}
+        {!isAdmin && <CurrentPlayer>{currentPlayer}</CurrentPlayer>}
+        <AdminPlayer>{adminPlayer}</AdminPlayer>
         {commonPlayers}
       </PlayersWrapper>
     );

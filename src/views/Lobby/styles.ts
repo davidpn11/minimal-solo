@@ -29,6 +29,14 @@ export const PlayersWrapper = styled.div`
   grid-template-columns: 400px 400px;
   grid-template-rows: repeat(6, 1fr);
   gap: 5px;
+  grid-template-areas: "CurrentPlayer AdminPlayer";
+`;
+
+export const AdminPlayer = styled.div`
+  grid-area: AdminPlayer;
+`;
+export const CurrentPlayer = styled.div`
+  grid-area: CurrentPlayer;
 `;
 
 export const ActionWrapper = styled.div`
