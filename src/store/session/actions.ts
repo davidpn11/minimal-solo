@@ -12,10 +12,12 @@ import {
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
+  requestStartGame,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkResult } from "../types";
 import { PlayerActionTypes } from "../playerHand/actions";
+import { ReduxStore } from "../rootReducer";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const ADD_PLAYER = "ADD_PLAYER" as const;
@@ -32,6 +34,12 @@ export type SessionThunkResult<T> = ThunkResult<
   LocalSessionWithId,
   SessionActionTypes
 >;
+
+export type JoinGameSessionReturn = {
+  session: LocalSessionWithId;
+  player: SessionPlayerWithId;
+};
+
 // export type SessionThunkResult = ThunkResult
 function setGameSession(session: LocalSessionWithId) {
   return {
@@ -81,10 +89,6 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
   };
 }
 
-export type JoinGameSessionReturn = {
-  session: LocalSessionWithId;
-  player: SessionPlayerWithId;
-};
 export function joinGameSession(
   sessionCode: string,
   name: string
@@ -108,12 +112,18 @@ export async function togglePlayerStatus(
   playerId: string,
   playerStatus: PlayerStatus
 ) {
-  const result = await requestTogglePlayerStatus(
-    sessionId,
-    playerId,
-    playerStatus
-  );
-  console.log({ result });
+  try {
+    await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export function startGameSession() {
+  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+    const state = getState();
+    requestStartGame("0iTnuIQ008UH1perzZfc", "DxHsteJ1xWBenSoxPxzR");
+  };
 }
 
 export type SessionActionTypes = ReturnType<

@@ -5,7 +5,11 @@ import {
   requestSessionPlayersListener,
   requestTogglePlayerStatus,
 } from "../api/db/session";
-import { addNewPlayer, clearSession } from "../store/session/actions";
+import {
+  addNewPlayer,
+  clearSession,
+  startGameSession,
+} from "../store/session/actions";
 import { PlayerStatus } from "../model/Player";
 
 //TODO RENAME THIS
@@ -35,6 +39,7 @@ export function useMatchMaker() {
   };
 
   const startGame = () => {
+    dispatch(startGameSession());
     console.log("startGame");
   };
 

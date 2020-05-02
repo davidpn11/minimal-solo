@@ -2,6 +2,7 @@ import { SessionPlayer } from "./Player";
 import { Card } from "./Card";
 import { Option } from "fp-ts/lib/Option";
 
+type UnionExclude<T, K> = T extends K ? never : T;
 export type SessionStatus = "INITIAL" | "STARTED" | "FINISHED";
 export type ID = { id: string };
 
@@ -21,7 +22,7 @@ export type LocalNoGameSession = Omit<NoGameSession, "deck">;
 
 export type GameSession = {
   code: string;
-  status: Omit<SessionStatus, "INITIAL">;
+  status: UnionExclude<SessionStatus, "INITIAL">;
   admin: string;
   deck: Normalized<Card>;
   activeCards: Normalized<Card>;

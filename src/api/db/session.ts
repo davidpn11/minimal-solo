@@ -17,41 +17,16 @@ import {
   PlayerStatus,
   SessionPlayerWithId,
 } from "../../model/Player";
-import { buildOne, sortDeck } from "../../model/Card";
+import { buildOne, sortDeck, Card } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { normalizeQuery, popDeckCards } from "../helpers";
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 3;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
-
-export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
-  if (doc.exists) {
-    const data = doc.data() as T;
-    return {
-      [doc.id]: data,
-    };
-  } else {
-    return {};
-  }
-}
-
-export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
-  if (!doc.empty) {
-    let data = {};
-    doc.forEach((el) => {
-      data = {
-        ...data,
-        [el.id]: el.data(),
-      };
-    });
-    return data;
-  } else {
-    return {};
-  }
-}
 
 function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   if (!doc.empty && doc.size === 1) {
@@ -181,4 +156,42 @@ export async function requestAddPlayer(
     .add(initialPlayerData);
 
   return { ...initialPlayerData, id: player.id };
+}
+
+export const requestBuyCards = (
+  sessionRef: ReturnType<typeof getSessionRef>
+) => async (playerId: string, nCards = 1) => {
+  const deckRef = sessionRef.collection("deck");
+  const deck = normalizeQuery<Card>(await deckRef.get());
+
+  //get number of deck cards
+  const userCards = popDeckCards(deck, nCards);
+
+  //delete from deck structure
+  await Promise.all(
+    userCards.keys.map((key) => {
+      return deckRef.doc(key).delete();
+    })
+  );
+
+  //write on activeCards structture
+  const batch = database.batch();
+  userCards.keys.map((key) => {
+    const cardRef = sessionRef.collection("activeCards").doc(key);
+    batch.set(cardRef, userCards.cards[key]);
+  });
+  await batch.commit();
+
+  //set userHand
+  await sessionRef.collection("players").doc(playerId).set(
+    {
+      hand: userCards.keys,
+    },
+    { merge: true }
+  );
+};
+
+export async function requestStartGame(sessionId: string, playerId: string) {
+  const sessionRef = getSessionRef(sessionId);
+  await requestBuyCards(sessionRef)(playerId);
 }

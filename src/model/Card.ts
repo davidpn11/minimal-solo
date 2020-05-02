@@ -19,6 +19,8 @@ export type Value =
   | "SWAP_ALL"
   | "COLOR";
 
+export type Status = "HAND" | "DECK" | "GAME" | "PLAY";
+
 export type CommonCard = {
   color: Omit<Color, "BLACK">;
   value: Omit<Value, "PLUS_FOR" | "SWAP_ALL">;
@@ -51,8 +53,6 @@ const commonValues: Value[] = [
 ];
 
 export type Card = CommonCard | ActionCard;
-
-export type Status = "HAND" | "DECK" | "GAME" | "PLAY";
 
 function buildCommon(color: Color): CommonCard[] {
   return commonValues.map((value) => {

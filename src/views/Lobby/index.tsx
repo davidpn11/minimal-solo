@@ -46,7 +46,7 @@ const SESSION: LocalSessionWithId = {
     "2zqR87wtl8zrzXwW43HH": { status: "READY", hand: [], name: "Jamie" },
     "8": { status: "READY", hand: [], name: "Bruce" },
     "30gHNPYwsVUOQOW2ovDr": { hand: [], status: "ADMIN", name: "David" },
-    DQ9QotLCW2AwX9jfcMHy: { hand: [], status: "NOT_READY", name: "Pedro" },
+    DQ9QotLCW2AwX9jfcMHy: { hand: [], status: "READY", name: "Pedro" },
   },
   admin: "30gHNPYwsVUOQOW2ovDr",
 };
@@ -65,7 +65,7 @@ export default function Lobby() {
   // const currentPlayerId = useSelector(getPlayerId);
   // const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
-  const isAllPlayersReady = useSelector(allPlayersReady);
+  const isAllPlayersReady = true; //useSelector(allPlayersReady);
 
   const { toggleStatus, startGame } = useMatchMaker();
 
