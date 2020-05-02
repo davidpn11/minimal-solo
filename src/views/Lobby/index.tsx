@@ -31,6 +31,7 @@ import {
   getPlayerId,
 } from "../../store/playerHand/selector";
 import { LocalSessionWithId } from "../../model/Session";
+import { useMatchMaker } from "../../hooks/useMatchMaker";
 
 const SESSION: LocalSessionWithId = {
   id: "ACeKB3PFRXkvv6QdyCHw",
@@ -66,16 +67,7 @@ export default function Lobby() {
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const isAllPlayersReady = useSelector(allPlayersReady);
 
-  const toggleStatus = (
-    playerId: string,
-    playerStatus: PlayerStatus
-  ) => async () => {
-    await requestTogglePlayerStatus(currentSession.id, playerId, playerStatus);
-  };
-
-  const startGame = () => {
-    console.log("start");
-  };
+  const { toggleStatus, startGame } = useMatchMaker();
 
   const getPlayersGrid = () => {
     const isCurrentPlayer = (id: string) => currentPlayerId === id;
