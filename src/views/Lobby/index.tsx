@@ -12,6 +12,7 @@ import {
   Title,
   AdminPlayer,
   CurrentPlayer,
+  LobbyWrapper,
 } from "./styles";
 import {
   requestSessionPlayersListener,
@@ -56,12 +57,12 @@ const PLAYER = O.some({
 } as SessionPlayer);
 
 export default function Lobby() {
-  // const currentSession = SESSION;
-  // const currentPlayerId = "2zqR87wtl8zrzXwW43HH";
-  // const currentSessionPlayer = PLAYER;
-  const currentSession = useSelector(getSession);
-  const currentPlayerId = useSelector(getPlayerId);
-  const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
+  const currentSession = SESSION;
+  const currentPlayerId = "2zqR87wtl8zrzXwW43HH";
+  const currentSessionPlayer = PLAYER;
+  // const currentSession = useSelector(getSession);
+  // const currentPlayerId = useSelector(getPlayerId);
+  // const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const isAllPlayersReady = useSelector(allPlayersReady);
 
@@ -150,24 +151,26 @@ export default function Lobby() {
       () => <div />,
       (player) => (
         <Page>
-          <Title>Room Code</Title>
-          <Code>{currentSession.code}</Code>
-          <Title>Players</Title>
-          {getPlayersGrid()}
-          <ActionWrapper>
-            {isAdmin ? (
-              <Button onClick={startGame} disabled={!isAllPlayersReady}>
-                Start Game
-              </Button>
-            ) : (
-              <Button
-                variant={player.status === "READY" ? "secondary" : "primary"}
-                onClick={toggleStatus(currentPlayerId, player.status)}
-              >
-                {player.status === "READY" ? "Ready" : "Not Ready"}
-              </Button>
-            )}
-          </ActionWrapper>
+          <LobbyWrapper>
+            <Title>Room Code</Title>
+            <Code>{currentSession.code}</Code>
+            <Title>Players</Title>
+            {getPlayersGrid()}
+            <ActionWrapper>
+              {isAdmin ? (
+                <Button onClick={startGame} disabled={!isAllPlayersReady}>
+                  Start Game
+                </Button>
+              ) : (
+                <Button
+                  variant={player.status === "READY" ? "secondary" : "primary"}
+                  onClick={toggleStatus(currentPlayerId, player.status)}
+                >
+                  {player.status === "READY" ? "Ready" : "Not Ready"}
+                </Button>
+              )}
+            </ActionWrapper>
+          </LobbyWrapper>
         </Page>
       )
     )
