@@ -122,7 +122,21 @@ export async function togglePlayerStatus(
 export function startGameSession() {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     const state = getState();
-    requestStartGame("0iTnuIQ008UH1perzZfc", "DxHsteJ1xWBenSoxPxzR");
+
+    const session: LocalSessionWithId = {
+      id: "0iTnuIQ008UH1perzZfc",
+      code: "123",
+      status: "INITIAL",
+      players: {
+        DxHsteJ1xWBenSoxPxzR: {
+          hand: ["2BI4gdBnvStrkEQ0br4M"],
+          name: "David",
+          status: "ADMIN",
+        },
+      },
+      admin: "DxHsteJ1xWBenSoxPxzR",
+    };
+    requestStartGame(state.session);
   };
 }
 

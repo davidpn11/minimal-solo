@@ -58,14 +58,15 @@ const PLAYER = O.some({
 } as SessionPlayer);
 
 export default function Lobby() {
-  const currentSession = SESSION;
-  const currentPlayerId = "2zqR87wtl8zrzXwW43HH";
-  const currentSessionPlayer = PLAYER;
-  // const currentSession = useSelector(getSession);
-  // const currentPlayerId = useSelector(getPlayerId);
-  // const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
+  // const currentSession = SESSION;
+  // const currentPlayerId = "2zqR87wtl8zrzXwW43HH";
+  // const currentSessionPlayer = PLAYER;
+  // const isAllPlayersReady = true;
+  const isAllPlayersReady = useSelector(allPlayersReady);
+  const currentSession = useSelector(getSession);
+  const currentPlayerId = useSelector(getPlayerId);
+  const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
-  const isAllPlayersReady = true; //useSelector(allPlayersReady);
 
   const { toggleStatus, startGame } = useMatchMaker();
 

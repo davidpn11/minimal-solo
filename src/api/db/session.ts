@@ -19,6 +19,7 @@ import {
 } from "../../model/Player";
 import { buildOne, sortDeck, Card } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
+import * as R from "fp-ts/lib/Record";
 import { pipe } from "fp-ts/lib/pipeable";
 import { normalizeQuery, popDeckCards } from "../helpers";
 
@@ -160,7 +161,7 @@ export async function requestAddPlayer(
 
 export const requestBuyCards = (
   sessionRef: ReturnType<typeof getSessionRef>
-) => async (playerId: string, nCards = 1) => {
+) => async (player: SessionPlayerWithId, nCards = 1) => {
   const deckRef = sessionRef.collection("deck");
   const deck = normalizeQuery<Card>(await deckRef.get());
 
@@ -174,7 +175,7 @@ export const requestBuyCards = (
     })
   );
 
-  //write on activeCards structture
+  //write on activeCards structrure
   const batch = database.batch();
   userCards.keys.map((key) => {
     const cardRef = sessionRef.collection("activeCards").doc(key);
@@ -183,15 +184,24 @@ export const requestBuyCards = (
   await batch.commit();
 
   //set userHand
-  await sessionRef.collection("players").doc(playerId).set(
-    {
-      hand: userCards.keys,
-    },
-    { merge: true }
-  );
+  await sessionRef
+    .collection("players")
+    .doc(player.id)
+    .set(
+      {
+        hand: [...player.hand, ...userCards.keys],
+      },
+      { merge: true }
+    );
 };
 
-export async function requestStartGame(sessionId: string, playerId: string) {
-  const sessionRef = getSessionRef(sessionId);
-  await requestBuyCards(sessionRef)(playerId);
+export async function requestStartGame(session: LocalSessionWithId) {
+  const sessionRef = getSessionRef(session.id);
+  const buyCards = requestBuyCards(sessionRef);
+
+  const dealPlayerCard = (key: string, player: SessionPlayer) => {
+    buyCards({ id: key, ...player }, 7);
+  };
+
+  pipe(session.players, R.mapWithIndex(dealPlayerCard));
 }
