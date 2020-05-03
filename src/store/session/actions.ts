@@ -18,7 +18,6 @@ import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkResult } from "../types";
 import { ReduxStore } from "../rootReducer";
 import { pipe } from "fp-ts/lib/pipeable";
-import * as R from "fp-ts/lib/Record";
 import * as A from "fp-ts/lib/Array";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;

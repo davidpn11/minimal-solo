@@ -22,5 +22,5 @@ export function useSessionListener() {
         }
       );
     }
-  }, [currentSession.id, hasListener, dispatch]);
+  }, [currentSession, hasListener, dispatch]);
 }

@@ -63,10 +63,7 @@ export async function requestCreateSession(
 
   const session = await database.collection("session").add(initialSession);
   const sessionRef = getSessionRef(session.id);
-  const player = await sessionRef
-    .collection("players")
-    .doc(playerId)
-    .set(playerData);
+  await sessionRef.collection("players").doc(playerId).set(playerData);
 
   const generateCards = sortDeck(buildOne());
 

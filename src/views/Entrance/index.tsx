@@ -42,7 +42,7 @@ export default function Entrance() {
 
   useEffect(() => {
     dispatch(clearSession());
-  }, []);
+  }, [dispatch]);
 
   const createRoom = async () => {
     if (adminName.length === 0) {
