@@ -80,7 +80,7 @@ export default function Lobby() {
 
     const filterCommonPlayers = (key: string, value: SessionPlayer) => {
       if (isCurrentPlayer(key) || isAdminPlayer(value)) return O.none;
-      return O.fromNullable(value);
+      return O.some(value);
     };
 
     const renderPlayerArea = (

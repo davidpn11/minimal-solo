@@ -31,7 +31,7 @@ export type GameSession = {
   players: Normalized<SessionPlayer>;
   currentPlayer: string;
   direction: "LEFT" | "RIGHT";
-  progression: Play[];
+  progression: Normalized<Play>;
   winner: Option<SessionPlayer>;
 };
 

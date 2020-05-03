@@ -20,6 +20,7 @@ import {
 import { buildOne, sortDeck, Card } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
 import * as R from "fp-ts/lib/Record";
+import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/pipeable";
 import { normalizeQuery, popDeckCards } from "../helpers";
 
@@ -161,7 +162,10 @@ export async function requestAddPlayer(
 
 export const requestBuyCards = (
   sessionRef: ReturnType<typeof getSessionRef>
-) => async (player: SessionPlayerWithId, nCards = 1) => {
+) => async (
+  player: SessionPlayerWithId,
+  nCards = 1
+): Promise<SessionPlayerWithId> => {
   const deckRef = sessionRef.collection("deck");
   const deck = normalizeQuery<Card>(await deckRef.get());
 
@@ -184,24 +188,88 @@ export const requestBuyCards = (
   await batch.commit();
 
   //set userHand
-  await sessionRef
-    .collection("players")
-    .doc(player.id)
-    .set(
-      {
-        hand: [...player.hand, ...userCards.keys],
-      },
-      { merge: true }
-    );
+  const newHand = [...player.hand, ...userCards.keys];
+  await sessionRef.collection("players").doc(player.id).set(
+    {
+      hand: newHand,
+    },
+    { merge: true }
+  );
+
+  return { ...player, hand: newHand };
 };
 
-export async function requestStartGame(session: LocalSessionWithId) {
+async function requestSetCurrentCard(
+  sessionRef: ReturnType<typeof getSessionRef>
+): Promise<Card> {
+  const deckRef = sessionRef.collection("deck");
+  const deck = normalizeQuery<Card>(await deckRef.get());
+  const userCards = popDeckCards(deck);
+  const key = pipe(userCards.keys, A.head);
+
+  const card = pipe(
+    key,
+    O.fold(
+      () => O.none,
+      (key) => R.lookup(key, userCards.cards)
+    )
+  );
+
+  if (O.isNone(card)) throw new Error("fail to fetch card");
+
+  sessionRef.set(
+    {
+      currentCard: card.value,
+    },
+    { merge: true }
+  );
+
+  return card.value;
+}
+
+export async function initGameSession(
+  session: LocalSessionWithId,
+  newPlayers: Normalized<SessionPlayer>
+): Promise<LocalSessionWithId> {
+  const sessionRef = getSessionRef(session.id);
+
+  const randPlayer = () => {
+    const array = pipe(session.players, R.keys);
+    return array[Math.floor(Math.random() * array.length)];
+  };
+
+  const currentCard = await requestSetCurrentCard(sessionRef);
+  const newSession: LocalSessionWithId = {
+    ...session,
+    players: newPlayers,
+    status: "STARTED",
+    currentPlayer: randPlayer(),
+    direction: "RIGHT",
+    progression: {},
+    winner: O.none,
+    currentCard: currentCard,
+  };
+  const { id, ...newSessionRest } = newSession;
+  await sessionRef.set(newSessionRest);
+
+  return newSession;
+}
+
+export async function requestDealStartHands(session: LocalSessionWithId) {
   const sessionRef = getSessionRef(session.id);
   const buyCards = requestBuyCards(sessionRef);
 
-  const dealPlayerCard = (key: string, player: SessionPlayer) => {
-    buyCards({ id: key, ...player }, 7);
+  const dealPlayerCard = (
+    key: string,
+    acc: Promise<SessionPlayerWithId>[],
+    player: SessionPlayer
+  ) => {
+    return [...acc, buyCards({ id: key, ...player }, 7)];
   };
 
-  pipe(session.players, R.mapWithIndex(dealPlayerCard));
+  const players = await Promise.all(
+    pipe(session.players, R.reduceWithIndex([], dealPlayerCard))
+  );
+  return players;
+  console.log("dealing", players);
 }

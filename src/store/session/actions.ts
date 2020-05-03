@@ -12,12 +12,16 @@ import {
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
-  requestStartGame,
+  requestDealStartHands,
+  initGameSession,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkResult } from "../types";
 import { PlayerActionTypes } from "../playerHand/actions";
 import { ReduxStore } from "../rootReducer";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as R from "fp-ts/lib/Record";
+import * as A from "fp-ts/lib/Array";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const ADD_PLAYER = "ADD_PLAYER" as const;
@@ -119,24 +123,52 @@ export async function togglePlayerStatus(
   }
 }
 
+function normalizePlayers(
+  players: SessionPlayerWithId[]
+): Normalized<SessionPlayer> {
+  const playerWithIdToNormalized = (
+    acc: Normalized<SessionPlayer>,
+    p: SessionPlayerWithId
+  ) => {
+    const { id, ...playerRest } = p;
+
+    return { ...acc, [id]: playerRest };
+  };
+  return pipe(players, A.reduce({}, playerWithIdToNormalized));
+}
+
 export function startGameSession() {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
-    const state = getState();
+    try {
+      const state = getState();
 
-    const session: LocalSessionWithId = {
-      id: "0iTnuIQ008UH1perzZfc",
-      code: "123",
-      status: "INITIAL",
-      players: {
-        DxHsteJ1xWBenSoxPxzR: {
-          hand: ["2BI4gdBnvStrkEQ0br4M"],
-          name: "David",
-          status: "ADMIN",
-        },
-      },
-      admin: "DxHsteJ1xWBenSoxPxzR",
-    };
-    requestStartGame(state.session);
+      // const session: LocalSessionWithId = {
+      //   id: "0iTnuIQ008UH1perzZfc",
+      //   code: "123",
+      //   status: "INITIAL",
+      //   players: {
+      //     DxHsteJ1xWBenSoxPxzR: {
+      //       hand: ["2BI4gdBnvStrkEQ0br4M"],
+      //       name: "David",
+      //       status: "ADMIN",
+      //     },
+      //   },
+      //   admin: "DxHsteJ1xWBenSoxPxzR",
+      // };
+      const players = await requestDealStartHands(state.session);
+      // normalizePlayer
+      const startedGameSession = await initGameSession(
+        state.session,
+        normalizePlayers(players)
+      );
+      console.log({ startedGameSession });
+      dispatch(setGameSession(startedGameSession));
+
+      //Populates player hands
+      //move game
+    } catch (error) {
+      console.error(error);
+    }
   };
 }
 
