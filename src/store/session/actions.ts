@@ -5,7 +5,6 @@ import {
   SessionPlayer,
   SessionPlayerWithId,
   PlayerStatus,
-  Player,
 } from "../../model/Player";
 import {
   requestCreateSession,
@@ -17,7 +16,6 @@ import {
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkResult } from "../types";
-import { PlayerActionTypes } from "../playerHand/actions";
 import { ReduxStore } from "../rootReducer";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as R from "fp-ts/lib/Record";
@@ -45,7 +43,7 @@ export type JoinGameSessionReturn = {
 };
 
 // export type SessionThunkResult = ThunkResult
-function setGameSession(session: LocalSessionWithId) {
+export function setGameSession(session: LocalSessionWithId) {
   return {
     type: CREATE_SESSION,
     payload: session,
@@ -142,7 +140,7 @@ export function startGameSession() {
     try {
       const state = getState();
 
-      // const session: LocalSessionWithId = {
+      // const sessionDummy: LocalSessionWithId = {
       //   id: "0iTnuIQ008UH1perzZfc",
       //   code: "123",
       //   status: "INITIAL",
@@ -155,17 +153,16 @@ export function startGameSession() {
       //   },
       //   admin: "DxHsteJ1xWBenSoxPxzR",
       // };
+
+      //Populates player hands
       const players = await requestDealStartHands(state.session);
-      // normalizePlayer
+      //Set initial session
       const startedGameSession = await initGameSession(
         state.session,
         normalizePlayers(players)
       );
       console.log({ startedGameSession });
       dispatch(setGameSession(startedGameSession));
-
-      //Populates player hands
-      //move game
     } catch (error) {
       console.error(error);
     }

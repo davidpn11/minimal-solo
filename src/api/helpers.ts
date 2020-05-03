@@ -6,6 +6,14 @@ import * as A from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import * as R from "fp-ts/lib/Record";
 
+export function extractDocumentData<T>(doc: DocumentSnapshot): O.Option<T> {
+  if (doc.exists) {
+    const data = doc.data() as T;
+    return O.fromNullable(data);
+  } else {
+    return O.none;
+  }
+}
 export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
   if (doc.exists) {
     const data = doc.data() as T;

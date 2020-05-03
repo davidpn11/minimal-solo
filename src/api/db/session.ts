@@ -11,7 +11,7 @@ import {
   LocalGameSession,
   ID,
 } from "../../model/Session";
-import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
+import { QuerySnapshot } from "../../model/Firebase";
 import {
   SessionPlayer,
   PlayerStatus,
@@ -22,7 +22,7 @@ import * as O from "fp-ts/lib/Option";
 import * as R from "fp-ts/lib/Record";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/pipeable";
-import { normalizeQuery, popDeckCards } from "../helpers";
+import { normalizeQuery, popDeckCards, extractDocumentData } from "../helpers";
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 3;
@@ -127,15 +127,34 @@ export async function requestTogglePlayerStatus(
 
 export async function requestSessionPlayersListener(
   sessionId: string,
-  addFn: (p: Normalized<SessionPlayer>) => void
+  callback: (p: Normalized<SessionPlayer>) => void
 ) {
   try {
     await getSessionRef(sessionId)
       .collection("players")
       .onSnapshot((querySnapshot) => {
         const players = normalizeQuery<SessionPlayer>(querySnapshot);
-        addFn(players);
+        callback(players);
       });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function requestSessionStatusListener(
+  sessionId: string,
+  callback: (newSession: LocalSessionWithId) => void
+) {
+  try {
+    await getSessionRef(sessionId).onSnapshot((documentSnapshot) => {
+      const newSession = extractDocumentData<LocalSessionWithId>(
+        documentSnapshot
+      );
+      console.log({ newSession });
+      if (O.isSome(newSession)) {
+        callback(newSession.value);
+      }
+    });
   } catch (error) {
     console.error(error);
   }
@@ -271,5 +290,4 @@ export async function requestDealStartHands(session: LocalSessionWithId) {
     pipe(session.players, R.reduceWithIndex([], dealPlayerCard))
   );
   return players;
-  console.log("dealing", players);
 }

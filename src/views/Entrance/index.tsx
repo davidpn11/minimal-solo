@@ -41,10 +41,6 @@ export default function Entrance() {
     setCode(event.currentTarget.value);
 
   useEffect(() => {
-    console.log("codle");
-  }, [2000]);
-
-  useEffect(() => {
     dispatch(clearSession());
   }, []);
 
