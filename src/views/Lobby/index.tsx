@@ -1,26 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import * as R from "fp-ts/lib/Record";
 
-import {
-  ActionWrapper,
-  Code,
-  Page,
-  PlayersWrapper,
-  Title,
-  AdminPlayer,
-  CurrentPlayer,
-  LobbyWrapper,
-} from "./styles";
-import {
-  requestSessionPlayersListener,
-  requestTogglePlayerStatus,
-} from "../../api/db/session";
+import { ActionWrapper, Code, Page, Title, LobbyWrapper } from "./styles";
+
 import { Button } from "../../components/Button";
-import { LobbyPlayerCard } from "../../components/LobbyPlayerCard";
-import { PlayerStatus, SessionPlayer } from "../../model/Player";
 import {
   allPlayersReady,
   getSession,
@@ -32,6 +17,8 @@ import {
 } from "../../store/playerHand/selector";
 import { LocalSessionWithId } from "../../model/Session";
 import { useMatchMaker } from "../../hooks/useMatchMaker";
+import { usePlayersGrid } from "../../hooks/usePlayersGrid";
+import { SessionPlayer } from "../../model/Player";
 
 const SESSION: LocalSessionWithId = {
   id: "ACeKB3PFRXkvv6QdyCHw",
@@ -67,76 +54,9 @@ export default function Lobby() {
   const currentPlayerId = useSelector(getPlayerId);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
+  const playersGrid = usePlayersGrid();
 
   const { toggleStatus, startGame } = useMatchMaker();
-
-  const getPlayersGrid = () => {
-    const isCurrentPlayer = (id: string) => currentPlayerId === id;
-    const isAdminPlayer = (player: SessionPlayer) => player.status === "ADMIN";
-
-    const filterCurrentPlayer = (key: string) => isCurrentPlayer(key);
-    const filterAdminPlayer = (key: string, value: SessionPlayer) =>
-      isAdminPlayer(value);
-
-    const filterCommonPlayers = (key: string, value: SessionPlayer) => {
-      if (isCurrentPlayer(key) || isAdminPlayer(value)) return O.none;
-      return O.some(value);
-    };
-
-    const renderPlayerArea = (
-      key: string,
-      acc: JSX.Element[],
-      player: SessionPlayer
-    ) => {
-      return [
-        ...acc,
-        <LobbyPlayerCard
-          key={key}
-          name={player.name}
-          avatar={"http://placekitten.com/32/32"}
-          status={player.status}
-        />,
-      ];
-    };
-
-    const renderPlayer = (acc: JSX.Element, player: SessionPlayer) => (
-      <LobbyPlayerCard
-        name={player.name}
-        avatar={"http://placekitten.com/32/32"}
-        status={player.status}
-      />
-    );
-
-    const adminPlayer = pipe(
-      currentSession.players,
-      R.filterWithIndex(filterAdminPlayer),
-      R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer)
-    );
-
-    const currentPlayer = pipe(
-      currentSession.players,
-      R.filterWithIndex(filterCurrentPlayer),
-      R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer)
-    );
-
-    const commonPlayers = pipe(
-      currentSession.players,
-      R.filterMapWithIndex(filterCommonPlayers),
-      R.reduceWithIndex<string, SessionPlayer, JSX.Element[]>(
-        [],
-        renderPlayerArea
-      )
-    );
-
-    return (
-      <PlayersWrapper>
-        {/* Checks if current player is admin */}
-        {!isAdmin && <CurrentPlayer>{currentPlayer}</CurrentPlayer>}
-        <AdminPlayer>{adminPlayer}</AdminPlayer>
-        {commonPlayers}
-      </PlayersWrapper>
-    );
-  };
 
   return pipe(
     currentSessionPlayer,
@@ -148,7 +68,7 @@ export default function Lobby() {
             <Title>Room Code</Title>
             <Code>{currentSession.code}</Code>
             <Title>Players</Title>
-            {getPlayersGrid()}
+            {playersGrid}
             <ActionWrapper>
               {isAdmin ? (
                 <Button onClick={startGame} disabled={!isAllPlayersReady}>
