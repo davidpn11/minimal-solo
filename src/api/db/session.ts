@@ -147,7 +147,6 @@ export async function requestSessionStatusListener(
       const newSession = extractDocumentData<LocalSessionWithId>(
         documentSnapshot
       );
-      console.log({ newSession });
       if (O.isSome(newSession)) {
         callback(newSession.value);
       }
