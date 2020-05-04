@@ -1,5 +1,5 @@
 import styled, { css, FlattenSimpleInterpolation } from "styled-components";
-import { Color, Status } from "../../model/Card";
+import { Color, CardStatus } from "../../model/Card";
 import { WithMinimalSoloTheme } from "../../theme";
 
 export const CardValue = styled.span`
@@ -53,7 +53,7 @@ export const CardLower = styled.span`
   }
 `;
 
-type CardWrapperProps = { color: Color; status: Status };
+type CardWrapperProps = { color: Color; status: CardStatus };
 
 function mapCards(
   props: WithMinimalSoloTheme & CardWrapperProps
@@ -70,9 +70,9 @@ function mapCards(
       }
 
       svg {
-          max-width: 80%;
-          max-height: 144px;
-        }
+        max-width: 80%;
+        max-height: 144px;
+      }
     `;
   } else if (props.status === "GAME") {
     return css`

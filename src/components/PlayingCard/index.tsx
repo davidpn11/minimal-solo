@@ -1,7 +1,7 @@
 import React from "react";
 import { CardWrapper, CardValue, CardUpper, CardLower } from "./styles";
 import { Logo } from "../Logo";
-import { Color, Status, Value } from "../../model/Card";
+import { Color, CardStatus, Value } from "../../model/Card";
 
 import { ReactComponent as One } from "../../assets/svg/One.svg";
 import { ReactComponent as Two } from "../../assets/svg/Two.svg";
@@ -25,7 +25,7 @@ import { ReactComponent as ColorIcon } from "../../assets/svg/Color.svg";
 type Props = {
   color: Color;
   value: Value;
-  status: Status;
+  status: CardStatus;
 };
 
 type Icons = { main: React.ReactNode; corner: React.ReactNode };

@@ -185,7 +185,7 @@ export const requestBuyCards = (
   const deck = normalizeQuery<Card>(await deckRef.get());
 
   //get number of deck cards
-  const userCards = popDeckCards(deck, nCards);
+  const userCards = popDeckCards(deck, "HAND", nCards);
 
   //delete from deck structure
   await Promise.all(
@@ -219,7 +219,7 @@ async function requestSetCurrentCard(
 ): Promise<Card> {
   const deckRef = sessionRef.collection("deck");
   const deck = normalizeQuery<Card>(await deckRef.get());
-  const userCards = popDeckCards(deck);
+  const userCards = popDeckCards(deck, "GAME");
   const key = pipe(userCards.keys, A.head);
 
   const card = pipe(

@@ -1,7 +1,7 @@
 import { select, withKnobs } from "@storybook/addon-knobs";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { PlayingCard } from "./index";
-import {Color, Status, Value} from "../../model/Card";
+import { Color, CardStatus, Value } from "../../model/Card";
 
 const COLORS: Record<string, Color> = {
   Blue: "BLUE",
@@ -33,26 +33,24 @@ const COMMON_VALUES: Record<string, Value> = {
   Swap: "SWAP",
 };
 
-const STATUSES: Record<string, Status> = {
+const STATUSES: Record<string, CardStatus> = {
   Deck: "DECK",
   Hand: "HAND",
   Play: "PLAY",
-  Game: "GAME"
+  Game: "GAME",
 };
 
 export function CardStory() {
   const statusKnob = select("Status", STATUSES, "HAND");
   const colorKnob = select("Color", COLORS, "BLUE");
   const isActionCard = colorKnob === "BLACK";
-  const [cardTypes, defaultCard]: [Record<string, Value>, Value] = isActionCard ? [ACTION_VALUES, "PLUS_FOUR"] : [COMMON_VALUES, "ONE"];
+  const [cardTypes, defaultCard]: [Record<string, Value>, Value] = isActionCard
+    ? [ACTION_VALUES, "PLUS_FOUR"]
+    : [COMMON_VALUES, "ONE"];
   const valueKnob = select("Card", cardTypes, defaultCard);
 
   return (
-    <PlayingCard
-      status={statusKnob}
-      value={valueKnob}
-      color={colorKnob}
-    />
+    <PlayingCard status={statusKnob} value={valueKnob} color={colorKnob} />
   );
 }
 
