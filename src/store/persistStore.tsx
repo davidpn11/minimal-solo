@@ -20,6 +20,7 @@ export function PersistGate(props: Props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // We don't need to persist on the initial route
     if (window.location.pathname === ENTRANCE_ROUTE) {
       setReadyStatus(true);
     } else {
