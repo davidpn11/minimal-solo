@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import * as E from 'fp-ts/lib/Either';
@@ -38,9 +38,11 @@ export default function Entrance() {
   useEffect(
     function resetState() {
       safeClearItem('sessionId');
-      dispatch(clearSession());
       safeSetItem('playerId', playerId);
-      dispatch(setPlayerId(playerId));
+      batch(() => {
+        dispatch(clearSession());
+        dispatch(setPlayerId(playerId));
+      });
     },
     [dispatch],
   );
