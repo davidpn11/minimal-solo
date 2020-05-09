@@ -1,5 +1,5 @@
 import { select, withKnobs } from '@storybook/addon-knobs';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PlayingCard } from './index';
 import { Color, CardStatus, Value } from '../../model/Card';
 

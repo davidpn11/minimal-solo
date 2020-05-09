@@ -1,11 +1,9 @@
 import React from 'react';
 import { ButtonVariant, ButtonWrapper } from './styles';
 
-type Props = {
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
   variant: ButtonVariant;
-  onClick?: () => void;
-  disabled?: boolean;
 };
 
 export function Button(props: Props) {
