@@ -41,6 +41,7 @@ export const HandCardsWrapper = styled.div`
   ${CardWrapper} {
     max-width: 104px;
     max-height: 156px;
+    position: relative;
 
     &:not(:first-of-type) {
       margin-left: calc(-104px / 4);
