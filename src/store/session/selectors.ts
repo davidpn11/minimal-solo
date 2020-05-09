@@ -10,7 +10,10 @@ import { Card } from '../../model/Card';
 export const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
-  R.lookup(state.player.id, state.session.players);
+  pipe(
+    state.player.id,
+    O.chain(playerId => R.lookup(playerId, state.session.players)),
+  );
 
 export const allPlayersReady = (state: ReduxStore): boolean => {
   if (R.size(state.session.players) < MIN_ROOM_SIZE) return false;
@@ -22,7 +25,8 @@ export const allPlayersReady = (state: ReduxStore): boolean => {
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
-  const playerId = state.player.id;
+  const playerId = O.isSome(state.player.id) ? state.player.id.value : '';
+
   return pipe(
     state.session.players,
     R.filterWithIndex(key => key !== playerId),

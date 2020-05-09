@@ -3,11 +3,11 @@ import { Player } from '../../model/Player';
 import { Normalized } from '../../model/Session';
 import { Card } from '../../model/Card';
 import { ThunkResult } from '../types';
-import { ReduxStore } from '../rootReducer';
 import { requestGetPlayerHand } from '../../api/db/gameSession';
 
 export const SET_PLAYER = 'SET_PLAYER' as const;
 export const SET_PLAYER_HAND = 'SET_PLAYER_HAND' as const;
+export const SET_PLAYER_ID = 'SET_PLAYER_ID' as const;
 
 export type PlayerThunkDispatch = ThunkDispatch<Player, {}, PlayerActionTypes>;
 export type PlayerThunkResult<T> = ThunkResult<T, Player, PlayerActionTypes>;
@@ -25,6 +25,12 @@ export function setPlayerHand(hand: Normalized<Card>) {
     payload: hand,
   };
 }
+export function setPlayerId(playerId: string) {
+  return {
+    type: SET_PLAYER_ID,
+    payload: playerId,
+  };
+}
 
 export function getPlayerHand(sessionId: string, hand: string[]) {
   return async (dispatch: PlayerThunkDispatch) => {
@@ -39,4 +45,7 @@ export function getPlayerHand(sessionId: string, hand: string[]) {
   };
 }
 
-export type PlayerActionTypes = ReturnType<typeof setPlayer> | ReturnType<typeof setPlayerHand>;
+export type PlayerActionTypes =
+  | ReturnType<typeof setPlayer>
+  | ReturnType<typeof setPlayerId>
+  | ReturnType<typeof setPlayerHand>;

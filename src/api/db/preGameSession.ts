@@ -35,9 +35,10 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   }
 }
 
-export async function requestCreateSession(adminName: string): Promise<LocalSessionWithId> {
-  const playerId = getUniqueId();
-
+export async function requestCreateSession(
+  adminName: string,
+  playerId: string,
+): Promise<LocalSessionWithId> {
   const initialSession = {
     code: codeGenerator(),
     status: 'INITIAL' as NoGameSession['status'],
@@ -145,6 +146,7 @@ export async function requestSessionStatusListener(
 export async function requestAddPlayer(
   sessionId: string,
   name: string,
+  playerId: string,
 ): Promise<SessionPlayerWithId> {
   const initialPlayerData: SessionPlayer = {
     name,
@@ -152,13 +154,9 @@ export async function requestAddPlayer(
     hand: [],
   };
 
-  const player = await database
-    .collection('session')
-    .doc(sessionId)
-    .collection('players')
-    .add(initialPlayerData);
+  await getSessionRef(sessionId).collection('players').doc(playerId).set(initialPlayerData);
 
-  return { ...initialPlayerData, id: player.id };
+  return { ...initialPlayerData, id: playerId };
 }
 
 export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) => async (

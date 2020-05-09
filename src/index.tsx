@@ -8,14 +8,17 @@ import * as serviceWorker from './serviceWorker';
 import store from './store';
 import { THEME } from './theme';
 import { GlobalStyles } from './styles';
+import { PersistGate } from './store/persistStore';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={THEME}>
-        <GlobalStyles />
-        <App />
-      </ThemeProvider>
+      <PersistGate>
+        <ThemeProvider theme={THEME}>
+          <GlobalStyles />
+          <App />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
