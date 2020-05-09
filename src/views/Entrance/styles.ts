@@ -40,64 +40,6 @@ export const CardWrapper = styled.div`
     width: 100%;
     margin-bottom: ${props => props.theme.spacing.medium}px;
   }
-
-  .MuiFormLabel-root {
-    color: ${props => rgba(props.theme.colors.white, 0.67)};
-    font-family: ${props => props.theme.fonts.Ubuntu};
-
-    &.Mui-focused {
-      color: ${props => props.theme.colors.redBase};
-    }
-
-    &.Mui-disabled {
-      color: ${props => rgba(props.theme.colors.white, 0.24)};
-    }
-  }
-
-  .MuiOutlinedInput-root {
-    color: ${props => props.theme.colors.white};
-    font-family: ${props => props.theme.fonts.Ubuntu};
-    border-radius: ${props => props.theme.radius.base}px;
-    margin-bottom: ${props => props.theme.spacing.medium}px;
-
-    .MuiOutlinedInput-notchedOutline {
-      border-color: ${props => rgba(props.theme.colors.white, 0.67)};
-      border-width: 2px;
-    }
-
-    :hover {
-      .MuiOutlinedInput-notchedOutline {
-        border-color: ${props => props.theme.colors.white};
-      }
-    }
-
-    &.Mui-disabled {
-      color: ${props => rgba(props.theme.colors.white, 0.24)};
-
-      .MuiOutlinedInput-notchedOutline {
-        border-color: ${props => rgba(props.theme.colors.white, 0.24)};
-      }
-    }
-  }
-
-  && {
-    .Mui-focused {
-      .MuiOutlinedInput-notchedOutline {
-        border-color: ${props => props.theme.colors.redBase};
-      }
-    }
-  }
-
-  .MuiFormHelperText-root {
-    color: ${props => props.theme.colors.redBase};
-    font-family: ${props => props.theme.fonts.Ubuntu};
-    font-weight: 600;
-    margin-bottom: ${props => props.theme.spacing.small}px;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    top: -12px;
-  }
 `;
 
 export const Title = styled.h2`
