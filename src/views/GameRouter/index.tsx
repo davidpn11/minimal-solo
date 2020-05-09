@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { GameWrapper } from './styles';
-import MyHand from './components/MyHand';
+import { PlayerHand } from '../../components/PlayerHand';
 import GameTable from './components/GameTable';
 import { getSession } from '../../store/session/selectors';
 import Lobby from '../Lobby';
@@ -30,7 +30,7 @@ export default function GameRouter() {
         <GameEngine>
           <GameWrapper>
             <GameTable />
-            <MyHand />
+            <PlayerHand />
           </GameWrapper>
         </GameEngine>
       );

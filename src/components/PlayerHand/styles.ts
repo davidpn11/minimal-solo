@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardWrapper } from '../../../../components/PlayingCard/styles';
+import { CardWrapper } from '../PlayingCard/styles';
 
 export const DeckWrapper = styled.div`
   overflow-x: auto;

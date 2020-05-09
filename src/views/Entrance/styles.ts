@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { rgba } from 'polished';
 import { ButtonWrapper } from '../../components/Button/styles';
 
 export const Page = styled.main`
