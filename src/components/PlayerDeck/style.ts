@@ -16,7 +16,8 @@ export const PlayerCardsCount = styled.h3`
   line-height: 12px;
   margin-bottom: 8px;
 `;
-export const PlayerDeck = styled.div`
+
+export const PlayerDeckPile = styled.div`
   align-items: center;
   border-radius: 6px;
   display: flex;
@@ -47,7 +48,7 @@ export const PlayerDeckWrapper = styled.section<PlayerDeckProps>`
   grid-area: ${props => `player-${props.position}`};
   grid-gap: 4px;
 
-  ${PlayerDeck} {
+  ${PlayerDeckPile} {
     background: ${props => props.theme.gradients[props.gradientColor]};
   }
 `;

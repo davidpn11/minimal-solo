@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayerDeckWrapper, PlayerName, PlayerCardsCount, PlayerDeck } from './style';
+import { PlayerDeckWrapper, PlayerName, PlayerCardsCount, PlayerDeckPile } from './style';
 import { SessionPlayer } from '../../model/Player';
 import { PlayingCard } from '../PlayingCard';
 import { mapCountToColor, mapCountToGradient } from './helpers';
@@ -9,7 +9,7 @@ type Props = {
   player: SessionPlayer;
 };
 
-export default function TablePlayer(props: Props) {
+export function PlayerDeck(props: Props) {
   const cardCount = props.player.hand.length;
 
   return (
@@ -20,11 +20,11 @@ export default function TablePlayer(props: Props) {
     >
       <PlayerName>{props.player.name}</PlayerName>
       <PlayerCardsCount>{cardCount} cards</PlayerCardsCount>
-      <PlayerDeck>
+      <PlayerDeckPile>
         {props.player.hand.map(card => (
           <PlayingCard key={card} status="DECK" color="BLACK" value="ONE" />
         ))}
-      </PlayerDeck>
+      </PlayerDeckPile>
     </PlayerDeckWrapper>
   );
 }
