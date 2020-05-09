@@ -4,7 +4,7 @@ import { Formik, Field, FormikHelpers, Form } from 'formik';
 
 import { Title } from '../styles';
 import { Button } from '../../../components/Button';
-import { TextField } from '../../../components/FormikTextField';
+import { TextField } from '../../../components/TextField';
 
 export type CreateFields = {
   adminName: string;

@@ -6,15 +6,15 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { FormikHelpers } from 'formik';
 
 import { CardWrapper, Page } from './styles';
-import { Logo } from '../../components/Logo';
-import { createGameSession, joinGameSession, clearSession } from '../../store/session/actions';
-import { ReduxThunkDispatch } from '../../store/rootReducer';
-import { LocalSessionWithId } from '../../model/Session';
-import { getPlayerId } from '../../store/playerHand/selector';
-import { safeClearItem, safeSetItem } from '../../utils/storage';
-import { setPlayerId } from '../../store/playerHand/actions';
 import { JoinFields, JoinRoomForm } from './components/JoinRoomForm';
 import { CreateFields, CreateRoomForm } from './components/CreateRoomForm';
+import { Logo } from '../../components/Logo';
+import { LocalSessionWithId } from '../../model/Session';
+import { safeClearItem, safeSetItem } from '../../utils/storage';
+import { ReduxThunkDispatch } from '../../store/rootReducer';
+import { getPlayerId } from '../../store/playerHand/selector';
+import { setPlayerId } from '../../store/playerHand/actions';
+import { createGameSession, joinGameSession, clearSession } from '../../store/session/actions';
 
 export default function Entrance() {
   const dispatch = useDispatch<ReduxThunkDispatch>();
