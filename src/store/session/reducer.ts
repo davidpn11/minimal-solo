@@ -1,24 +1,21 @@
-import { LocalSessionWithId } from "../../model/Session";
-import { SessionActionTypes } from "./actions";
+import { LocalSessionWithId } from '../../model/Session';
+import { SessionActionTypes } from './actions';
 
 const initialState: LocalSessionWithId = {
-  id: "",
-  code: "",
-  status: "INITIAL",
+  id: '',
+  code: '',
+  status: 'INITIAL',
   players: {},
-  admin: "",
+  admin: '',
 };
 
-export function sessionReducer(
-  state = initialState,
-  action: SessionActionTypes
-): LocalSessionWithId {
+export function sessionReducer(state = initialState, action: SessionActionTypes): LocalSessionWithId {
   switch (action.type) {
-    case "CREATE_SESSION":
+    case 'CREATE_SESSION':
       return { ...state, ...action.payload };
-    case "CLEAR_SESSION":
+    case 'CLEAR_SESSION':
       return initialState;
-    case "ADD_PLAYER":
+    case 'ADD_PLAYER':
       return {
         ...state,
         players: {

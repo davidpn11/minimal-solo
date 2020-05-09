@@ -1,17 +1,15 @@
-import * as firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import { firebaseConfig } from "./config";
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import { firebaseConfig } from './config';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
 export const database = firebase.firestore();
-export const getSessionRef = (id: string) =>
-  database.collection("session").doc(id);
+export const getSessionRef = (id: string) => database.collection('session').doc(id);
 
-export const getSessionRefByCode = (code: string) =>
-  database.collection("session").where("code", "==", code);
+export const getSessionRefByCode = (code: string) => database.collection('session').where('code', '==', code);
 
-export const getUniqueId = () => database.collection("session").doc().id;
+export const getUniqueId = () => database.collection('session').doc().id;

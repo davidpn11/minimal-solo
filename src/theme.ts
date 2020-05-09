@@ -1,27 +1,27 @@
-import { rgba } from "polished";
+import { rgba } from 'polished';
 
-const GRADIENT_ROTATION = "315deg" as const;
+const GRADIENT_ROTATION = '315deg' as const;
 
 export const COLORS = {
-  blackBase: "#363436",
-  blackLight: "#444144",
-  blackShadow: "#272627",
-  blackest: "#171717",
-  blueBase: "#2F80ED",
-  blueLight: "#4D92F0",
-  blueShadow: "#1470EB",
-  greenBase: "#27AE60",
-  greenLight: "#2DC86E",
-  greenShadow: "#229653",
-  redBase: "#EB5757",
-  redLight: "#EE7272",
-  redShadow: "#E83B3B",
-  yellowBase: "#F2C94C",
-  yellowLight: "#F4D167",
-  yellowShadow: "#F0C02E",
-  white: "#FFFFFF",
-  whiteSmoke: "#CCC",
-  border: "#F0EFF0",
+  blackBase: '#363436',
+  blackLight: '#444144',
+  blackShadow: '#272627',
+  blackest: '#171717',
+  blueBase: '#2F80ED',
+  blueLight: '#4D92F0',
+  blueShadow: '#1470EB',
+  greenBase: '#27AE60',
+  greenLight: '#2DC86E',
+  greenShadow: '#229653',
+  redBase: '#EB5757',
+  redLight: '#EE7272',
+  redShadow: '#E83B3B',
+  yellowBase: '#F2C94C',
+  yellowLight: '#F4D167',
+  yellowShadow: '#F0C02E',
+  white: '#FFFFFF',
+  whiteSmoke: '#CCC',
+  border: '#F0EFF0',
 };
 
 export const GRADIENTS = {

@@ -1,7 +1,7 @@
-import { ThunkDispatch } from "redux-thunk";
-import { Player } from "../../model/Player";
+import { ThunkDispatch } from 'redux-thunk';
+import { Player } from '../../model/Player';
 
-export const ADD_PLAYER = "SET_PLAYER" as const;
+export const ADD_PLAYER = 'SET_PLAYER' as const;
 
 export function setPlayer(player: Player) {
   return {

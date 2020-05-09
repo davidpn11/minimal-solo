@@ -1,7 +1,7 @@
-import React from "react";
-import { SoloButtonStates, SoloButton } from "./styles";
+import React from 'react';
+import { SoloButtonStates, SoloButton } from './styles';
 
-import { ReactComponent as SoloIcon } from "../../assets/svg/SoloIcon.svg";
+import { ReactComponent as SoloIcon } from '../../assets/svg/SoloIcon.svg';
 
 type Props = {
   state: SoloButtonStates;
@@ -10,11 +10,7 @@ type Props = {
 
 export function Solo(props: Props) {
   return (
-    <SoloButton
-      state={props.state}
-      onClick={props.onClick}
-      disabled={props.state !== "CAN_SOLO"}
-    >
+    <SoloButton state={props.state} onClick={props.onClick} disabled={props.state !== 'CAN_SOLO'}>
       <SoloIcon />
     </SoloButton>
   );

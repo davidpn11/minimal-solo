@@ -12,13 +12,8 @@ const cards = Array(30).fill({
 export default function CardDeck() {
   return (
     <CardsWrapper>
-      {cards.map((card) => (
-        <PlayingCard
-          key={card.id}
-          color={card.color}
-          status="DECK"
-          value={card.value}
-        />
+      {cards.map(card => (
+        <PlayingCard key={card.id} color={card.color} status="DECK" value={card.value} />
       ))}
     </CardsWrapper>
   );

@@ -1,8 +1,8 @@
-import { combineReducers } from "redux";
-import { sessionReducer } from "./session/reducer";
-import { playerReducer } from "./playerHand/reducer";
-import { SessionThunkDispatch } from "./session/actions";
-import { PlayerThunkDispatch } from "./playerHand/actions";
+import { combineReducers } from 'redux';
+import { sessionReducer } from './session/reducer';
+import { playerReducer } from './playerHand/reducer';
+import { SessionThunkDispatch } from './session/actions';
+import { PlayerThunkDispatch } from './playerHand/actions';
 
 export const rootReducer = combineReducers({
   session: sessionReducer,

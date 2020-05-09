@@ -1,22 +1,22 @@
-import styled, { css } from "styled-components";
-import { WithMinimalSoloTheme } from "../../theme";
+import styled, { css } from 'styled-components';
+import { WithMinimalSoloTheme } from '../../theme';
 
-export type LobbyPlayerStatus = "ADMIN" | "READY" | "NOT_READY";
+export type LobbyPlayerStatus = 'ADMIN' | 'READY' | 'NOT_READY';
 type WrapperProps = { status: LobbyPlayerStatus };
 
 function mapStatusStyles(props: WithMinimalSoloTheme & WrapperProps) {
   switch (props.status) {
-    case "ADMIN":
+    case 'ADMIN':
       return css`
         background: ${props.theme.backgrounds.admin};
         border-color: ${props.theme.colors.blueLight};
       `;
-    case "READY":
+    case 'READY':
       return css`
         background: ${props.theme.backgrounds.ready};
         border-color: ${props.theme.colors.greenLight};
       `;
-    case "NOT_READY":
+    case 'NOT_READY':
     default:
       return css`
         background: ${props.theme.backgrounds.notReady};
@@ -27,14 +27,14 @@ function mapStatusStyles(props: WithMinimalSoloTheme & WrapperProps) {
 
 export const Wrapper = styled.div<WrapperProps>`
   align-items: center;
-  border-radius: ${(props) => props.theme.radius.small}px;
+  border-radius: ${props => props.theme.radius.small}px;
   border: 1px solid;
-  box-shadow: ${(props) => props.theme.shadows.base};
-  color: ${(props) => props.theme.colors.white};
+  box-shadow: ${props => props.theme.shadows.base};
+  color: ${props => props.theme.colors.white};
   display: flex;
   flex-flow: row nowrap;
   height: 48px;
-  padding: ${(props) => props.theme.spacing.base}px;
+  padding: ${props => props.theme.spacing.base}px;
   transition: 150ms ease-in-out;
   width: 100%;
   max-width: 300px;
@@ -42,9 +42,9 @@ export const Wrapper = styled.div<WrapperProps>`
 `;
 
 export const PlayerImage = styled.img`
-  background: ${(props) => props.theme.colors.blackBase};
+  background: ${props => props.theme.colors.blackBase};
   border: none;
-  border-radius: ${(props) => props.theme.radius.small}px;
+  border-radius: ${props => props.theme.radius.small}px;
   height: 32px;
   width: 32px;
 `;
@@ -56,7 +56,7 @@ export const PlayerInfo = styled.div`
   flex-flow: column nowrap;
   height: 100%;
   justify-content: center;
-  margin-left: ${(props) => props.theme.spacing.base}px;
+  margin-left: ${props => props.theme.spacing.base}px;
   width: 100%;
 `;
 

@@ -1,44 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import TextField from "@material-ui/core/TextField";
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import * as E from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
 
-import { CardWrapper, Title, Page } from "./styles";
-import { Button } from "../../components/Button";
-import { Logo } from "../../components/Logo";
-import {
-  createGameSession,
-  joinGameSession,
-  clearSession,
-  JoinGameSessionReturn,
-} from "../../store/session/actions";
-import { setPlayer } from "../../store/playerHand/actions";
-import { ReduxThunkDispatch } from "../../store/rootReducer";
-import { LocalSessionWithId } from "../../model/Session";
+import { CardWrapper, Title, Page } from './styles';
+import { Button } from '../../components/Button';
+import { Logo } from '../../components/Logo';
+import { createGameSession, joinGameSession, clearSession, JoinGameSessionReturn } from '../../store/session/actions';
+import { setPlayer } from '../../store/playerHand/actions';
+import { ReduxThunkDispatch } from '../../store/rootReducer';
+import { LocalSessionWithId } from '../../model/Session';
 
 const BASE_ERROR_STATE = {
   status: false,
-  message: "",
+  message: '',
 };
 
 export default function Entrance() {
-  const [name, setName] = useState("");
-  const [adminName, setAdminName] = useState("");
+  const [name, setName] = useState('');
+  const [adminName, setAdminName] = useState('');
   // TODO: Actual error handling
   const [roomError, setRoomError] = useState(BASE_ERROR_STATE);
   const [nameError, setNameError] = useState(BASE_ERROR_STATE);
   const [adminNameError, setAdminNameError] = useState(BASE_ERROR_STATE);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
   const dispatch = useDispatch<ReduxThunkDispatch>();
   const history = useHistory();
-  const changeName = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setName(event.currentTarget.value);
-  const changeAdminName = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setAdminName(event.currentTarget.value);
-  const changeCode = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setCode(event.currentTarget.value);
+  const changeName = (event: React.ChangeEvent<HTMLInputElement>) => setName(event.currentTarget.value);
+  const changeAdminName = (event: React.ChangeEvent<HTMLInputElement>) => setAdminName(event.currentTarget.value);
+  const changeCode = (event: React.ChangeEvent<HTMLInputElement>) => setCode(event.currentTarget.value);
 
   useEffect(() => {
     dispatch(clearSession());
@@ -48,7 +40,7 @@ export default function Entrance() {
     if (adminName.length === 0) {
       return setAdminNameError({
         status: true,
-        message: "Please input your name.",
+        message: 'Please input your name.',
       });
     }
     setAdminNameError(BASE_ERROR_STATE);
@@ -58,11 +50,11 @@ export default function Entrance() {
       await dispatch(createGameSession(adminName)),
       E.fold<any, LocalSessionWithId, void>(
         () => {},
-        async (session) => {
+        async session => {
           await dispatch(setPlayer({ id: session.admin, hand: {} }));
           history.push(`/room/${session.code}`);
-        }
-      )
+        },
+      ),
     );
   };
 
@@ -70,7 +62,7 @@ export default function Entrance() {
     if (name.length === 0) {
       return setNameError({
         status: true,
-        message: "Please input your name.",
+        message: 'Please input your name.',
       });
     }
     setNameError(BASE_ERROR_STATE);
@@ -88,8 +80,8 @@ export default function Entrance() {
         async ({ player, session }) => {
           await dispatch(setPlayer({ id: player.id, hand: {} }));
           history.push(`/room/${session.code}`);
-        }
-      )
+        },
+      ),
     );
   };
 

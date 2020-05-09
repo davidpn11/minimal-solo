@@ -13,7 +13,7 @@ export default function MyDeck() {
   return (
     <DeckWrapper>
       <HandCardsWrapper>
-        {cards.map((card) => (
+        {cards.map(card => (
           <HandCardWrapper>
             <PlayingCard value={card.value} status="HAND" color={card.color} />
           </HandCardWrapper>
