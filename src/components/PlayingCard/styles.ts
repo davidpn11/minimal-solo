@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import { Color, CardStatus } from '../../model/Card';
 import { WithMinimalSoloTheme } from '../../theme';
@@ -53,7 +54,7 @@ export const CardLower = styled.span`
   }
 `;
 
-type CardWrapperProps = { color: Color; status: CardStatus };
+type CardWrapperProps = { color: Color; status: CardStatus; onClick?: (e: MouseEvent) => void };
 
 function mapCards(props: WithMinimalSoloTheme & CardWrapperProps): FlattenSimpleInterpolation {
   if (props.status === 'DECK') {
@@ -112,6 +113,7 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   border: 1px solid;
   border-radius: ${props => props.theme.radius.base}px;
   box-shadow: ${props => props.theme.shadows.base};
+  cursor: ${props => (props.onClick ? 'pointer' : 'default')};
   display: flex;
   flex-direction: column;
   flex-shrink: 0;

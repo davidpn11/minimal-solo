@@ -18,7 +18,13 @@ export function PlayerHand() {
       player.hand,
       R.reduceWithIndex<string, Card, JSX.Element[]>([], (key, acc, card) => [
         ...acc,
-        <PlayingCard key={key} value={card.value} status="HAND" color={card.color} />,
+        <PlayingCard
+          key={key}
+          value={card.value}
+          status="HAND"
+          color={card.color}
+          onClick={() => {}}
+        />,
       ]),
     );
   }

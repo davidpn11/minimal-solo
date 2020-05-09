@@ -41,7 +41,10 @@ export const HandCardsWrapper = styled.div`
   ${CardWrapper} {
     max-width: 104px;
     max-height: 156px;
-    margin-left: calc(-104px / 4);
+
+    &:not(:first-of-type) {
+      margin-left: calc(-104px / 4);
+    }
 
     :hover {
       z-index: 100;
