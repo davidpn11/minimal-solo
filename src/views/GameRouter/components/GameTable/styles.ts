@@ -20,34 +20,3 @@ export const TableWrapper = styled.div`
   border-radius: 6px;
   flex: 1;
 `;
-
-export const TableCenter = styled.div`
-  background: linear-gradient(334.22deg, #363436 0%, #444144 100%);
-  border-radius: 8px;
-  grid-area: center;
-  margin: 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32px;
-
-  svg {
-    width: 200px;
-  }
-`;
-
-export const CardPlaceholder = styled.div`
-  background: #fff;
-  padding: 8px;
-  height: 190px;
-  width: 150px;
-  border-radius: 12px;
-  padding-top: 8px;
-
-  ${CardWrapper} {
-    width: 120px;
-    height: 170px;
-    margin: auto;
-  }
-`;

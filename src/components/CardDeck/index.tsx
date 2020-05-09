@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayingCard } from '../../../../components/PlayingCard';
+import { PlayingCard } from '../PlayingCard';
 import { CardsWrapper } from './styles';
 
 const cards = Array(30).fill({
