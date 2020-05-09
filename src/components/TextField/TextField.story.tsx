@@ -6,9 +6,7 @@ import { TextField } from './index';
 
 function ErrorKnob() {
   const errorKnob = boolean('Error', false);
-  const { setFieldError, setFieldTouched, errors } = useFormikContext();
-
-  console.log({ errors, errorKnob });
+  const { setFieldError, setFieldTouched } = useFormikContext();
 
   useEffect(() => {
     if (errorKnob) {
