@@ -199,16 +199,43 @@ export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) =>
 async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
   const deckRef = sessionRef.collection('deck');
   const deck = normalizeQuery<Card>(await deckRef.get());
-  const userCards = popDeckCards(deck, 'GAME');
-  const key = pipe(userCards.keys, A.head);
+
+  let currentCard = popDeckCards(deck, 'GAME');
+
+  while (
+    pipe(
+      currentCard.cards,
+      R.some(
+        c =>
+          c.color === 'BLACK' ||
+          c.value === 'REVERSE' ||
+          c.value === 'PLUS_TWO' ||
+          c.value === 'SWAP' ||
+          c.value === 'BLOCK',
+      ),
+    )
+  ) {
+    currentCard = popDeckCards(deck, 'GAME');
+  }
+
+  const key = pipe(currentCard.keys, A.head);
+
+  //delete from deck structure
+  await Promise.all(
+    currentCard.keys.map(key => {
+      return deckRef.doc(key).delete();
+    }),
+  );
 
   const card = pipe(
     key,
     O.fold(
       () => O.none,
-      key => R.lookup(key, userCards.cards),
+      key => R.lookup(key, currentCard.cards),
     ),
   );
+
+  console.log(card);
 
   if (O.isNone(card)) throw new Error('fail to fetch card');
 
