@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
 
@@ -8,14 +7,16 @@ import { PlayingCard } from '../PlayingCard';
 import { Solo } from '../Solo';
 import { Pass } from '../Pass';
 import { Card } from '../../model/Card';
-import { getPlayer } from '../../store/playerHand/selector';
+import { Normalized } from '../../model/Session';
 
-export function PlayerHand() {
-  const player = useSelector(getPlayer);
+type Props = {
+  cards: Normalized<Card>;
+};
 
+export function PlayerHand(props: Props) {
   function renderCards(): React.ReactNode {
     return pipe(
-      player.hand,
+      props.cards,
       R.reduceWithIndex<string, Card, JSX.Element[]>([], (key, acc, card) => [
         ...acc,
         <PlayingCard

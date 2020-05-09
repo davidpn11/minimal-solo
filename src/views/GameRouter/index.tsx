@@ -9,11 +9,13 @@ import { getSession } from '../../store/session/selectors';
 import Lobby from '../Lobby';
 import GameEngine from '../../GameEngine';
 import { useSessionListener } from '../../hooks/useSessionListener';
+import { getPlayer } from '../../store/playerHand/selector';
 
 const TEST_MODE = true;
 
 export default function GameRouter() {
   const currentSession = useSelector(getSession);
+  const player = useSelector(getPlayer);
   const history = useHistory();
   const hasSession = !!currentSession.code;
   useSessionListener();
@@ -30,7 +32,7 @@ export default function GameRouter() {
         <GameEngine>
           <GameWrapper>
             <GameTable />
-            <PlayerHand />
+            <PlayerHand cards={player.hand} />
           </GameWrapper>
         </GameEngine>
       );
