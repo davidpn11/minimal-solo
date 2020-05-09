@@ -1,5 +1,11 @@
 import { database, getSessionRef, getUniqueId, getSessionRefByCode } from '../firebase';
-import { Normalized, NoGameSession, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
+import {
+  Normalized,
+  NoGameSession,
+  LocalSessionWithId,
+  LocalGameSession,
+  ID,
+} from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
 import { SessionPlayer, PlayerStatus, SessionPlayerWithId } from '../../model/Player';
 import { buildOne, sortDeck, Card } from '../../model/Card';
@@ -29,7 +35,10 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   }
 }
 
-export async function requestCreateSession(adminName: string, playerId: string): Promise<LocalSessionWithId> {
+export async function requestCreateSession(
+  adminName: string,
+  playerId: string,
+): Promise<LocalSessionWithId> {
   const initialSession = {
     code: codeGenerator(),
     status: 'INITIAL' as NoGameSession['status'],
@@ -84,7 +93,11 @@ export async function requestJoinSession(sessionCode: string) {
   );
 }
 
-export async function requestTogglePlayerStatus(sessionId: string, playerId: string, playerStatus: PlayerStatus) {
+export async function requestTogglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus,
+) {
   if (playerStatus === 'ADMIN') throw new Error('IsAdmin');
 
   return await getSessionRef(sessionId)
@@ -241,10 +254,16 @@ export async function requestDealStartHands(session: LocalSessionWithId) {
   const sessionRef = getSessionRef(session.id);
   const buyCards = requestBuyCards(sessionRef);
 
-  const dealPlayerCard = (key: string, acc: Promise<SessionPlayerWithId>[], player: SessionPlayer) => {
-    return [...acc, buyCards({ id: key, ...player }, 7)];
-  };
+  const dealPlayerCard = async (
+    key: string,
+    acc: Promise<SessionPlayerWithId[]>,
+    player: SessionPlayer,
+  ) => [...(await acc), await buyCards({ id: key, ...player }, 7)];
 
-  const players = await Promise.all(pipe(session.players, R.reduceWithIndex([], dealPlayerCard)));
+  const players = await pipe(
+    session.players,
+    R.reduceWithIndex(Promise.resolve([] as SessionPlayerWithId[]), await dealPlayerCard),
+  );
+
   return players;
 }

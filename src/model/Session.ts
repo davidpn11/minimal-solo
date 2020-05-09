@@ -1,8 +1,8 @@
 import { SessionPlayer } from './Player';
 import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
+import { UnionExclude } from './types';
 
-type UnionExclude<T, K> = T extends K ? never : T;
 export type SessionStatus = 'INITIAL' | 'STARTED' | 'FINISHED';
 export type ID = { id: string };
 

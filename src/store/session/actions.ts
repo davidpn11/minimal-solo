@@ -9,7 +9,7 @@ import {
   requestTogglePlayerStatus,
   requestDealStartHands,
   initGameSession,
-} from '../../api/db/session';
+} from '../../api/db/preGameSession';
 import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
@@ -93,7 +93,11 @@ export function joinGameSession(
   };
 }
 
-export async function togglePlayerStatus(sessionId: string, playerId: string, playerStatus: PlayerStatus) {
+export async function togglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus,
+) {
   try {
     await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
   } catch (error) {
@@ -133,7 +137,6 @@ export function startGameSession() {
       const players = await requestDealStartHands(state.session);
       //Set initial session
       const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
-      console.log({ startedGameSession });
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);

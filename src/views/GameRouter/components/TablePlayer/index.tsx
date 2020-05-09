@@ -19,7 +19,7 @@ export default function TablePlayer(props: Props) {
       <PlayerCardsCount>{props.player.hand.length} cards</PlayerCardsCount>
       <PlayerDeck>
         {props.player.hand.map(card => (
-          <PlayingCard status="DECK" color="BLACK" value="ONE" />
+          <PlayingCard key={card} status="DECK" color="BLACK" value="ONE" />
         ))}
       </PlayerDeck>
     </PlayerWrapper>

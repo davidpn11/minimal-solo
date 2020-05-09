@@ -5,161 +5,31 @@ import { SessionPlayer } from '../../../../model/Player';
 import { Logo } from '../../../../components/Logo';
 import CardDeck from '../CardDeck';
 import CurrentCard from '../CurrentCard';
-
-const players: SessionPlayer[] = [
-  // {
-  //   name: "kevin",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "michel",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: "david",
-  //   hand: [
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //     {
-  //       status: "GAME",
-  //       color: "RED",
-  //       value: "ONE",
-  //     },
-  //   ],
-  // },
-];
+import { useSelector } from 'react-redux';
+import { getSession, getOtherSessionPlayers } from '../../../../store/session/selectors';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
+import * as R from 'fp-ts/lib/Record';
+import { getPlayerHandIds } from '../../../../store/playerHand/selector';
 
 export default function GameTable() {
+  const session = useSelector(getSession);
+  const otherPlayers = useSelector(getOtherSessionPlayers);
+
+  const renderPlayerCard = (key: string, player: SessionPlayer, pos: number) => (
+    <TablePlayer key={key} player={player} playerPosition={pos} />
+  );
+  const renderPlayers = () => {
+    let i = 0;
+    return pipe(
+      otherPlayers,
+      R.reduceWithIndex([] as JSX.Element[], (key, acc, p) => {
+        const player = renderPlayerCard(key, p, i);
+        i = i + 1;
+        return [...acc, player];
+      }),
+    );
+  };
   return (
     <TableWrapper>
       <TableCenter>
@@ -171,9 +41,7 @@ export default function GameTable() {
           <CardDeck />
         </CardPlaceholder>
       </TableCenter>
-      {players.map((player, i) => (
-        <TablePlayer player={player} playerPosition={i} />
-      ))}
+      {renderPlayers()}
     </TableWrapper>
   );
 }

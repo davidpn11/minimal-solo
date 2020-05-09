@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSession } from '../store/session/selectors';
-import { requestSessionPlayersListener, requestTogglePlayerStatus } from '../api/db/session';
+import { requestSessionPlayersListener, requestTogglePlayerStatus } from '../api/db/preGameSession';
 import { addNewPlayer, clearSession, startGameSession } from '../store/session/actions';
 import { PlayerStatus } from '../model/Player';
 
@@ -28,7 +28,6 @@ export function useMatchMaker() {
 
   const startGame = () => {
     dispatch(startGameSession());
-    console.log('startGame');
   };
 
   return { toggleStatus, startGame };
