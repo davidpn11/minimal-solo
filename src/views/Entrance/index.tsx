@@ -33,16 +33,15 @@ export default function Entrance() {
     [dispatch, playerId],
   );
 
+  function joinSession(session: LocalSessionWithId) {
+    safeSetItem('sessionId', session.id);
+    history.push(`/room/${session.code}`);
+  }
+
   async function createRoom({ adminName }: CreateFields) {
     return pipe(
       await dispatch(createGameSession(adminName, playerId)),
-      E.fold<any, LocalSessionWithId, void>(
-        () => {},
-        async session => {
-          safeSetItem('sessionId', session.id);
-          history.push(`/room/${session.code}`);
-        },
-      ),
+      E.fold<any, LocalSessionWithId, void>(() => {}, joinSession),
     );
   }
 
@@ -51,10 +50,7 @@ export default function Entrance() {
       await dispatch(joinGameSession(roomCode, userName, playerId)),
       E.fold<any, LocalSessionWithId, void>(
         () => formikHelpers.setFieldError('roomCode', 'Room code not found. Please double check.'),
-        async session => {
-          safeSetItem('sessionId', session.id);
-          history.push(`/room/${session.code}`);
-        },
+        joinSession,
       ),
     );
   }
