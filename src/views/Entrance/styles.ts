@@ -22,6 +22,14 @@ export const CardWrapper = styled.div`
   width: 384px;
   box-shadow: ${props => props.theme.shadows.darker};
 
+  form {
+    width: 100%;
+  }
+
+  form + form {
+    margin-top: 16px;
+  }
+
   svg {
     width: 144px;
     height: 144px;
@@ -40,6 +48,10 @@ export const CardWrapper = styled.div`
     &.Mui-focused {
       color: ${props => props.theme.colors.redBase};
     }
+
+    &.Mui-disabled {
+      color: ${props => rgba(props.theme.colors.white, 0.24)};
+    }
   }
 
   .MuiOutlinedInput-root {
@@ -56,6 +68,14 @@ export const CardWrapper = styled.div`
     :hover {
       .MuiOutlinedInput-notchedOutline {
         border-color: ${props => props.theme.colors.white};
+      }
+    }
+
+    &.Mui-disabled {
+      color: ${props => rgba(props.theme.colors.white, 0.24)};
+
+      .MuiOutlinedInput-notchedOutline {
+        border-color: ${props => rgba(props.theme.colors.white, 0.24)};
       }
     }
   }
