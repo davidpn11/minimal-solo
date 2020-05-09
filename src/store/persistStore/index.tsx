@@ -4,9 +4,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
 import { loadSession } from './helpers';
-import { ENTRANCE_ROUTE } from '../../App';
 import { setGameSession } from '../session/actions';
 import { setPlayerId } from '../playerHand/actions';
+import { ENTRANCE_ROUTE } from '../../App';
+import { unitJSX } from '../../utils/unit';
 
 type Props = {
   children: React.ReactNode;
@@ -40,7 +41,7 @@ export function PersistGate(props: Props) {
   }, [dispatch]);
 
   if (!isReady) {
-    return null;
+    return unitJSX;
   }
 
   return <>{props.children}</>;
