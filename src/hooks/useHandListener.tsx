@@ -12,10 +12,10 @@ export function useHandListener() {
   const player = useSelector(getPlayer);
   const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
-  const E = A.getEq(eqString);
+  const ArrayEq = A.getEq(eqString);
 
   useEffect(() => {
-    if (!E.equals(currPlayerHand, playerHand)) {
+    if (!ArrayEq.equals(currPlayerHand, playerHand)) {
       setCurrPlayerHand(playerHand);
       dispatch(getPlayerHand(currentSession.id, playerHand));
     }
