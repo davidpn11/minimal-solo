@@ -1,5 +1,5 @@
-import React from "react";
-import { ButtonVariant, ButtonWrapper } from "./styles";
+import React from 'react';
+import { ButtonVariant, ButtonWrapper } from './styles';
 
 type Props = {
   children: React.ReactNode;
@@ -17,5 +17,5 @@ export function Button(props: Props) {
 }
 
 Button.defaultProps = {
-  variant: "primary",
+  variant: 'primary',
 };

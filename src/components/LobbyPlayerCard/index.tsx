@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  PlayerImage,
-  PlayerInfo,
-  PlayerStatus,
-  PlayerName,
-  Wrapper,
-  LobbyPlayerStatus,
-} from "./styles";
+import React from 'react';
+import { PlayerImage, PlayerInfo, PlayerStatus, PlayerName, Wrapper, LobbyPlayerStatus } from './styles';
 
 type Props = {
   name: string;
@@ -16,13 +9,13 @@ type Props = {
 
 function mapStatus(status: LobbyPlayerStatus) {
   switch (status) {
-    case "ADMIN":
-      return "Admin";
-    case "READY":
-      return "Ready";
-    case "NOT_READY":
+    case 'ADMIN':
+      return 'Admin';
+    case 'READY':
+      return 'Ready';
+    case 'NOT_READY':
     default:
-      return "Not Ready";
+      return 'Not Ready';
   }
 }
 

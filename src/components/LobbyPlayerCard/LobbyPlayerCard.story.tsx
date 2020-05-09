@@ -1,27 +1,25 @@
-import { select, text, withKnobs } from "@storybook/addon-knobs";
-import React from "react";
-import { LobbyPlayerCard } from "./index";
+import { select, text, withKnobs } from '@storybook/addon-knobs';
+import React from 'react';
+import { LobbyPlayerCard } from './index';
 
 export function LobbyPlayerCardStory() {
-  const nameKnob = text("Player Name", "Michel Costa");
+  const nameKnob = text('Player Name', 'Michel Costa');
   const statusKnob = select(
-    "Status Type",
+    'Status Type',
     {
-      Admin: "ADMIN",
-      Ready: "READY",
-      NotReady: "NOT_READY",
+      Admin: 'ADMIN',
+      Ready: 'READY',
+      NotReady: 'NOT_READY',
     },
-    "ADMIN"
+    'ADMIN',
   );
-  const avatarKnob = text("AvatarUrl", "http://placekitten.com/32/32");
+  const avatarKnob = text('AvatarUrl', 'http://placekitten.com/32/32');
 
-  return (
-    <LobbyPlayerCard status={statusKnob} name={nameKnob} avatar={avatarKnob} />
-  );
+  return <LobbyPlayerCard status={statusKnob} name={nameKnob} avatar={avatarKnob} />;
 }
 
 export default {
-  title: "MinimalSolo/Components/PlayerCards",
+  title: 'MinimalSolo/Components/PlayerCards',
   component: LobbyPlayerCardStory,
   decorators: [withKnobs],
 };

@@ -1,66 +1,66 @@
-import * as A from "fp-ts/lib/Array";
+import * as A from 'fp-ts/lib/Array';
 
-export type Color = "GREEN" | "GOLD" | "RED" | "BLUE" | "BLACK";
+export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
-  | "ONE"
-  | "TWO"
-  | "THREE"
-  | "FOUR"
-  | "FIVE"
-  | "SIX"
-  | "SEVEN"
-  | "EIGHT"
-  | "NINE"
-  | "BLOCK"
-  | "REVERSE"
-  | "PLUS_TWO"
-  | "PLUS_FOUR"
-  | "SWAP"
-  | "SWAP_ALL"
-  | "COLOR";
+  | 'ONE'
+  | 'TWO'
+  | 'THREE'
+  | 'FOUR'
+  | 'FIVE'
+  | 'SIX'
+  | 'SEVEN'
+  | 'EIGHT'
+  | 'NINE'
+  | 'BLOCK'
+  | 'REVERSE'
+  | 'PLUS_TWO'
+  | 'PLUS_FOUR'
+  | 'SWAP'
+  | 'SWAP_ALL'
+  | 'COLOR';
 
-export type CardStatus = "HAND" | "DECK" | "GAME" | "PLAY";
+export type CardStatus = 'HAND' | 'DECK' | 'GAME' | 'PLAY';
 
 export type CommonCard = {
-  color: Omit<Color, "BLACK">;
-  value: Omit<Value, "PLUS_FOR" | "SWAP_ALL">;
+  color: Omit<Color, 'BLACK'>;
+  value: Omit<Value, 'PLUS_FOR' | 'SWAP_ALL'>;
   createdAt?: number;
   status: CardStatus;
 };
 
 export type ActionCard = {
-  color: "BLACK";
-  value: "PLUS_FOUR" | "SWAP_ALL" | "COLOR";
+  color: 'BLACK';
+  value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
   createdAt: number;
   status: CardStatus;
 };
 
-const colors: Color[] = ["GREEN", "GOLD", "RED", "BLUE", "BLACK"];
+const colors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE', 'BLACK'];
 const commonValues: Value[] = [
-  "ONE",
-  "TWO",
-  "THREE",
-  "FOUR",
-  "FIVE",
-  "SIX",
-  "SEVEN",
-  "EIGHT",
-  "NINE",
-  "BLOCK",
-  "REVERSE",
-  "PLUS_TWO",
-  "SWAP",
+  'ONE',
+  'TWO',
+  'THREE',
+  'FOUR',
+  'FIVE',
+  'SIX',
+  'SEVEN',
+  'EIGHT',
+  'NINE',
+  'BLOCK',
+  'REVERSE',
+  'PLUS_TWO',
+  'SWAP',
 ];
 
 export type Card = CommonCard | ActionCard;
 
 function buildCommon(color: Color): CommonCard[] {
-  return commonValues.map((value) => {
+  return commonValues.map(value => {
     return {
       color,
       value,
       createdAt: 0,
-      status: "DECK",
+      status: 'DECK',
     };
   });
 }
@@ -68,29 +68,24 @@ function buildCommon(color: Color): CommonCard[] {
 const buildSpecial = (): ActionCard[] => {
   return [
     {
-      color: "BLACK",
-      value: "SWAP_ALL",
+      color: 'BLACK',
+      value: 'SWAP_ALL',
       createdAt: 0,
-      status: "DECK",
+      status: 'DECK',
     },
     {
-      color: "BLACK",
-      value: "PLUS_FOUR",
+      color: 'BLACK',
+      value: 'PLUS_FOUR',
       createdAt: 0,
-      status: "DECK",
+      status: 'DECK',
     },
   ];
 };
 
 export function buildOne(): Card[] {
-  const cs = colors.map((c) => {
-    if (c === "BLACK") {
-      return [
-        ...buildSpecial(),
-        ...buildSpecial(),
-        ...buildSpecial(),
-        ...buildSpecial(),
-      ];
+  const cs = colors.map(c => {
+    if (c === 'BLACK') {
+      return [...buildSpecial(), ...buildSpecial(), ...buildSpecial(), ...buildSpecial()];
     } else {
       return buildCommon(c);
     }

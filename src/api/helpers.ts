@@ -1,10 +1,10 @@
-import { DocumentSnapshot, QuerySnapshot } from "../model/Firebase";
-import { Normalized } from "../model/Session";
-import { Card, CardStatus } from "../model/Card";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as A from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
-import * as R from "fp-ts/lib/Record";
+import { DocumentSnapshot, QuerySnapshot } from '../model/Firebase';
+import { Normalized } from '../model/Session';
+import { Card, CardStatus } from '../model/Card';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
+import * as O from 'fp-ts/lib/Option';
+import * as R from 'fp-ts/lib/Record';
 
 export function extractDocumentData<T>(doc: DocumentSnapshot): O.Option<T> {
   if (doc.exists) {
@@ -28,7 +28,7 @@ export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
 export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   if (!doc.empty) {
     let data = {};
-    doc.forEach((el) => {
+    doc.forEach(el => {
       data = {
         ...data,
         [el.id]: el.data(),
@@ -40,13 +40,9 @@ export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   }
 }
 
-export function popDeckCards(
-  deck: Normalized<Card>,
-  status: CardStatus = "HAND",
-  nCards = 1
-) {
+export function popDeckCards(deck: Normalized<Card>, status: CardStatus = 'HAND', nCards = 1) {
   const keys = pipe(deck, R.keys, A.takeLeft(nCards));
-  console.log("pop", keys);
+  console.log('pop', keys);
   const getCard = (acc: Normalized<Card>, key: string) => {
     const card: Card = { ...deck[key], status };
     return { ...acc, [key]: card };

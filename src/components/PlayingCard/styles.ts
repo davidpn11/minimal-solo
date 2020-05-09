@@ -1,6 +1,6 @@
-import styled, { css, FlattenSimpleInterpolation } from "styled-components";
-import { Color, CardStatus } from "../../model/Card";
-import { WithMinimalSoloTheme } from "../../theme";
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import { Color, CardStatus } from '../../model/Card';
+import { WithMinimalSoloTheme } from '../../theme';
 
 export const CardValue = styled.span`
   align-items: center;
@@ -55,10 +55,8 @@ export const CardLower = styled.span`
 
 type CardWrapperProps = { color: Color; status: CardStatus };
 
-function mapCards(
-  props: WithMinimalSoloTheme & CardWrapperProps
-): FlattenSimpleInterpolation {
-  if (props.status === "DECK") {
+function mapCards(props: WithMinimalSoloTheme & CardWrapperProps): FlattenSimpleInterpolation {
+  if (props.status === 'DECK') {
     return css`
       background: ${props.theme.gradients.blackestGradient};
       border-color: ${props.theme.colors.blackBase};
@@ -74,33 +72,33 @@ function mapCards(
         max-height: 144px;
       }
     `;
-  } else if (props.status === "GAME") {
+  } else if (props.status === 'GAME') {
     return css`
       display: none;
     `;
   }
   switch (props.color) {
-    case "BLUE":
+    case 'BLUE':
       return css`
         background: ${props.theme.gradients.blueGradient};
         border-color: ${props.theme.colors.blueShadow};
       `;
-    case "GOLD":
+    case 'GOLD':
       return css`
         background: ${props.theme.gradients.yellowGradient};
         border-color: ${props.theme.colors.yellowShadow};
       `;
-    case "GREEN":
+    case 'GREEN':
       return css`
         background: ${props.theme.gradients.greenGradient};
         border-color: ${props.theme.colors.greenShadow};
       `;
-    case "RED":
+    case 'RED':
       return css`
         background: ${props.theme.gradients.redGradient};
         border-color: ${props.theme.colors.redShadow};
       `;
-    case "BLACK":
+    case 'BLACK':
     default:
       return css`
         background: ${props.theme.gradients.blackGradient};
@@ -112,8 +110,8 @@ function mapCards(
 export const CardWrapper = styled.div<CardWrapperProps>`
   align-items: center;
   border: 1px solid;
-  border-radius: ${(props) => props.theme.radius.base}px;
-  box-shadow: ${(props) => props.theme.shadows.base};
+  border-radius: ${props => props.theme.radius.base}px;
+  box-shadow: ${props => props.theme.shadows.base};
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -121,7 +119,7 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   justify-content: space-between;
   max-height: 300px;
   max-width: 200px;
-  padding: ${(props) => props.theme.spacing.medium}px;
+  padding: ${props => props.theme.spacing.medium}px;
   position: relative;
   width: 200px;
 

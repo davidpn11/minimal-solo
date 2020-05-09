@@ -1,10 +1,10 @@
-import React from "react";
-import { TableWrapper, TableCenter, CardPlaceholder } from "./styles";
-import TablePlayer from "../TablePlayer";
-import { SessionPlayer } from "../../../../model/Player";
-import { Logo } from "../../../../components/Logo";
-import CardDeck from "../CardDeck";
-import CurrentCard from "../CurrentCard";
+import React from 'react';
+import { TableWrapper, TableCenter, CardPlaceholder } from './styles';
+import TablePlayer from '../TablePlayer';
+import { SessionPlayer } from '../../../../model/Player';
+import { Logo } from '../../../../components/Logo';
+import CardDeck from '../CardDeck';
+import CurrentCard from '../CurrentCard';
 
 const players: SessionPlayer[] = [
   // {

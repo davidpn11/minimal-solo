@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap");
@@ -17,8 +17,8 @@ export const GlobalStyles = createGlobalStyle`
 
 body {
   margin: 0;
-  background: ${(props) => props.theme.backgrounds.base};
-  font-family: ${(props) => props.theme.fonts.Ubuntu};
+  background: ${props => props.theme.backgrounds.base};
+  font-family: ${props => props.theme.fonts.Ubuntu};
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -35,7 +35,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: ${(props) => props.theme.fonts.Ubuntu};
+  font-family: ${props => props.theme.fonts.Ubuntu};
   margin: 0;
   padding: 0;
 }

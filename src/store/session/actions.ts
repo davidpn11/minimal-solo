@@ -1,11 +1,7 @@
-import { ThunkDispatch } from "redux-thunk";
-import * as E from "fp-ts/lib/Either";
+import { ThunkDispatch } from 'redux-thunk';
+import * as E from 'fp-ts/lib/Either';
 
-import {
-  SessionPlayer,
-  SessionPlayerWithId,
-  PlayerStatus,
-} from "../../model/Player";
+import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
   requestCreateSession,
   requestJoinSession,
@@ -13,28 +9,20 @@ import {
   requestTogglePlayerStatus,
   requestDealStartHands,
   initGameSession,
-} from "../../api/db/session";
-import { LocalSessionWithId, Normalized } from "../../model/Session";
-import { ThunkResult } from "../types";
-import { ReduxStore } from "../rootReducer";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as A from "fp-ts/lib/Array";
+} from '../../api/db/session';
+import { LocalSessionWithId, Normalized } from '../../model/Session';
+import { ThunkResult } from '../types';
+import { ReduxStore } from '../rootReducer';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
 
-export const CREATE_SESSION = "CREATE_SESSION" as const;
-export const ADD_PLAYER = "ADD_PLAYER" as const;
-export const CLEAR_SESSION = "CLEAR_SESSION" as const;
-export const SET_PLAYER_STATUS = "SET_PLAYER_STATUS" as const;
+export const CREATE_SESSION = 'CREATE_SESSION' as const;
+export const ADD_PLAYER = 'ADD_PLAYER' as const;
+export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
+export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 
-export type SessionThunkDispatch = ThunkDispatch<
-  LocalSessionWithId,
-  {},
-  SessionActionTypes
->;
-export type SessionThunkResult<T> = ThunkResult<
-  T,
-  LocalSessionWithId,
-  SessionActionTypes
->;
+export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
+export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
 
 export type JoinGameSessionReturn = {
   session: LocalSessionWithId;
@@ -69,9 +57,7 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-export function createGameSession(
-  name: string
-): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
+export function createGameSession(name: string): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestCreateSession(name);
@@ -92,7 +78,7 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
 
 export function joinGameSession(
   sessionCode: string,
-  name: string
+  name: string,
 ): SessionThunkResult<E.Either<JoinGameSessionReturn, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
@@ -108,11 +94,7 @@ export function joinGameSession(
   };
 }
 
-export async function togglePlayerStatus(
-  sessionId: string,
-  playerId: string,
-  playerStatus: PlayerStatus
-) {
+export async function togglePlayerStatus(sessionId: string, playerId: string, playerStatus: PlayerStatus) {
   try {
     await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
   } catch (error) {
@@ -120,13 +102,8 @@ export async function togglePlayerStatus(
   }
 }
 
-function normalizePlayers(
-  players: SessionPlayerWithId[]
-): Normalized<SessionPlayer> {
-  const playerWithIdToNormalized = (
-    acc: Normalized<SessionPlayer>,
-    p: SessionPlayerWithId
-  ) => {
+function normalizePlayers(players: SessionPlayerWithId[]): Normalized<SessionPlayer> {
+  const playerWithIdToNormalized = (acc: Normalized<SessionPlayer>, p: SessionPlayerWithId) => {
     const { id, ...playerRest } = p;
 
     return { ...acc, [id]: playerRest };
@@ -156,10 +133,7 @@ export function startGameSession() {
       //Populates player hands
       const players = await requestDealStartHands(state.session);
       //Set initial session
-      const startedGameSession = await initGameSession(
-        state.session,
-        normalizePlayers(players)
-      );
+      const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
       console.log({ startedGameSession });
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
@@ -169,8 +143,5 @@ export function startGameSession() {
 }
 
 export type SessionActionTypes = ReturnType<
-  | typeof setGameSession
-  | typeof addPlayers
-  | typeof clearSession
-  | typeof setPlayer
+  typeof setGameSession | typeof addPlayers | typeof clearSession | typeof setPlayer
 >;

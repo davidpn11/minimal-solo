@@ -1,20 +1,13 @@
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as R from "fp-ts/lib/Record";
-import React from "react";
-import { useSelector } from "react-redux";
-import { LobbyPlayerCard } from "../components/LobbyPlayerCard";
-import { SessionPlayer } from "../model/Player";
-import {
-  getPlayerId,
-  isCurrentPlayerAdmin,
-} from "../store/playerHand/selector";
-import { getSession } from "../store/session/selectors";
-import {
-  AdminPlayer,
-  CurrentPlayer,
-  PlayersWrapper,
-} from "../views/Lobby/styles";
+import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as R from 'fp-ts/lib/Record';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { LobbyPlayerCard } from '../components/LobbyPlayerCard';
+import { SessionPlayer } from '../model/Player';
+import { getPlayerId, isCurrentPlayerAdmin } from '../store/playerHand/selector';
+import { getSession } from '../store/session/selectors';
+import { AdminPlayer, CurrentPlayer, PlayersWrapper } from '../views/Lobby/styles';
 
 export function usePlayersGrid() {
   const currentSession = useSelector(getSession);
@@ -22,60 +15,43 @@ export function usePlayersGrid() {
   const isAdmin = useSelector(isCurrentPlayerAdmin);
 
   const isCurrentPlayer = (id: string) => currentPlayerId === id;
-  const isAdminPlayer = (player: SessionPlayer) => player.status === "ADMIN";
+  const isAdminPlayer = (player: SessionPlayer) => player.status === 'ADMIN';
 
   const filterCurrentPlayer = (key: string) => isCurrentPlayer(key);
-  const filterAdminPlayer = (key: string, value: SessionPlayer) =>
-    isAdminPlayer(value);
+  const filterAdminPlayer = (key: string, value: SessionPlayer) => isAdminPlayer(value);
 
   const filterCommonPlayers = (key: string, value: SessionPlayer) => {
     if (isCurrentPlayer(key) || isAdminPlayer(value)) return O.none;
     return O.some(value);
   };
 
-  const renderPlayerArea = (
-    key: string,
-    acc: JSX.Element[],
-    player: SessionPlayer
-  ) => {
+  const renderPlayerArea = (key: string, acc: JSX.Element[], player: SessionPlayer) => {
     return [
       ...acc,
-      <LobbyPlayerCard
-        key={key}
-        name={player.name}
-        avatar={"http://placekitten.com/32/32"}
-        status={player.status}
-      />,
+      <LobbyPlayerCard key={key} name={player.name} avatar={'http://placekitten.com/32/32'} status={player.status} />,
     ];
   };
 
   const renderPlayer = (acc: JSX.Element, player: SessionPlayer) => (
-    <LobbyPlayerCard
-      name={player.name}
-      avatar={"http://placekitten.com/32/32"}
-      status={player.status}
-    />
+    <LobbyPlayerCard name={player.name} avatar={'http://placekitten.com/32/32'} status={player.status} />
   );
 
   const adminPlayer = pipe(
     currentSession.players,
     R.filterWithIndex(filterAdminPlayer),
-    R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer)
+    R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer),
   );
 
   const currentPlayer = pipe(
     currentSession.players,
     R.filterWithIndex(filterCurrentPlayer),
-    R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer)
+    R.reduce<SessionPlayer, JSX.Element>(<></>, renderPlayer),
   );
 
   const commonPlayers = pipe(
     currentSession.players,
     R.filterMapWithIndex(filterCommonPlayers),
-    R.reduceWithIndex<string, SessionPlayer, JSX.Element[]>(
-      [],
-      renderPlayerArea
-    )
+    R.reduceWithIndex<string, SessionPlayer, JSX.Element[]>([], renderPlayerArea),
   );
 
   return (
