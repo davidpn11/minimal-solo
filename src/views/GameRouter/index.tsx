@@ -7,7 +7,7 @@ import MyHand from './components/MyHand';
 import GameTable from './components/GameTable';
 import { getSession } from '../../store/session/selectors';
 import Lobby from '../Lobby';
-import GameEngine from '../../engine';
+import GameEngine from '../../GameEngine';
 import { useSessionListener } from '../../hooks/useSessionListener';
 
 const TEST_MODE = true;

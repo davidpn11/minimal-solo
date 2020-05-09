@@ -29,7 +29,6 @@ export default function GameTable() {
       }),
     );
   };
-  console.log(session);
   return (
     <TableWrapper>
       <TableCenter>

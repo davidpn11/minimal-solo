@@ -28,7 +28,6 @@ export function useMatchMaker() {
 
   const startGame = () => {
     dispatch(startGameSession());
-    console.log('startGame');
   };
 
   return { toggleStatus, startGame };

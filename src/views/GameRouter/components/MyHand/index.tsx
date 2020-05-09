@@ -13,11 +13,11 @@ export default function MyDeck() {
   return (
     <DeckWrapper>
       <HandCardsWrapper>
-        {cards.map(card => (
+        {/* {cards.map(() => (
           <HandCardWrapper>
-            <PlayingCard value={card.value} status="HAND" color={card.color} />
+            <PlayingCard  value={card.value} status="HAND" color={card.color} />
           </HandCardWrapper>
-        ))}
+        ))} */}
       </HandCardsWrapper>
     </DeckWrapper>
   );
