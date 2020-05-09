@@ -2,7 +2,7 @@ import React from "react";
 import { addDecorator } from "@storybook/react";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { THEME } from "../src/theme";
-import "../src/index.css";
+import { GlobalStyles } from "../src/styles";
 
 const Global = createGlobalStyle`
   #root {
@@ -27,6 +27,7 @@ const StorybookContainer = styled.div`
 
 const WrapperDecorator = (storyFn) => (
   <ThemeProvider theme={THEME}>
+    <GlobalStyles />
     <Global />
     <StorybookContainer>{storyFn()}</StorybookContainer>
   </ThemeProvider>
