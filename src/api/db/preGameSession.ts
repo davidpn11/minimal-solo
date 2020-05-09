@@ -16,7 +16,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 
 export const MAX_ROOM_SIZE = 10;
-export const MIN_ROOM_SIZE = 2;
+export const MIN_ROOM_SIZE = 3;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
@@ -254,14 +254,16 @@ export async function requestDealStartHands(session: LocalSessionWithId) {
   const sessionRef = getSessionRef(session.id);
   const buyCards = requestBuyCards(sessionRef);
 
-  const dealPlayerCard = (
+  const dealPlayerCard = async (
     key: string,
-    acc: Promise<SessionPlayerWithId>[],
+    acc: Promise<SessionPlayerWithId[]>,
     player: SessionPlayer,
-  ) => {
-    return [...acc, buyCards({ id: key, ...player }, 7)];
-  };
+  ) => [...(await acc), await buyCards({ id: key, ...player }, 7)];
 
-  const players = await Promise.all(pipe(session.players, R.reduceWithIndex([], dealPlayerCard)));
+  const players = await pipe(
+    session.players,
+    R.reduceWithIndex(Promise.resolve([] as SessionPlayerWithId[]), await dealPlayerCard),
+  );
+
   return players;
 }
