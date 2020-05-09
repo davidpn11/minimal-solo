@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { CardWrapper } from '../../../../components/PlayingCard/styles';
+import { HAND_HEIGHT } from '../../../../components/PlayerHand/styles';
 
 export const TableWrapper = styled.div`
   background: #272627;
-  height: 80vh;
+  height: calc(100vh - ${HAND_HEIGHT}px);
 
   display: grid;
   grid-gap: 16px;
@@ -17,7 +18,6 @@ export const TableWrapper = styled.div`
   padding: 12px 24px;
 
   border-radius: 6px;
-  margin: 8px 0;
   flex: 1;
 `;
 

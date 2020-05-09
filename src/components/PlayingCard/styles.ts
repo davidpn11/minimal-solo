@@ -122,6 +122,9 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   padding: ${props => props.theme.spacing.medium}px;
   position: relative;
   width: 200px;
+  transition: all 150ms ease;
+  top: 0;
+  z-index: 1;
 
   ${mapCards}
 `;

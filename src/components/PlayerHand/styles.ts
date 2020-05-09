@@ -1,36 +1,57 @@
 import styled from 'styled-components';
-import { CardWrapper } from '../PlayingCard/styles';
+import { CardLower, CardUpper, CardValue, CardWrapper } from '../PlayingCard/styles';
 
-export const DeckWrapper = styled.div`
-  overflow-x: auto;
-  padding-top: 20px;
+export const HAND_HEIGHT = 188;
 
-  > * {
-    margin: 6px;
-  }
-
-  ${CardWrapper} {
-  }
+export const HandWrapper = styled.section`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  height: ${HAND_HEIGHT}px;
+  overflow: hidden;
+  padding: 16px 32px;
 `;
 
 export const HandCardsWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
 
-export const HandCardWrapper = styled.div`
-  overflow: hidden;
-  &:last-child,
-  &:hover {
-    overflow: visible;
+  ${CardWrapper} {
+    max-width: 104px;
+    max-height: 156px;
+    margin-left: calc(-104px / 4);
+
+    :hover {
+      z-index: 100;
+      top: -16px;
+    }
   }
 
-  &:hover {
-    transition: 0.15s ease-in;
-    &:hover {
-      transform: translateY(-12px) scale(1.05);
-      z-index: 6;
+  ${CardUpper} {
+    top: 8px;
+    left: 8px;
+  }
+
+  ${CardLower} {
+    bottom: 8px;
+    right: 8px;
+  }
+
+  ${CardUpper}, ${CardLower} {
+    width: 16px;
+    height: 16px;
+
+    svg {
+      width: 8px;
+      height: 8px;
+    }
+  }
+
+  ${CardValue} {
+    svg {
+      width: 50px;
+      height: 50px;
     }
   }
 `;

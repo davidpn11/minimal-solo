@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
 
-import { DeckWrapper, HandCardsWrapper } from './styles';
+import { HandWrapper, HandCardsWrapper } from './styles';
 import { PlayingCard } from '../PlayingCard';
 import { Card } from '../../model/Card';
 import { getPlayer } from '../../store/playerHand/selector';
+import { Solo } from '../Solo';
+import { Pass } from '../Pass';
 
 export function PlayerHand() {
   const player = useSelector(getPlayer);
@@ -22,8 +24,10 @@ export function PlayerHand() {
   }
 
   return (
-    <DeckWrapper>
+    <HandWrapper>
+      <Solo state="CANNOT_SOLO" onClick={() => {}} />
       <HandCardsWrapper>{renderCards()}</HandCardsWrapper>
-    </DeckWrapper>
+      <Pass state="CANNOT_PASS" onClick={() => {}} />
+    </HandWrapper>
   );
 }
