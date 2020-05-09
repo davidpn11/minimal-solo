@@ -5,17 +5,20 @@ import {
   SessionPlayer,
   SessionPlayerWithId,
   PlayerStatus,
-  Player,
 } from "../../model/Player";
 import {
   requestCreateSession,
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
+  requestDealStartHands,
+  initGameSession,
 } from "../../api/db/session";
 import { LocalSessionWithId, Normalized } from "../../model/Session";
 import { ThunkResult } from "../types";
-import { PlayerActionTypes } from "../playerHand/actions";
+import { ReduxStore } from "../rootReducer";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as A from "fp-ts/lib/Array";
 
 export const CREATE_SESSION = "CREATE_SESSION" as const;
 export const ADD_PLAYER = "ADD_PLAYER" as const;
@@ -32,8 +35,14 @@ export type SessionThunkResult<T> = ThunkResult<
   LocalSessionWithId,
   SessionActionTypes
 >;
+
+export type JoinGameSessionReturn = {
+  session: LocalSessionWithId;
+  player: SessionPlayerWithId;
+};
+
 // export type SessionThunkResult = ThunkResult
-function setGameSession(session: LocalSessionWithId) {
+export function setGameSession(session: LocalSessionWithId) {
   return {
     type: CREATE_SESSION,
     payload: session,
@@ -81,10 +90,6 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
   };
 }
 
-export type JoinGameSessionReturn = {
-  session: LocalSessionWithId;
-  player: SessionPlayerWithId;
-};
 export function joinGameSession(
   sessionCode: string,
   name: string
@@ -108,12 +113,59 @@ export async function togglePlayerStatus(
   playerId: string,
   playerStatus: PlayerStatus
 ) {
-  const result = await requestTogglePlayerStatus(
-    sessionId,
-    playerId,
-    playerStatus
-  );
-  console.log({ result });
+  try {
+    await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function normalizePlayers(
+  players: SessionPlayerWithId[]
+): Normalized<SessionPlayer> {
+  const playerWithIdToNormalized = (
+    acc: Normalized<SessionPlayer>,
+    p: SessionPlayerWithId
+  ) => {
+    const { id, ...playerRest } = p;
+
+    return { ...acc, [id]: playerRest };
+  };
+  return pipe(players, A.reduce({}, playerWithIdToNormalized));
+}
+
+export function startGameSession() {
+  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+    try {
+      const state = getState();
+
+      // const sessionDummy: LocalSessionWithId = {
+      //   id: "0iTnuIQ008UH1perzZfc",
+      //   code: "123",
+      //   status: "INITIAL",
+      //   players: {
+      //     DxHsteJ1xWBenSoxPxzR: {
+      //       hand: ["2BI4gdBnvStrkEQ0br4M"],
+      //       name: "David",
+      //       status: "ADMIN",
+      //     },
+      //   },
+      //   admin: "DxHsteJ1xWBenSoxPxzR",
+      // };
+
+      //Populates player hands
+      const players = await requestDealStartHands(state.session);
+      //Set initial session
+      const startedGameSession = await initGameSession(
+        state.session,
+        normalizePlayers(players)
+      );
+      console.log({ startedGameSession });
+      dispatch(setGameSession(startedGameSession));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
 
 export type SessionActionTypes = ReturnType<

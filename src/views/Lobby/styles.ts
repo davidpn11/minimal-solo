@@ -6,7 +6,10 @@ export const Page = styled.main`
   height: 100vh;
   padding: ${(props) => props.theme.spacing.high}px;
   width: 100vw;
+  align-items: center;
 `;
+
+export const LobbyWrapper = styled.div``;
 
 export const Title = styled.h1`
   font-weight: 500;
@@ -25,18 +28,28 @@ export const Code = styled.h2`
 
 export const PlayersWrapper = styled.div`
   margin-top: ${(props) => props.theme.spacing.medium}px;
-  display: flex;
-  flex-flow: row wrap;
-  width: 80%;
+  display: grid;
+  grid-template-columns: 300px 300px;
+  //TODO Mobile column size
+  /* grid-template-columns: 150px 150px; */
+  grid-template-rows: repeat(6, 1fr);
+  gap: 5px;
+  grid-template-areas: "AdminPlayer CurrentPlayer";
+`;
 
-  div + div {
-    margin-left: ${(props) => props.theme.spacing.medium}px;
-  }
+export const AdminPlayer = styled.div`
+  grid-area: AdminPlayer;
+`;
+export const CurrentPlayer = styled.div`
+  grid-area: CurrentPlayer;
 `;
 
 export const ActionWrapper = styled.div`
-  width: 40%;
   display: flex;
   flex-flow: column nowrap;
   margin-top: ${(props) => props.theme.spacing.large}px;
+  align-items: center;
+  button {
+    max-width: 300px;
+  }
 `;

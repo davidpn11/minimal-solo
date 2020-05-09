@@ -11,46 +11,24 @@ import {
   LocalGameSession,
   ID,
 } from "../../model/Session";
-import { DocumentSnapshot, QuerySnapshot } from "../../model/Firebase";
+import { QuerySnapshot } from "../../model/Firebase";
 import {
   SessionPlayer,
   PlayerStatus,
   SessionPlayerWithId,
 } from "../../model/Player";
-import { buildOne, sortDeck } from "../../model/Card";
+import { buildOne, sortDeck, Card } from "../../model/Card";
 import * as O from "fp-ts/lib/Option";
+import * as R from "fp-ts/lib/Record";
+import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/pipeable";
+import { normalizeQuery, popDeckCards, extractDocumentData } from "../helpers";
 
-const MAX_ROOM_SIZE = 10;
+export const MAX_ROOM_SIZE = 10;
+export const MIN_ROOM_SIZE = 3;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
-
-export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
-  if (doc.exists) {
-    const data = doc.data() as T;
-    return {
-      [doc.id]: data,
-    };
-  } else {
-    return {};
-  }
-}
-
-export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
-  if (!doc.empty) {
-    let data = {};
-    doc.forEach((el) => {
-      data = {
-        ...data,
-        [el.id]: el.data(),
-      };
-    });
-    return data;
-  } else {
-    return {};
-  }
-}
 
 function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   if (!doc.empty && doc.size === 1) {
@@ -85,10 +63,7 @@ export async function requestCreateSession(
 
   const session = await database.collection("session").add(initialSession);
   const sessionRef = getSessionRef(session.id);
-  const player = await sessionRef
-    .collection("players")
-    .doc(playerId)
-    .set(playerData);
+  await sessionRef.collection("players").doc(playerId).set(playerData);
 
   const generateCards = sortDeck(buildOne());
 
@@ -149,15 +124,33 @@ export async function requestTogglePlayerStatus(
 
 export async function requestSessionPlayersListener(
   sessionId: string,
-  addFn: (p: Normalized<SessionPlayer>) => void
+  callback: (p: Normalized<SessionPlayer>) => void
 ) {
   try {
     await getSessionRef(sessionId)
       .collection("players")
       .onSnapshot((querySnapshot) => {
         const players = normalizeQuery<SessionPlayer>(querySnapshot);
-        addFn(players);
+        callback(players);
       });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function requestSessionStatusListener(
+  sessionId: string,
+  callback: (newSession: LocalSessionWithId) => void
+) {
+  try {
+    await getSessionRef(sessionId).onSnapshot((documentSnapshot) => {
+      const newSession = extractDocumentData<LocalSessionWithId>(
+        documentSnapshot
+      );
+      if (O.isSome(newSession)) {
+        callback(newSession.value);
+      }
+    });
   } catch (error) {
     console.error(error);
   }
@@ -180,4 +173,117 @@ export async function requestAddPlayer(
     .add(initialPlayerData);
 
   return { ...initialPlayerData, id: player.id };
+}
+
+export const requestBuyCards = (
+  sessionRef: ReturnType<typeof getSessionRef>
+) => async (
+  player: SessionPlayerWithId,
+  nCards = 1
+): Promise<SessionPlayerWithId> => {
+  const deckRef = sessionRef.collection("deck");
+  const deck = normalizeQuery<Card>(await deckRef.get());
+
+  //get number of deck cards
+  const userCards = popDeckCards(deck, "HAND", nCards);
+
+  //delete from deck structure
+  await Promise.all(
+    userCards.keys.map((key) => {
+      return deckRef.doc(key).delete();
+    })
+  );
+
+  //write on activeCards structrure
+  const batch = database.batch();
+  userCards.keys.map((key) => {
+    const cardRef = sessionRef.collection("activeCards").doc(key);
+    batch.set(cardRef, userCards.cards[key]);
+  });
+  await batch.commit();
+
+  //set userHand
+  const newHand = [...player.hand, ...userCards.keys];
+  await sessionRef.collection("players").doc(player.id).set(
+    {
+      hand: newHand,
+    },
+    { merge: true }
+  );
+
+  return { ...player, hand: newHand };
+};
+
+async function requestSetCurrentCard(
+  sessionRef: ReturnType<typeof getSessionRef>
+): Promise<Card> {
+  const deckRef = sessionRef.collection("deck");
+  const deck = normalizeQuery<Card>(await deckRef.get());
+  const userCards = popDeckCards(deck, "GAME");
+  const key = pipe(userCards.keys, A.head);
+
+  const card = pipe(
+    key,
+    O.fold(
+      () => O.none,
+      (key) => R.lookup(key, userCards.cards)
+    )
+  );
+
+  if (O.isNone(card)) throw new Error("fail to fetch card");
+
+  sessionRef.set(
+    {
+      currentCard: card.value,
+    },
+    { merge: true }
+  );
+
+  return card.value;
+}
+
+export async function initGameSession(
+  session: LocalSessionWithId,
+  newPlayers: Normalized<SessionPlayer>
+): Promise<LocalSessionWithId> {
+  const sessionRef = getSessionRef(session.id);
+
+  const randPlayer = () => {
+    const array = pipe(session.players, R.keys);
+    return array[Math.floor(Math.random() * array.length)];
+  };
+
+  const currentCard = await requestSetCurrentCard(sessionRef);
+  const newSession: LocalSessionWithId = {
+    ...session,
+    players: newPlayers,
+    status: "STARTED",
+    currentPlayer: randPlayer(),
+    direction: "RIGHT",
+    progression: {},
+    winner: O.none,
+    currentCard: currentCard,
+  };
+  const { id, ...newSessionRest } = newSession;
+  await sessionRef.set(newSessionRest);
+
+  return newSession;
+}
+
+export async function requestDealStartHands(session: LocalSessionWithId) {
+  const sessionRef = getSessionRef(session.id);
+  const buyCards = requestBuyCards(sessionRef);
+
+  const dealPlayerCard = (
+    key: string,
+    acc: Promise<SessionPlayerWithId>[],
+    player: SessionPlayer
+  ) => {
+    return [...acc, buyCards({ id: key, ...player }, 7)];
+  };
+
+  const players = await Promise.all(
+    pipe(session.players, R.reduceWithIndex([], dealPlayerCard))
+  );
+  return players;
 }

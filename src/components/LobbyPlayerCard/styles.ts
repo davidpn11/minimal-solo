@@ -36,7 +36,8 @@ export const Wrapper = styled.div<WrapperProps>`
   height: 48px;
   padding: ${(props) => props.theme.spacing.base}px;
   transition: 150ms ease-in-out;
-  width: 25%;
+  width: 100%;
+  max-width: 300px;
   ${mapStatusStyles}
 `;
 

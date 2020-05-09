@@ -7,13 +7,18 @@ import MyHand from "./components/MyHand";
 import GameTable from "./components/GameTable";
 import { getSession } from "../../store/session/selectors";
 import Lobby from "../Lobby";
+import GameEngine from "../../engine";
+import { useSessionListener } from "../../hooks/useSessionListener";
 
-export default function GameRoom() {
+const TEST_MODE = true;
+
+export default function GameRouter() {
   const currentSession = useSelector(getSession);
   const history = useHistory();
   const hasSession = !!currentSession.code;
+  useSessionListener();
 
-  if (!hasSession) {
+  if (!hasSession && !TEST_MODE) {
     history.push("/");
   }
 
@@ -22,10 +27,12 @@ export default function GameRoom() {
       return <Lobby />;
     case "STARTED":
       return (
-        <GameWrapper>
-          <GameTable />
-          <MyHand />
-        </GameWrapper>
+        <GameEngine>
+          <GameWrapper>
+            <GameTable />
+            <MyHand />
+          </GameWrapper>
+        </GameEngine>
       );
     default:
       throw new Error("Not a valid session status");

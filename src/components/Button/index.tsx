@@ -5,6 +5,7 @@ type Props = {
   children: React.ReactNode;
   variant: ButtonVariant;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
 export function Button(props: Props) {
