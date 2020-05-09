@@ -1,4 +1,5 @@
 import * as A from 'fp-ts/lib/Array';
+import { UnionExclude } from './types';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -22,8 +23,8 @@ export type Value =
 export type CardStatus = 'HAND' | 'DECK' | 'GAME' | 'PLAY';
 
 export type CommonCard = {
-  color: Omit<Color, 'BLACK'>;
-  value: Omit<Value, 'PLUS_FOR' | 'SWAP_ALL'>;
+  color: UnionExclude<Color, 'BLACK'>;
+  value: UnionExclude<Value, 'PLUS_FOR' | 'SWAP_ALL'>;
   createdAt?: number;
   status: CardStatus;
 };
@@ -55,14 +56,15 @@ const commonValues: Value[] = [
 export type Card = CommonCard | ActionCard;
 
 function buildCommon(color: Color): CommonCard[] {
-  return commonValues.map(value => {
-    return {
-      color,
-      value,
-      createdAt: 0,
-      status: 'DECK',
-    };
-  });
+  return commonValues.map(
+    value =>
+      ({
+        color,
+        value,
+        createdAt: 0,
+        status: 'DECK',
+      } as CommonCard),
+  );
 }
 
 const buildSpecial = (): ActionCard[] => {
@@ -90,7 +92,8 @@ export function buildOne(): Card[] {
       return buildCommon(c);
     }
   });
-  return A.flatten(cs);
+
+  return A.flatten<CommonCard | ActionCard>(cs);
 }
 
 export function sortDeck(deck: Card[]): Card[] {
