@@ -1,13 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { useSessionListener } from '../hooks/useSessionListener';
+import { useHandListener } from '../hooks/useHandListener';
 
 // type Props = {
 //   // children: React.ReactChildren;
 // };
 
 const GameEngine: FunctionComponent = props => {
-  console.log('oi');
-  useSessionListener();
+  useHandListener();
   return <>{props.children}</>;
 };
 

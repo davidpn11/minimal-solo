@@ -69,7 +69,10 @@ const starterSession: LocalSessionWithId = {
   },
 };
 
-export function sessionReducer(state = starterSession, action: SessionActionTypes): LocalSessionWithId {
+export function sessionReducer(
+  state = initialState,
+  action: SessionActionTypes,
+): LocalSessionWithId {
   switch (action.type) {
     case 'CREATE_SESSION':
       return { ...state, ...action.payload };

@@ -57,7 +57,9 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-export function createGameSession(name: string): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
+export function createGameSession(
+  name: string,
+): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestCreateSession(name);
@@ -94,7 +96,11 @@ export function joinGameSession(
   };
 }
 
-export async function togglePlayerStatus(sessionId: string, playerId: string, playerStatus: PlayerStatus) {
+export async function togglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus,
+) {
   try {
     await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
   } catch (error) {
@@ -134,7 +140,6 @@ export function startGameSession() {
       const players = await requestDealStartHands(state.session);
       //Set initial session
       const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
-      console.log({ startedGameSession });
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);

@@ -1,5 +1,11 @@
 import { database, getSessionRef, getUniqueId, getSessionRefByCode } from '../firebase';
-import { Normalized, NoGameSession, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
+import {
+  Normalized,
+  NoGameSession,
+  LocalSessionWithId,
+  LocalGameSession,
+  ID,
+} from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
 import { SessionPlayer, PlayerStatus, SessionPlayerWithId } from '../../model/Player';
 import { buildOne, sortDeck, Card } from '../../model/Card';
@@ -10,7 +16,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 
 export const MAX_ROOM_SIZE = 10;
-export const MIN_ROOM_SIZE = 3;
+export const MIN_ROOM_SIZE = 2;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
@@ -86,7 +92,11 @@ export async function requestJoinSession(sessionCode: string) {
   );
 }
 
-export async function requestTogglePlayerStatus(sessionId: string, playerId: string, playerStatus: PlayerStatus) {
+export async function requestTogglePlayerStatus(
+  sessionId: string,
+  playerId: string,
+  playerStatus: PlayerStatus,
+) {
   if (playerStatus === 'ADMIN') throw new Error('IsAdmin');
 
   return await getSessionRef(sessionId)
@@ -132,14 +142,21 @@ export async function requestSessionStatusListener(
   }
 }
 
-export async function requestAddPlayer(sessionId: string, name: string): Promise<SessionPlayerWithId> {
+export async function requestAddPlayer(
+  sessionId: string,
+  name: string,
+): Promise<SessionPlayerWithId> {
   const initialPlayerData: SessionPlayer = {
     name,
     status: 'NOT_READY' as const,
     hand: [],
   };
 
-  const player = await database.collection('session').doc(sessionId).collection('players').add(initialPlayerData);
+  const player = await database
+    .collection('session')
+    .doc(sessionId)
+    .collection('players')
+    .add(initialPlayerData);
 
   return { ...initialPlayerData, id: player.id };
 }
@@ -239,7 +256,11 @@ export async function requestDealStartHands(session: LocalSessionWithId) {
   const sessionRef = getSessionRef(session.id);
   const buyCards = requestBuyCards(sessionRef);
 
-  const dealPlayerCard = (key: string, acc: Promise<SessionPlayerWithId>[], player: SessionPlayer) => {
+  const dealPlayerCard = (
+    key: string,
+    acc: Promise<SessionPlayerWithId>[],
+    player: SessionPlayer,
+  ) => {
     return [...acc, buyCards({ id: key, ...player }, 7)];
   };
 

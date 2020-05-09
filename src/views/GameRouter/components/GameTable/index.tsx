@@ -10,6 +10,7 @@ import { getSession, getOtherSessionPlayers } from '../../../../store/session/se
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
+import { getPlayerHandIds } from '../../../../store/playerHand/selector';
 
 export default function GameTable() {
   const session = useSelector(getSession);

@@ -1,5 +1,5 @@
 import { Player } from '../../model/Player';
-import { PlayerActionTypes } from './actions';
+import { PlayerActionTypes, SET_PLAYER, SET_PLAYER_HAND } from './actions';
 
 const initialState: Player = {
   id: '',
@@ -11,12 +11,17 @@ const starterState: Player = {
   hand: {},
 };
 
-export function playerReducer(state = starterState, action: PlayerActionTypes): Player {
+export function playerReducer(state = initialState, action: PlayerActionTypes): Player {
   switch (action.type) {
-    case 'SET_PLAYER':
+    case SET_PLAYER:
       return {
         ...state,
         ...action.payload,
+      };
+    case SET_PLAYER_HAND:
+      return {
+        ...state,
+        hand: action.payload,
       };
     default:
       return state;

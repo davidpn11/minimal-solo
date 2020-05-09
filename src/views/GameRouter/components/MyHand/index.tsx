@@ -1,24 +1,27 @@
 import React from 'react';
 import { DeckWrapper, HandCardsWrapper, HandCardWrapper } from './styles';
 import { PlayingCard } from '../../../../components/PlayingCard';
-
-const cards = Array(15).fill({
-  id: '1',
-  status: 'GAME',
-  color: 'RED',
-  value: 'ONE',
-});
+import { useSelector } from 'react-redux';
+import { getPlayer } from '../../../../store/playerHand/selector';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
+import * as R from 'fp-ts/lib/Record';
+import { Card } from '../../../../model/Card';
 
 export default function MyDeck() {
+  const player = useSelector(getPlayer);
+
+  const renderCards = () =>
+    pipe(
+      player.hand,
+      R.reduceWithIndex([] as JSX.Element[], (key, acc, card) => [
+        ...acc,
+        <PlayingCard key={key} value={card.value} status="HAND" color={card.color} />,
+      ]),
+    );
   return (
     <DeckWrapper>
-      <HandCardsWrapper>
-        {/* {cards.map(() => (
-          <HandCardWrapper>
-            <PlayingCard  value={card.value} status="HAND" color={card.color} />
-          </HandCardWrapper>
-        ))} */}
-      </HandCardsWrapper>
+      <HandCardsWrapper>{renderCards()}</HandCardsWrapper>
     </DeckWrapper>
   );
 }

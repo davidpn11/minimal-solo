@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSession } from '../store/session/selectors';
-import { requestSessionStatusListener } from '../api/db/preGameSession';
-import { LocalSessionWithId } from '../model/Session';
-import { setGameSession } from '../store/session/actions';
-import { getPlayerHandIds } from '../store/playerHand/selector';
+import { getPlayerHandIds, getPlayer } from '../store/playerHand/selector';
+import * as A from 'fp-ts/lib/Array';
+import { eqString } from 'fp-ts/lib/Eq';
+import { getPlayerHand } from '../store/playerHand/actions';
 
-export function useSessionListener() {
+export function useHandListener() {
   const currentSession = useSelector(getSession);
   const playerHand = useSelector(getPlayerHandIds);
+  const player = useSelector(getPlayer);
+  const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
-  const [hasListener, setHasListener] = useState<boolean>(false);
+  const E = A.getEq(eqString);
 
   useEffect(() => {
-    console.log({ playerHand });
+    if (!E.equals(currPlayerHand, playerHand)) {
+      setCurrPlayerHand(playerHand);
+      dispatch(getPlayerHand(currentSession.id, playerHand));
+    }
   }, [playerHand]);
+  return { playerHand };
 }
