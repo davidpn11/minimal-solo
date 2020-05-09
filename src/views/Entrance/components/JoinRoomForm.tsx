@@ -27,11 +27,29 @@ type Props = {
 
 export function JoinRoomForm(props: Props) {
   return (
-    <Formik initialValues={INITIAL_VALUES} validationSchema={validationSchema} onSubmit={props.onSubmit}>
+    <Formik
+      initialValues={INITIAL_VALUES}
+      validationSchema={validationSchema}
+      onSubmit={props.onSubmit}
+    >
       <Form>
         <Title>Join an existing Room</Title>
-        <Field component={TextField} name="roomCode" label="Room Code" fullWidth autoComplete="off" required />
-        <Field component={TextField} name="userName" label="Your name" fullWidth autoComplete="off" required />
+        <Field
+          component={TextField}
+          name="roomCode"
+          label="Room Code"
+          fullWidth
+          autoComplete="off"
+          required
+        />
+        <Field
+          component={TextField}
+          name="userName"
+          label="Your name"
+          fullWidth
+          autoComplete="off"
+          required
+        />
         <Button type="submit">JOIN</Button>
       </Form>
     </Formik>
