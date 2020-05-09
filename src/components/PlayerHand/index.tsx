@@ -5,10 +5,10 @@ import * as R from 'fp-ts/lib/Record';
 
 import { HandWrapper, HandCardsWrapper } from './styles';
 import { PlayingCard } from '../PlayingCard';
-import { Card } from '../../model/Card';
-import { getPlayer } from '../../store/playerHand/selector';
 import { Solo } from '../Solo';
 import { Pass } from '../Pass';
+import { Card } from '../../model/Card';
+import { getPlayer } from '../../store/playerHand/selector';
 
 export function PlayerHand() {
   const player = useSelector(getPlayer);

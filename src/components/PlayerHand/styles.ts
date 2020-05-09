@@ -24,7 +24,6 @@ export const HandCardsWrapper = styled.div`
   overflow-x: auto;
   height: 100%;
   margin: 0 16px;
-
   scrollbar-color: ${props => rgba(props.theme.colors.blueBase, 0.5)} transparent;
   scrollbar-width: thin;
 
