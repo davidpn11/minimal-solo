@@ -13,6 +13,11 @@ export function playerReducer(state = initialState, action: PlayerActionTypes): 
         ...state,
         ...action.payload,
       };
+    case 'SET_PLAYER_ID':
+      return {
+        ...state,
+        id: action.payload,
+      };
     default:
       return state;
   }
