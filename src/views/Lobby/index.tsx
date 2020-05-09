@@ -6,7 +6,11 @@ import * as O from 'fp-ts/lib/Option';
 import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 
 import { Button } from '../../components/Button';
-import { allPlayersReady, getSession, getCurrentSessionPlayer } from '../../store/session/selectors';
+import {
+  allPlayersReady,
+  getSession,
+  getCurrentSessionPlayer,
+} from '../../store/session/selectors';
 import { isCurrentPlayerAdmin, getPlayerId } from '../../store/playerHand/selector';
 import { LocalSessionWithId } from '../../model/Session';
 import { useMatchMaker } from '../../hooks/useMatchMaker';

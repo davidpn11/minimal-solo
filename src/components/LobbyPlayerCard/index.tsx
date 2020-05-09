@@ -1,5 +1,12 @@
 import React from 'react';
-import { PlayerImage, PlayerInfo, PlayerStatus, PlayerName, Wrapper, LobbyPlayerStatus } from './styles';
+import {
+  PlayerImage,
+  PlayerInfo,
+  PlayerStatus,
+  PlayerName,
+  Wrapper,
+  LobbyPlayerStatus,
+} from './styles';
 
 type Props = {
   name: string;

@@ -26,7 +26,12 @@ export function TextfieldStory() {
 
   return (
     <div>
-      <Formik initialValues={{ field: '' }} onSubmit={() => {}} validateOnChange={false} validateOnBlur={false}>
+      <Formik
+        initialValues={{ field: '' }}
+        onSubmit={() => {}}
+        validateOnChange={false}
+        validateOnBlur={false}
+      >
         <Form>
           <Field component={TextField} name="field" disabled={disabledKnob} label={labelKnob} />
           <ErrorKnob />

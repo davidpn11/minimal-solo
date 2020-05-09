@@ -45,7 +45,10 @@ export default function Entrance() {
     );
   }
 
-  async function joinRoom({ roomCode, userName }: JoinFields, formikHelpers: FormikHelpers<JoinFields>) {
+  async function joinRoom(
+    { roomCode, userName }: JoinFields,
+    formikHelpers: FormikHelpers<JoinFields>,
+  ) {
     return pipe(
       await dispatch(joinGameSession(roomCode, userName, playerId)),
       E.fold<any, LocalSessionWithId, void>(

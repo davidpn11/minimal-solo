@@ -28,12 +28,21 @@ export function usePlayersGrid() {
   const renderPlayerArea = (key: string, acc: JSX.Element[], player: SessionPlayer) => {
     return [
       ...acc,
-      <LobbyPlayerCard key={key} name={player.name} avatar={'http://placekitten.com/32/32'} status={player.status} />,
+      <LobbyPlayerCard
+        key={key}
+        name={player.name}
+        avatar={'http://placekitten.com/32/32'}
+        status={player.status}
+      />,
     ];
   };
 
   const renderPlayer = (acc: JSX.Element, player: SessionPlayer) => (
-    <LobbyPlayerCard name={player.name} avatar={'http://placekitten.com/32/32'} status={player.status} />
+    <LobbyPlayerCard
+      name={player.name}
+      avatar={'http://placekitten.com/32/32'}
+      status={player.status}
+    />
   );
 
   const adminPlayer = pipe(
