@@ -9,7 +9,7 @@ import {
   requestTogglePlayerStatus,
   requestDealStartHands,
   initGameSession,
-} from '../../api/db/session';
+} from '../../api/db/preGameSession';
 import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';

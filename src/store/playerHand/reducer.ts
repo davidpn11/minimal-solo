@@ -6,7 +6,12 @@ const initialState: Player = {
   hand: {},
 };
 
-export function playerReducer(state = initialState, action: PlayerActionTypes): Player {
+const starterState: Player = {
+  id: 'J8h4cn1KClXvziBKERdF',
+  hand: {},
+};
+
+export function playerReducer(state = starterState, action: PlayerActionTypes): Player {
   switch (action.type) {
     case 'SET_PLAYER':
       return {

@@ -4,7 +4,7 @@ import { ReduxStore } from '../rootReducer';
 import { LocalSessionWithId } from '../../model/Session';
 import { SessionPlayer } from '../../model/Player';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { MIN_ROOM_SIZE } from '../../api/db/session';
+import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 
 export const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
