@@ -7,8 +7,21 @@ import { random } from 'faker';
 import { PlayerHand } from './';
 import { buildOne, Card, sortDeck } from '../../model/Card';
 import { Normalized } from '../../model/Session';
-import { STATES as SOLO_STATES } from '../Solo/Solo.story';
-import { STATES as PASS_STATES } from '../Pass/Pass.story';
+import { SoloButtonStates } from '../Solo/styles';
+import { PassButtonStates } from '../Pass';
+
+const SOLO_STATES: Record<string, SoloButtonStates> = {
+  CanSolo: 'CAN_SOLO',
+  CannotSolo: 'CANNOT_SOLO',
+  IsSolo: 'IS_SOLO',
+  DidntSolo: 'DIDNT_SOLO',
+};
+
+const PASS_STATES: Record<string, PassButtonStates> = {
+  CanPass: 'CAN_PASS',
+  Passed: 'PASSED',
+  CannotPass: 'CANNOT_PASS',
+};
 
 const deck = sortDeck(buildOne());
 export function PlayerHandStory() {
