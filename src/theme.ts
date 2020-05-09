@@ -24,6 +24,8 @@ export const COLORS = {
   border: '#F0EFF0',
 };
 
+export type ThemeColors = keyof typeof COLORS;
+
 export const GRADIENTS = {
   blackGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.blackBase} 0%, ${COLORS.blackLight} 100%)`,
   blackestGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.blackest} 0%, ${COLORS.blackShadow} 100%)`,
@@ -33,6 +35,8 @@ export const GRADIENTS = {
   whiteGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.border} 0%, ${COLORS.white} 100%)`,
   yellowGradient: `linear-gradient(${GRADIENT_ROTATION}, ${COLORS.yellowBase} 0%, ${COLORS.yellowLight} 100%)`,
 };
+
+export type ThemeGradients = keyof typeof GRADIENTS;
 
 export const THEME = {
   backgrounds: {

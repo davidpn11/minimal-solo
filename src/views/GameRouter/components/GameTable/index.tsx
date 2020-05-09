@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableWrapper, TableCenter, CardPlaceholder } from './styles';
-import TablePlayer from '../TablePlayer';
+import TablePlayer from '../../../../components/PlayerDeck';
 import { SessionPlayer } from '../../../../model/Player';
 import { Logo } from '../../../../components/Logo';
 import CardDeck from '../CardDeck';
