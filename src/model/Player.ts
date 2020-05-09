@@ -1,3 +1,4 @@
+import * as O from 'fp-ts/lib/Option';
 import { ID, Normalized } from './Session';
 import { Card } from './Card';
 
@@ -11,6 +12,6 @@ export type SessionPlayer = {
 export type SessionPlayerWithId = SessionPlayer & ID;
 
 export type Player = {
-  id: string;
+  id: O.Option<string>;
   hand: Normalized<Card>;
 };
