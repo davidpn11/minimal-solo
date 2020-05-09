@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import * as E from 'fp-ts/lib/Either';
@@ -8,10 +8,12 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { CardWrapper, Title, Page } from './styles';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
-import { createGameSession, joinGameSession, clearSession, JoinGameSessionReturn } from '../../store/session/actions';
-import { setPlayer } from '../../store/playerHand/actions';
+import { createGameSession, joinGameSession, clearSession } from '../../store/session/actions';
 import { ReduxThunkDispatch } from '../../store/rootReducer';
 import { LocalSessionWithId } from '../../model/Session';
+import { getPlayerId } from '../../store/playerHand/selector';
+import { safeClearItem, safeSetItem } from '../../utils/storage';
+import { setPlayerId } from '../../store/playerHand/actions';
 
 const BASE_ERROR_STATE = {
   status: false,
@@ -31,10 +33,17 @@ export default function Entrance() {
   const changeName = (event: React.ChangeEvent<HTMLInputElement>) => setName(event.currentTarget.value);
   const changeAdminName = (event: React.ChangeEvent<HTMLInputElement>) => setAdminName(event.currentTarget.value);
   const changeCode = (event: React.ChangeEvent<HTMLInputElement>) => setCode(event.currentTarget.value);
+  const playerId = useSelector(getPlayerId);
 
-  useEffect(() => {
-    dispatch(clearSession());
-  }, [dispatch]);
+  useEffect(
+    function resetState() {
+      safeClearItem('sessionId');
+      dispatch(clearSession());
+      safeSetItem('playerId', playerId);
+      dispatch(setPlayerId(playerId));
+    },
+    [dispatch],
+  );
 
   const createRoom = async () => {
     if (adminName.length === 0) {
@@ -45,13 +54,12 @@ export default function Entrance() {
     }
     setAdminNameError(BASE_ERROR_STATE);
 
-    //TODO pass sessionID to path
     return pipe(
-      await dispatch(createGameSession(adminName)),
+      await dispatch(createGameSession(adminName, playerId)),
       E.fold<any, LocalSessionWithId, void>(
         () => {},
         async session => {
-          await dispatch(setPlayer({ id: session.admin, hand: {} }));
+          safeSetItem('sessionId', session.id);
           history.push(`/room/${session.code}`);
         },
       ),
@@ -69,16 +77,16 @@ export default function Entrance() {
     setRoomError(BASE_ERROR_STATE);
 
     return pipe(
-      await dispatch(joinGameSession(code, name)),
-      E.fold<any, JoinGameSessionReturn, void>(
+      await dispatch(joinGameSession(code, name, playerId)),
+      E.fold<any, LocalSessionWithId, void>(
         () => {
           setRoomError({
             status: true,
             message: "Couldn't find this room. Please check it's name.",
           });
         },
-        async ({ player, session }) => {
-          await dispatch(setPlayer({ id: player.id, hand: {} }));
+        async session => {
+          safeSetItem('sessionId', session.id);
           history.push(`/room/${session.code}`);
         },
       ),

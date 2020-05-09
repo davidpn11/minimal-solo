@@ -1,4 +1,4 @@
-import { Option } from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
 import { ReduxStore } from '../rootReducer';
 import { LocalSessionWithId } from '../../model/Session';
@@ -8,8 +8,11 @@ import { MIN_ROOM_SIZE } from '../../api/db/session';
 
 export const getSession = (state: ReduxStore): LocalSessionWithId => state.session;
 
-export const getCurrentSessionPlayer = (state: ReduxStore): Option<SessionPlayer> =>
-  R.lookup(state.player.id, state.session.players);
+export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
+  pipe(
+    state.player.id,
+    O.chain(playerId => R.lookup(playerId, state.session.players)),
+  );
 
 export const allPlayersReady = (state: ReduxStore): boolean => {
   if (R.size(state.session.players) < MIN_ROOM_SIZE) return false;

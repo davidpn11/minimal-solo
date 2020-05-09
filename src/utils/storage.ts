@@ -1,4 +1,6 @@
 import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { noop } from './unit';
 
 const STORAGE_TO_USE = window.sessionStorage; // localStorage || sessionStorage
 
@@ -24,11 +26,27 @@ export function getStorage(): O.Option<Storage> {
  * @param value Value to be Saved
  */
 export function safeSetItem(key: string, value: string) {
-  return (storage: Storage) => {
-    try {
-      storage.setItem(key, value);
-    } catch (e) {
-      storage.clear();
-    }
-  };
+  return pipe(
+    getStorage(),
+    O.fold(noop, storage => {
+      try {
+        storage.setItem(key, value);
+      } catch (e) {
+        storage.clear();
+      }
+    }),
+  );
+}
+
+export function safeClearItem(key: string) {
+  return pipe(
+    getStorage(),
+    O.fold(noop, storage => {
+      try {
+        storage.removeItem(key);
+      } catch (e) {
+        storage.clear();
+      }
+    }),
+  );
 }

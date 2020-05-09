@@ -3,8 +3,7 @@ import { batch, useDispatch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
-import { ReduxStore } from './rootReducer';
-import { getStorage, safeSetItem } from '../utils/storage';
+import { getStorage } from '../utils/storage';
 import { getSessionRef } from '../api/firebase';
 import { LocalSessionWithId, Session } from '../model/Session';
 import { extractDocumentData } from '../api/helpers';
@@ -79,16 +78,4 @@ export function loadPlayer(): O.Option<string> {
     getStorage(),
     O.chain(storage => O.fromNullable(storage.getItem('playerId'))),
   );
-}
-
-export function saveState(state: ReduxStore) {
-  try {
-    const { id: sessionId } = state.session;
-    const { id: playerId } = state.player;
-
-    safeSetItem('sessionId', sessionId);
-    safeSetItem('playerId', playerId);
-  } catch (error) {
-    console.error(error);
-  }
 }

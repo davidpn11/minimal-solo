@@ -24,11 +24,6 @@ export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
 
-export type JoinGameSessionReturn = {
-  session: LocalSessionWithId;
-  player: SessionPlayerWithId;
-};
-
 // export type SessionThunkResult = ThunkResult
 export function setGameSession(session: LocalSessionWithId) {
   return {
@@ -57,10 +52,13 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-export function createGameSession(name: string): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
+export function createGameSession(
+  name: string,
+  playerId: string,
+): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
-      const session = await requestCreateSession(name);
+      const session = await requestCreateSession(name, playerId);
       dispatch(setGameSession(session));
       return E.right(session);
     } catch (error) {
@@ -79,14 +77,15 @@ export function addNewPlayer(player: Normalized<SessionPlayer>) {
 export function joinGameSession(
   sessionCode: string,
   name: string,
-): SessionThunkResult<E.Either<JoinGameSessionReturn, any>> {
+  playerId: string,
+): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const session = await requestJoinSession(sessionCode);
-      const player = await requestAddPlayer(session.id, name);
+      const player = await requestAddPlayer(session.id, name, playerId);
       dispatch(setGameSession(session));
-      dispatch(addPlayers({ [player.id]: player }));
-      return E.right({ player, session });
+      dispatch(addPlayers({ [playerId]: player }));
+      return E.right(session);
     } catch (error) {
       console.error(error);
       return E.left(error);
