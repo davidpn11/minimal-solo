@@ -14,6 +14,7 @@ export const HandWrapper = styled.section`
   overflow-y: visible;
   padding: 0 32px;
   z-index: 2;
+  width: 100%;
 `;
 
 export const HandCardsWrapper = styled.div`

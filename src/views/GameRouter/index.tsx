@@ -32,7 +32,7 @@ export default function GameRouter() {
         <GameEngine>
           <GameWrapper>
             <GameTable />
-            <PlayerHand cards={player.hand} />
+            <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
           </GameWrapper>
         </GameEngine>
       );

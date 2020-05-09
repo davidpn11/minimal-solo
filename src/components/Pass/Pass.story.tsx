@@ -3,7 +3,7 @@ import { select, withKnobs } from '@storybook/addon-knobs';
 
 import { Pass, PassButtonStates } from './';
 
-const STATES: Record<string, PassButtonStates> = {
+export const STATES: Record<string, PassButtonStates> = {
   CanPass: 'CAN_PASS',
   Passed: 'PASSED',
   CannotPass: 'CANNOT_PASS',

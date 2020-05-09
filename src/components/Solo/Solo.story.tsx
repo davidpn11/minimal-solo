@@ -4,7 +4,7 @@ import { select, withKnobs } from '@storybook/addon-knobs';
 import { Solo } from './';
 import { SoloButtonStates } from './styles';
 
-const STATES: Record<string, SoloButtonStates> = {
+export const STATES: Record<string, SoloButtonStates> = {
   CanSolo: 'CAN_SOLO',
   CannotSolo: 'CANNOT_SOLO',
   IsSolo: 'IS_SOLO',

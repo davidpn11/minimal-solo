@@ -5,11 +5,14 @@ import * as R from 'fp-ts/lib/Record';
 import { HandWrapper, HandCardsWrapper } from './styles';
 import { PlayingCard } from '../PlayingCard';
 import { Solo } from '../Solo';
-import { Pass } from '../Pass';
+import { Pass, PassButtonStates } from '../Pass';
 import { Card } from '../../model/Card';
 import { Normalized } from '../../model/Session';
+import { SoloButtonStates } from '../Solo/styles';
 
 type Props = {
+  solo: SoloButtonStates;
+  pass: PassButtonStates;
   cards: Normalized<Card>;
 };
 
@@ -32,9 +35,9 @@ export function PlayerHand(props: Props) {
 
   return (
     <HandWrapper>
-      <Solo state="CANNOT_SOLO" onClick={() => {}} />
+      <Solo state={props.solo} onClick={() => {}} />
       <HandCardsWrapper>{renderCards()}</HandCardsWrapper>
-      <Pass state="CANNOT_PASS" onClick={() => {}} />
+      <Pass state={props.pass} onClick={() => {}} />
     </HandWrapper>
   );
 }
