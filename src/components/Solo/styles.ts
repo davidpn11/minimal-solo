@@ -46,7 +46,7 @@ export const SoloButton = styled.button<SoloButtonProps>`
   outline: none;
   position: relative;
   transition: all 300ms ease;
-  width: 104px;
+  min-width: 104px;
 
   ${mapStates}
 

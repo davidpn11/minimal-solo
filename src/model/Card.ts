@@ -55,7 +55,7 @@ const commonValues: Value[] = [
 
 export type Card = CommonCard | ActionCard;
 
-function buildCommon(color: Color): CommonCard[] {
+export function buildCommon(color: Color): CommonCard[] {
   return commonValues.map(
     value =>
       ({

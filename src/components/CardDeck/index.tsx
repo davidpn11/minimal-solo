@@ -1,18 +1,18 @@
 import React from 'react';
-import { PlayingCard } from '../../../../components/PlayingCard';
+import { PlayingCard } from '../PlayingCard';
 import { CardsWrapper } from './styles';
 
-const cards = Array(30).fill({
+const CARDS = Array(30).fill({
   id: '1',
   status: 'GAME',
   color: 'RED',
   value: 'ONE',
 });
 
-export default function CardDeck() {
+export function CardDeck() {
   return (
     <CardsWrapper>
-      {cards.map((card, index) => (
+      {CARDS.map((card, index) => (
         <PlayingCard key={index} color={card.color} status="DECK" value={card.value} />
       ))}
     </CardsWrapper>
