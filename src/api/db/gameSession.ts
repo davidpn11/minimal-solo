@@ -36,10 +36,17 @@ export async function requestPlayerHandListener(
       .onSnapshot(documentSnapshot => {
         const player = extractDocumentData<SessionPlayer>(documentSnapshot);
 
-        if (O.isSome(player)) {
-          const { hand } = player.value;
-          callback(hand);
-        }
+        pipe(
+          player,
+          O.fold(
+            () => {
+              throw new Error('No Player');
+            },
+            p => {
+              callback(p.hand);
+            },
+          ),
+        );
       });
   } catch (error) {
     console.error(error);
