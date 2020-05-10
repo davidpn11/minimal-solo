@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardWrapper } from '../../../../components/PlayingCard/styles';
+import { CardValue, CardWrapper } from '../PlayingCard/styles';
 
 export const CardsWrapper = styled.div`
   margin-top: -40px;
@@ -8,6 +8,13 @@ export const CardsWrapper = styled.div`
     position: relative;
     margin: auto;
     margin-bottom: -165px;
+
+    ${CardValue} {
+      svg {
+        width: 64px;
+        height: 64px;
+      }
+    }
 
     &:nth-child(1) {
       z-index: 8;

@@ -11,7 +11,7 @@ export const PassButton = styled.button<PassButtonProps>`
   outline: none;
   position: relative;
   transition: all 300ms ease-in-out;
-  width: 104px;
+  min-width: 104px;
 
   ${props =>
     props.isActive &&
