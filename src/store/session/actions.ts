@@ -118,21 +118,6 @@ export function startGameSession() {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     try {
       const state = getState();
-
-      // const sessionDummy: LocalSessionWithId = {
-      //   id: "0iTnuIQ008UH1perzZfc",
-      //   code: "123",
-      //   status: "INITIAL",
-      //   players: {
-      //     DxHsteJ1xWBenSoxPxzR: {
-      //       hand: ["2BI4gdBnvStrkEQ0br4M"],
-      //       name: "David",
-      //       status: "ADMIN",
-      //     },
-      //   },
-      //   admin: "DxHsteJ1xWBenSoxPxzR",
-      // };
-
       //Populates player hands
       const players = await requestDealStartHands(state.session);
       //Set initial session
