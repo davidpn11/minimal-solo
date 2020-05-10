@@ -25,7 +25,7 @@ export function LobbyPlayerCardStory() {
 }
 
 export default {
-  title: 'MinimalSolo/Components/PlayerCards',
+  title: 'MinimalSolo/Components/Game',
   component: LobbyPlayerCardStory,
   decorators: [withKnobs],
 };

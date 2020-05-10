@@ -17,29 +17,29 @@ import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
 import { SessionPlayer } from '../../model/Player';
 
-const SESSION: LocalSessionWithId = {
-  id: 'ACeKB3PFRXkvv6QdyCHw',
-  code: '42886',
-  status: 'INITIAL',
-  players: {
-    '2': { status: 'READY', hand: [], name: 'John' },
-    '3': { status: 'READY', hand: [], name: 'Kevin' },
-    '4': { status: 'READY', hand: [], name: 'Max' },
-    '6': { status: 'READY', hand: [], name: 'Rob' },
-    '7': { status: 'READY', hand: [], name: 'Alex' },
-    '2zqR87wtl8zrzXwW43HH': { status: 'READY', hand: [], name: 'Jamie' },
-    '8': { status: 'READY', hand: [], name: 'Bruce' },
-    '30gHNPYwsVUOQOW2ovDr': { hand: [], status: 'ADMIN', name: 'David' },
-    DQ9QotLCW2AwX9jfcMHy: { hand: [], status: 'READY', name: 'Pedro' },
-  },
-  admin: '30gHNPYwsVUOQOW2ovDr',
-};
-
-const PLAYER = O.some({
-  name: 'David',
-  hand: [],
-  status: 'ADMIN',
-} as SessionPlayer);
+// const SESSION: LocalSessionWithId = {
+//   id: 'ACeKB3PFRXkvv6QdyCHw',
+//   code: '42886',
+//   status: 'INITIAL',
+//   players: {
+//     '2': { status: 'READY', hand: [], name: 'John' },
+//     '3': { status: 'READY', hand: [], name: 'Kevin' },
+//     '4': { status: 'READY', hand: [], name: 'Max' },
+//     '6': { status: 'READY', hand: [], name: 'Rob' },
+//     '7': { status: 'READY', hand: [], name: 'Alex' },
+//     '2zqR87wtl8zrzXwW43HH': { status: 'READY', hand: [], name: 'Jamie' },
+//     '8': { status: 'READY', hand: [], name: 'Bruce' },
+//     '30gHNPYwsVUOQOW2ovDr': { hand: [], status: 'ADMIN', name: 'David' },
+//     DQ9QotLCW2AwX9jfcMHy: { hand: [], status: 'READY', name: 'Pedro' },
+//   },
+//   admin: '30gHNPYwsVUOQOW2ovDr',
+// };
+//
+// const PLAYER = O.some({
+//   name: 'David',
+//   hand: [],
+//   status: 'ADMIN',
+// } as SessionPlayer);
 
 export default function Lobby() {
   // const currentSession = SESSION;

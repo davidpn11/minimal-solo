@@ -4,7 +4,7 @@ import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
 
 import { PlayerDeck } from './';
-import { SessionPlayer } from '../../model/Player';
+import { createAvatar, SessionPlayer } from '../../model/Player';
 
 export function PlayerDeckStory() {
   const playerName = text('Player Name', 'Jack Johnson');
@@ -12,6 +12,7 @@ export function PlayerDeckStory() {
   const player: SessionPlayer = {
     name: playerName,
     status: 'READY',
+    avatar: createAvatar(),
     hand: A.range(1, cardCount).map(() => random.uuid()),
   };
 
