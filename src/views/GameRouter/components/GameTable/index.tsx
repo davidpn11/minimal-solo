@@ -1,18 +1,22 @@
 import React from 'react';
-import { TableWrapper, TableCenter, CardPlaceholder } from './styles';
-import { PlayerDeck } from '../../../../components/PlayerDeck';
-import { SessionPlayer } from '../../../../model/Player';
-import { Logo } from '../../../../components/Logo';
-import CardDeck from '../CardDeck';
-import CurrentCard from '../CurrentCard';
 import { useSelector } from 'react-redux';
-import { getSession, getOtherSessionPlayers } from '../../../../store/session/selectors';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
+
+import { TableWrapper } from './styles';
+import { PlayerDeck } from '../../../../components/PlayerDeck';
+import { SessionPlayer } from '../../../../model/Player';
+import {
+  getSession,
+  getOtherSessionPlayers,
+  getCurrentCard,
+} from '../../../../store/session/selectors';
+import { ActionArea } from '../../../../components/ActionArea';
 
 export default function GameTable() {
   const session = useSelector(getSession);
   const otherPlayers = useSelector(getOtherSessionPlayers);
+  const currentCard = useSelector(getCurrentCard);
 
   const renderPlayerCard = (key: string, player: SessionPlayer, pos: number) => (
     <PlayerDeck key={key} player={player} playerPosition={pos} />
@@ -32,15 +36,11 @@ export default function GameTable() {
 
   return (
     <TableWrapper>
-      <TableCenter>
-        <Logo variant="WHITE" />
-        <CardPlaceholder>
-          <CurrentCard />
-        </CardPlaceholder>
-        <CardPlaceholder>
-          <CardDeck />
-        </CardPlaceholder>
-      </TableCenter>
+      <ActionArea
+        currentCard={currentCard}
+        onDeckClick={() => console.log('Deck')}
+        onCurrentClick={() => console.log('Current')}
+      />
       {renderPlayers()}
     </TableWrapper>
   );
