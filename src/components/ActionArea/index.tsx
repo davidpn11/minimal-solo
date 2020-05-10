@@ -4,13 +4,15 @@ import { pipe } from 'fp-ts/lib/pipeable';
 
 import { AreaWrapper, LogoWrapper, SectionWrapper } from './styles';
 import { Logo } from '../Logo';
-import CardDeck from '../CardDeck';
+import { CardDeck } from '../CardDeck';
 import { Card } from '../../model/Card';
 import { PlayingCard } from '../PlayingCard';
 import { unitJSX } from '../../utils/unit';
 
 type Props = {
   currentCard: O.Option<Card>;
+  onDeckClick: () => void;
+  onCurrentClick: () => void;
 };
 
 export function ActionArea(props: Props) {
@@ -19,7 +21,7 @@ export function ActionArea(props: Props) {
       <LogoWrapper>
         <Logo variant="WHITE" />
       </LogoWrapper>
-      <SectionWrapper>
+      <SectionWrapper onClick={props.onCurrentClick}>
         {pipe(
           props.currentCard,
           O.fold(
@@ -28,7 +30,7 @@ export function ActionArea(props: Props) {
           ),
         )}
       </SectionWrapper>
-      <SectionWrapper>
+      <SectionWrapper onClick={props.onDeckClick}>
         <CardDeck />
       </SectionWrapper>
     </AreaWrapper>

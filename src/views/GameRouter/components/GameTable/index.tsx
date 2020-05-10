@@ -36,7 +36,11 @@ export default function GameTable() {
 
   return (
     <TableWrapper>
-      <ActionArea currentCard={currentCard} />
+      <ActionArea
+        currentCard={currentCard}
+        onDeckClick={() => console.log('Deck')}
+        onCurrentClick={() => console.log('Current')}
+      />
       {renderPlayers()}
     </TableWrapper>
   );

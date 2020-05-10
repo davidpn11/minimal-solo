@@ -2,14 +2,13 @@ import styled from 'styled-components';
 import { CardLower, CardUpper, CardValue, CardWrapper } from '../PlayingCard/styles';
 
 export const AreaWrapper = styled.section`
+  align-items: center;
   background: ${props => props.theme.gradients.blackGradient};
   border-radius: 8px;
-  grid-area: center;
-  margin: 20px;
-
   display: flex;
-  align-items: center;
+  grid-area: center;
   justify-content: space-evenly;
+  margin: 20px;
   padding: 32px;
 
   svg {
@@ -19,15 +18,17 @@ export const AreaWrapper = styled.section`
 
 export const SectionWrapper = styled.div`
   background: ${props => props.theme.colors.white};
-  padding: 8px;
-  height: 190px;
-  width: 150px;
   border-radius: 12px;
+  height: 190px;
+  padding: 8px;
+  width: 150px;
+  cursor: pointer;
 
   ${CardWrapper} {
     width: 120px;
     height: 170px;
     margin: auto;
+    pointer-events: none;
 
     ${CardUpper} {
       top: 8px;
