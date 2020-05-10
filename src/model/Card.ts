@@ -24,7 +24,7 @@ export type CardStatus = 'HAND' | 'DECK' | 'GAME' | 'PLAY';
 
 export type CommonCard = {
   color: UnionExclude<Color, 'BLACK'>;
-  value: UnionExclude<Value, 'PLUS_FOR' | 'SWAP_ALL'>;
+  value: UnionExclude<Value, 'PLUS_FOUR' | 'SWAP_ALL'>;
   createdAt?: number;
   status: CardStatus;
 };
