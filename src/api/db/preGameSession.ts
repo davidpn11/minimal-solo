@@ -235,8 +235,6 @@ async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef
     ),
   );
 
-  console.log(card);
-
   if (O.isNone(card)) throw new Error('fail to fetch card');
 
   sessionRef.set(
