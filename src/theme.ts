@@ -1,4 +1,5 @@
 import { rgba } from 'polished';
+export { default as AVATAR_BACKGROUND } from './assets/slime-background.png';
 
 const GRADIENT_ROTATION = '315deg' as const;
 

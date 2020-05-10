@@ -1,6 +1,7 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs';
 import React from 'react';
 import { LobbyPlayerCard } from './index';
+import { createAvatar, SessionPlayer } from '../../model/Player';
 
 export function LobbyPlayerCardStory() {
   const nameKnob = text('Player Name', 'Michel Costa');
@@ -13,9 +14,14 @@ export function LobbyPlayerCardStory() {
     },
     'ADMIN',
   );
-  const avatarKnob = text('AvatarUrl', 'http://placekitten.com/32/32');
+  const player: SessionPlayer = {
+    name: nameKnob,
+    status: statusKnob,
+    avatar: createAvatar(),
+    hand: [],
+  };
 
-  return <LobbyPlayerCard status={statusKnob} name={nameKnob} avatar={avatarKnob} />;
+  return <LobbyPlayerCard player={player} />;
 }
 
 export default {
