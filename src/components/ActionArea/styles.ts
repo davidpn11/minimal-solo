@@ -10,6 +10,7 @@ export const AreaWrapper = styled.section`
   justify-content: space-evenly;
   margin: 20px;
   padding: 32px;
+  width: 100%;
 
   svg {
     width: 200px;
