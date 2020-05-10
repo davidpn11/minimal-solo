@@ -1,7 +1,7 @@
 import { getSessionRef } from '../firebase';
 import { Normalized } from '../../model/Session';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { normalizeDocument, normalizeQuery } from '../helpers';
+import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import { Card } from '../../model/Card';
 import * as A from 'fp-ts/lib/Array';
 import * as R from 'fp-ts/lib/Record';
@@ -32,16 +32,14 @@ export async function requestPlayerHandListener(
   try {
     await getSessionRef(sessionId)
       .collection('players')
-      .onSnapshot(querySnapshot => {
-        const players = normalizeQuery<SessionPlayer>(querySnapshot);
-        const hand = pipe(
-          R.lookup(currentPlayerId, players),
-          O.fold(
-            () => [],
-            player => player.hand,
-          ),
-        );
-        callback(hand);
+      .doc(currentPlayerId)
+      .onSnapshot(documentSnapshot => {
+        const player = extractDocumentData<SessionPlayer>(documentSnapshot);
+
+        if (O.isSome(player)) {
+          const { hand } = player.value;
+          callback(hand);
+        }
       });
   } catch (error) {
     console.error(error);
