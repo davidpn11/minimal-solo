@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableWrapper, TableCenter, CardPlaceholder } from './styles';
-import TablePlayer from '../TablePlayer';
+import { PlayerDeck } from '../../../../components/PlayerDeck';
 import { SessionPlayer } from '../../../../model/Player';
 import { Logo } from '../../../../components/Logo';
 import CardDeck from '../CardDeck';
@@ -8,17 +8,16 @@ import CurrentCard from '../CurrentCard';
 import { useSelector } from 'react-redux';
 import { getSession, getOtherSessionPlayers } from '../../../../store/session/selectors';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
-import { getPlayerHandIds } from '../../../../store/playerHand/selector';
 
 export default function GameTable() {
   const session = useSelector(getSession);
   const otherPlayers = useSelector(getOtherSessionPlayers);
 
   const renderPlayerCard = (key: string, player: SessionPlayer, pos: number) => (
-    <TablePlayer key={key} player={player} playerPosition={pos} />
+    <PlayerDeck key={key} player={player} playerPosition={pos} />
   );
+
   const renderPlayers = () => {
     let i = 0;
     return pipe(
@@ -30,6 +29,7 @@ export default function GameTable() {
       }),
     );
   };
+
   return (
     <TableWrapper>
       <TableCenter>
