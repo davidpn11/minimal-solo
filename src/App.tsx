@@ -11,7 +11,7 @@ function App() {
     <Router>
       <Switch>
         <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
-        <Route path="/room/:id" component={GameRouter} />
+        <Route path="/room/:code" component={GameRouter} />
       </Switch>
     </Router>
   );

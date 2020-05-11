@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getSession } from '../store/session/selectors';
-import { getPlayerHandIds, getPlayer } from '../store/playerHand/selector';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import { eqString } from 'fp-ts/lib/Eq';
+
+import { getSessionValue } from '../store/session/selectors';
+import { getPlayerHandIds, getPlayer } from '../store/playerHand/selector';
 import { getPlayerHand } from '../store/playerHand/actions';
 import { requestPlayerHandListener } from '../api/db/gameSession';
 
 export function useHandListener() {
-  const currentSession = useSelector(getSession);
+  const currentSession = useSelector(getSessionValue);
   const playerHand = useSelector(getPlayerHandIds);
   const player = useSelector(getPlayer);
   const [hasListener, setHasListener] = useState<boolean>(false);

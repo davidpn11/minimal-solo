@@ -1,14 +1,10 @@
-import { LocalSessionWithId } from '../../model/Session';
+import * as O from 'fp-ts/lib/Option';
+
 import { SessionActionTypes } from './actions';
+import { LocalSessionWithId } from '../../model/Session';
 import { createAvatar } from '../../model/Player';
 
-const initialState: LocalSessionWithId = {
-  id: '',
-  code: '',
-  status: 'INITIAL',
-  players: {},
-  admin: '',
-};
+const initialState: O.Option<LocalSessionWithId> = O.none;
 
 const starterSession: LocalSessionWithId = {
   id: 'zXI3d1fis8XoNZUaoQT1',
@@ -76,20 +72,22 @@ const starterSession: LocalSessionWithId = {
 export function sessionReducer(
   state = initialState,
   action: SessionActionTypes,
-): LocalSessionWithId {
+): O.Option<LocalSessionWithId> {
   switch (action.type) {
     case 'CREATE_SESSION':
-      return { ...state, ...action.payload };
+      return O.some(action.payload);
     case 'CLEAR_SESSION':
       return initialState;
     case 'ADD_PLAYER':
-      return {
-        ...state,
+      if (O.isNone(state)) throw new Error('Cannot add player to unexistent session.');
+
+      return O.some({
+        ...state.value,
         players: {
-          ...state.players,
+          ...state.value.players,
           ...action.payload,
         },
-      };
+      });
     default:
       return state;
   }

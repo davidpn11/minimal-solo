@@ -21,17 +21,33 @@ export const isCurrentPlayerAdmin = (state: ReduxStore): boolean =>
     state.player.id,
     O.fold(
       () => false,
-      playerId => playerId === state.session.admin,
+      playerId =>
+        pipe(
+          state.session,
+          O.fold(
+            () => false,
+            session => playerId === session.admin,
+          ),
+        ),
     ),
   );
 
 export const getPlayerHandIds = (state: ReduxStore) => {
   const lookHand = (playerId: string) =>
     pipe(
-      R.lookup(playerId, state.session.players),
+      state.session,
       O.fold(
-        () => [],
-        (p: SessionPlayer) => p.hand,
+        () => {
+          throw new Error('Cannot get the player hand without a session');
+        },
+        session =>
+          pipe(
+            R.lookup(playerId, session.players),
+            O.fold(
+              () => [],
+              (p: SessionPlayer) => p.hand,
+            ),
+          ),
       ),
     );
   return pipe(

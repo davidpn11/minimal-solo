@@ -1,5 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
 
 import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
@@ -118,10 +119,16 @@ export function startGameSession() {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     try {
       const state = getState();
+
+      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
+
       //Populates player hands
-      const players = await requestDealStartHands(state.session);
+      const players = await requestDealStartHands(state.session.value);
       //Set initial session
-      const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
+      const startedGameSession = await initGameSession(
+        state.session.value,
+        normalizePlayers(players),
+      );
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);
