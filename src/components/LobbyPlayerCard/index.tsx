@@ -7,11 +7,11 @@ import {
   Wrapper,
   LobbyPlayerStatus,
 } from './styles';
+import { SessionPlayer } from '../../model/Player';
+import { AVATAR_BACKGROUND } from '../../theme';
 
 type Props = {
-  name: string;
-  avatar: string;
-  status: LobbyPlayerStatus;
+  player: SessionPlayer;
 };
 
 function mapStatus(status: LobbyPlayerStatus) {
@@ -28,11 +28,11 @@ function mapStatus(status: LobbyPlayerStatus) {
 
 export function LobbyPlayerCard(props: Props) {
   return (
-    <Wrapper status={props.status}>
-      <PlayerImage src={props.avatar} />
+    <Wrapper status={props.player.status}>
+      <PlayerImage src={AVATAR_BACKGROUND} avatar={props.player.avatar} />
       <PlayerInfo>
-        <PlayerName>{props.name}</PlayerName>
-        <PlayerStatus>{mapStatus(props.status)}</PlayerStatus>
+        <PlayerName>{props.player.name}</PlayerName>
+        <PlayerStatus>{mapStatus(props.player.status)}</PlayerStatus>
       </PlayerInfo>
     </Wrapper>
   );

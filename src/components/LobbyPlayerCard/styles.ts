@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 import { WithMinimalSoloTheme } from '../../theme';
+import { PlayerAvatar } from '../../model/Player';
+import { rgba } from 'polished';
 
 export type LobbyPlayerStatus = 'ADMIN' | 'READY' | 'NOT_READY';
 type WrapperProps = { status: LobbyPlayerStatus };
@@ -41,12 +43,18 @@ export const Wrapper = styled.div<WrapperProps>`
   ${mapStatusStyles}
 `;
 
-export const PlayerImage = styled.img`
+export const PlayerImage = styled.div<{ src: string; avatar: PlayerAvatar }>`
   background: ${props => props.theme.colors.blackBase};
-  border: none;
+  border: 2px solid ${props => rgba(props.theme.colors.blackest, 0.5)};
   border-radius: ${props => props.theme.radius.small}px;
-  height: 32px;
-  width: 32px;
+  min-height: 32px;
+  min-width: 32px;
+  background: url("${props => props.src}");
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size: ${props => props.avatar.scale}%;
+  background-position-x: -${props => props.avatar.positionX}px;
+  background-position-y: ${props => props.avatar.positionY}px;
 `;
 
 export const PlayerInfo = styled.div`

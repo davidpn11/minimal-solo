@@ -7,7 +7,7 @@ import {
   ID,
 } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
-import { SessionPlayer, PlayerStatus, SessionPlayerWithId } from '../../model/Player';
+import { SessionPlayer, PlayerStatus, SessionPlayerWithId, createAvatar } from '../../model/Player';
 import { buildOne, sortDeck, Card } from '../../model/Card';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
@@ -48,6 +48,7 @@ export async function requestCreateSession(
   const playerData: SessionPlayer = {
     name: adminName,
     hand: [],
+    avatar: createAvatar(),
     status: 'ADMIN',
   };
 
@@ -151,6 +152,7 @@ export async function requestAddPlayer(
   const initialPlayerData: SessionPlayer = {
     name,
     status: 'NOT_READY' as const,
+    avatar: createAvatar(),
     hand: [],
   };
 
