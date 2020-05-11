@@ -13,7 +13,7 @@ export const AreaWrapper = styled.section`
   width: 100%;
 
   svg {
-    width: 200px;
+    width: 148px;
   }
 `;
 
@@ -53,8 +53,8 @@ export const SectionWrapper = styled.div`
 
     ${CardValue} {
       svg {
-        width: 50px;
-        height: 50px;
+        width: 48px;
+        height: 48px;
       }
     }
   }

@@ -2,19 +2,20 @@ import styled from 'styled-components';
 import { CardLower, CardUpper, CardValue, CardWrapper } from '../PlayingCard/styles';
 import { rgba } from 'polished';
 
-export const HAND_HEIGHT = 188;
+export const HAND_HEIGHT = 248;
 
 export const HandWrapper = styled.section`
+  align-items: center;
+  background: ${props => props.theme.colors.blackBase};
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
-  justify-content: space-between;
   height: ${HAND_HEIGHT}px;
+  justify-content: space-between;
   overflow-x: hidden;
   overflow-y: visible;
   padding: 0 32px;
-  z-index: 2;
   width: 100%;
+  z-index: 5;
 `;
 
 export const HandCardsWrapper = styled.div`
@@ -23,6 +24,7 @@ export const HandCardsWrapper = styled.div`
   align-items: center;
   width: 100%;
   overflow-x: auto;
+  overflow-y: visible;
   height: 100%;
   margin: 0 16px;
   scrollbar-color: ${props => rgba(props.theme.colors.blueBase, 0.5)} transparent;
