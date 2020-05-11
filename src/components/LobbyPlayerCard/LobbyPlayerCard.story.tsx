@@ -3,6 +3,8 @@ import React from 'react';
 import { LobbyPlayerCard } from './index';
 import { createAvatar, SessionPlayer } from '../../model/Player';
 
+const avatar = createAvatar();
+
 export function LobbyPlayerCardStory() {
   const nameKnob = text('Player Name', 'Michel Costa');
   const statusKnob = select(
@@ -17,7 +19,7 @@ export function LobbyPlayerCardStory() {
   const player: SessionPlayer = {
     name: nameKnob,
     status: statusKnob,
-    avatar: createAvatar(),
+    avatar,
     hand: [],
   };
 

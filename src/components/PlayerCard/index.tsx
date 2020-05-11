@@ -15,7 +15,7 @@ export function PlayerCard(props: Props) {
       <PlayerImage src={AVATAR_BACKGROUND} avatar={props.player.avatar} />
       <PlayerInfo>
         <PlayerName>{props.player.name}</PlayerName>
-        <PlayerStatus>Map over Statuses</PlayerStatus>
+        <PlayerStatus>Holding {props.player.hand.length} card(s).</PlayerStatus>
       </PlayerInfo>
     </CardWrapper>
   );
