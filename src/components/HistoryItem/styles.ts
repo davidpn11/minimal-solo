@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+export const HISTORY_ITEM_HEIGHT = 32;
+
 export const CardWrapper = styled.div`
   align-items: center;
   background: transparent;
@@ -7,6 +9,7 @@ export const CardWrapper = styled.div`
   flex-flow: row nowrap;
   padding: ${props => props.theme.spacing.base}px;
   width: 100%;
+  height: ${HISTORY_ITEM_HEIGHT}px;
 `;
 
 export const PlayerInfo = styled.div`

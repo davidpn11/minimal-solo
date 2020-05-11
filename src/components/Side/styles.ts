@@ -39,6 +39,7 @@ export const PlayersWrapper = styled.div`
 export const HistoryWrapper = styled.div`
   padding: 0 8px;
   width: 100%;
+  height: 100%;
 `;
 
 export const EventCount = styled.p`
