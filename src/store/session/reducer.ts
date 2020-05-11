@@ -1,5 +1,6 @@
 import { LocalSessionWithId } from '../../model/Session';
 import { SessionActionTypes } from './actions';
+import { createAvatar } from '../../model/Player';
 
 const initialState: LocalSessionWithId = {
   id: '',
@@ -16,6 +17,7 @@ const starterSession: LocalSessionWithId = {
   players: {
     J8h4cn1KClXvziBKERdF: {
       status: 'READY',
+      avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
         '3LDER1PJJdsucVWshn0v',
@@ -29,6 +31,7 @@ const starterSession: LocalSessionWithId = {
     },
     rmmfi2FbizScaJtIcqPO: {
       name: 'David',
+      avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
         '3LDER1PJJdsucVWshn0v',
@@ -42,6 +45,7 @@ const starterSession: LocalSessionWithId = {
     },
     wnuIw3JU7FQMJTSAnNs4: {
       status: 'READY',
+      avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
         '3LDER1PJJdsucVWshn0v',
