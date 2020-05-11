@@ -24,6 +24,9 @@ export const allPlayersReady = (state: ReduxStore): boolean => {
   );
 };
 
+export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
+  state.session.players;
+
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
   const playerId = O.isSome(state.player.id) ? state.player.id.value : '';
 

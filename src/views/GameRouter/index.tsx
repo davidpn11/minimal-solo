@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { GameWrapper } from './styles';
+import { BoardWrapper, GameWrapper, Main } from './styles';
 import { PlayerHand } from '../../components/PlayerHand';
 import GameTable from './components/GameTable';
 import { getSession } from '../../store/session/selectors';
@@ -10,6 +10,7 @@ import Lobby from '../Lobby';
 import GameEngine from '../../GameEngine';
 import { useSessionListener } from '../../hooks/useSessionListener';
 import { getPlayer } from '../../store/playerHand/selector';
+import { Side } from '../../components/Side';
 
 const TEST_MODE = true;
 
@@ -31,8 +32,13 @@ export default function GameRouter() {
       return (
         <GameEngine>
           <GameWrapper>
-            <GameTable />
-            <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
+            <Main>
+              <BoardWrapper>
+                <GameTable />
+              </BoardWrapper>
+              <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
+            </Main>
+            <Side />
           </GameWrapper>
         </GameEngine>
       );
