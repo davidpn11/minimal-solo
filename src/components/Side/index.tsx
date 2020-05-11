@@ -1,8 +1,9 @@
 import React from 'react';
-import { EventCount, HistoryWrapper, Title, Wrapper } from './styles';
 import { useSelector } from 'react-redux';
-import { getAllPlayers } from '../../store/session/selectors';
+
+import { EventCount, HistoryWrapper, PlayersWrapper, Title, Wrapper } from './styles';
 import { PlayerCard } from '../PlayerCard';
+import { getAllPlayers } from '../../store/session/selectors';
 
 export function Side() {
   const players = useSelector(getAllPlayers);
@@ -10,9 +11,11 @@ export function Side() {
   return (
     <Wrapper>
       <Title>Players</Title>
-      {Object.values(players).map(player => (
-        <PlayerCard player={player} />
-      ))}
+      <PlayersWrapper>
+        {Object.values(players).map(player => (
+          <PlayerCard player={player} />
+        ))}
+      </PlayersWrapper>
       <Title>History</Title>
       <HistoryWrapper>
         <div>Items here</div>

@@ -7,8 +7,8 @@ export const Wrapper = styled.aside`
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
-  padding: 16px 8px;
-  width: 240px;
+  width: 256px;
+  padding: 16px 16px;
 `;
 
 export const Title = styled.h1`
@@ -17,8 +17,23 @@ export const Title = styled.h1`
   display: flex;
   font-size: 18px;
   font-weight: 500;
+  justify-content: flex-start;
   line-height: 21px;
+  margin-bottom: 8px;
   padding: 0 8px;
+  width: 100%;
+`;
+
+export const PlayersWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 16px;
+  width: 100%;
+
+  & > div + div {
+    margin-top: 8px;
+  }
 `;
 
 export const HistoryWrapper = styled.div`
@@ -26,4 +41,12 @@ export const HistoryWrapper = styled.div`
   width: 100%;
 `;
 
-export const EventCount = styled.p``;
+export const EventCount = styled.p`
+  align-items: center;
+  color: ${props => props.theme.colors.border};
+  display: flex;
+  font-size: 12px;
+  justify-content: flex-start;
+  line-height: 12px;
+  width: 100%;
+`;
