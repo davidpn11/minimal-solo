@@ -1,7 +1,7 @@
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
 import { ReduxStore } from '../rootReducer';
-import { LocalSessionWithId, Normalized } from '../../model/Session';
+import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
 import { SessionPlayer } from '../../model/Player';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
@@ -39,6 +39,14 @@ export const allPlayersReady = (state: ReduxStore): boolean => {
     R.filter(player => player.status !== 'ADMIN'),
     R.every(player => player.status === 'READY'),
   );
+};
+
+export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
+  state.session.players;
+
+export const getPlays = (state: ReduxStore): Play[] => {
+  if (state.session.status === 'INITIAL') return [];
+  return Object.values(state.session.progression);
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {

@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { GameWrapper } from './styles';
+import { BoardWrapper, GameWrapper, Main } from './styles';
 import Lobby from '../Lobby';
 import GameEngine from '../../GameEngine';
 import GameTable from './components/GameTable';
 import { PlayerHand } from '../../components/PlayerHand';
+import { Side } from '../../components/Side';
 import { getSession } from '../../store/session/selectors';
 import { useSessionListener } from '../../hooks/useSessionListener';
 import { getPlayer } from '../../store/playerHand/selector';
@@ -67,8 +68,13 @@ export default function GameRouter() {
             return (
               <GameEngine>
                 <GameWrapper>
-                  <GameTable />
-                  <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
+                  <Main>
+                    <BoardWrapper>
+                      <GameTable />
+                    </BoardWrapper>
+                    <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
+                  </Main>
+                  <Side />
                 </GameWrapper>
               </GameEngine>
             );

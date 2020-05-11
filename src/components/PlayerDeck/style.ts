@@ -7,6 +7,7 @@ export const PlayerName = styled.h2`
   font-weight: 500;
   line-height: 16px;
   margin-bottom: 2px;
+  user-select: none;
 `;
 
 export const PlayerCardsCount = styled.h3`
@@ -15,6 +16,7 @@ export const PlayerCardsCount = styled.h3`
   font-weight: 500;
   line-height: 12px;
   margin-bottom: 8px;
+  user-select: none;
 `;
 
 export const PlayerDeckPile = styled.div`
