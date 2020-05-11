@@ -16,7 +16,7 @@ import { useSessionListener } from '../../hooks/useSessionListener';
 import { getPlayer } from '../../store/playerHand/selector';
 import { noop, unitJSX } from '../../utils/unit';
 import { getSessionRef, getSessionRefByCode } from '../../api/firebase';
-import { extractDocumentData, normalizeQuery } from '../../api/helpers';
+import { normalizeQuery } from '../../api/helpers';
 import { LocalSession, LocalSessionWithId } from '../../model/Session';
 import { setGameSession } from '../../store/session/actions';
 import { SessionPlayer } from '../../model/Player';

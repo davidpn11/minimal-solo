@@ -8,6 +8,7 @@ import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 import { Button } from '../../components/Button';
 import {
   allPlayersReady,
+  getAllPlayers,
   getCurrentSessionPlayer,
   getSessionValue,
 } from '../../store/session/selectors';
@@ -18,12 +19,13 @@ import { usePlayersGrid } from '../../hooks/usePlayersGrid';
 export default function Lobby() {
   const currentSession = useSelector(getSessionValue);
   const isAllPlayersReady = useSelector(allPlayersReady);
+  const players = useSelector(getAllPlayers);
   const currentPlayerId = useSelector(getPlayerId);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();
-
-  useEffect(() => {}, [currentPlayerId]);
+  const playerIds = Object.keys(players);
+  const isPlaying = playerIds.some(playerId => playerId === currentPlayerId);
 
   const { toggleStatus, startGame } = useMatchMaker();
 

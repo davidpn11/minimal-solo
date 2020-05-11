@@ -42,11 +42,18 @@ export const allPlayersReady = (state: ReduxStore): boolean => {
 };
 
 export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
-  state.session.players;
+  pipe(
+    state.session,
+    O.fold(
+      () => ({}),
+      session => session.players,
+    ),
+  );
 
 export const getPlays = (state: ReduxStore): Play[] => {
-  if (state.session.status === 'INITIAL') return [];
-  return Object.values(state.session.progression);
+  if (O.isNone(state.session)) throw new Error('Cannot get plays without session.');
+  if (state.session.value.status === 'INITIAL') return [];
+  return Object.values(state.session.value.progression);
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
