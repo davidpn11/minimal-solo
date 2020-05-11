@@ -72,6 +72,7 @@ export default function GameRouter() {
                     <BoardWrapper>
                       <GameTable />
                     </BoardWrapper>
+                    {/* These props will come from the Engine */}
                     <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
                   </Main>
                   <Side />
