@@ -47,7 +47,8 @@ export default function GameRouter() {
             const players = normalizeQuery<SessionPlayer>(
               await getSessionRef(localSession.id).collection('players').get(),
             );
-            dispatch(setGameSession({ ...localSession, players }));
+            console.log(players);
+            // dispatch(setGameSession({ ...localSession, players }));
           }),
         );
       });

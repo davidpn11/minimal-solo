@@ -51,7 +51,6 @@ export const PlayerImage = styled.div<{ src: string; avatar: PlayerAvatar }>`
   min-width: 32px;
   background: url("${props => props.src}");
   background-repeat: repeat;
-  background-attachment: fixed;
   background-size: ${props => props.avatar.scale}%;
   background-position-x: -${props => props.avatar.positionX}px;
   background-position-y: ${props => props.avatar.positionY}px;
