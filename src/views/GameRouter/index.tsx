@@ -13,7 +13,7 @@ import { PlayerHand } from '../../components/PlayerHand';
 import { Side } from '../../components/Side';
 import { getSession } from '../../store/session/selectors';
 import { useSessionListener } from '../../hooks/useSessionListener';
-import { getPlayer } from '../../store/playerHand/selector';
+import { getPlayerValue } from '../../store/playerHand/selector';
 import { noop, unitJSX } from '../../utils/unit';
 import { getSessionRef, getSessionRefByCode } from '../../api/firebase';
 import { normalizeQuery } from '../../api/helpers';
@@ -23,7 +23,7 @@ import { SessionPlayer } from '../../model/Player';
 
 export default function GameRouter() {
   const currentSession = useSelector(getSession);
-  const player = useSelector(getPlayer);
+  const player = useSelector(getPlayerValue);
   const dispatch = useDispatch();
   useSessionListener();
 

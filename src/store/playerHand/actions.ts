@@ -35,9 +35,7 @@ export function setPlayerId(playerId: string) {
 export function getPlayerHand(sessionId: string, hand: string[]) {
   return async (dispatch: PlayerThunkDispatch) => {
     try {
-      // console.log({ hand });
       const normalizedHand = await requestGetPlayerHand(sessionId, hand);
-      // console.log({ normalizedHand });
       dispatch(setPlayerHand(normalizedHand));
     } catch (error) {
       console.error(error);

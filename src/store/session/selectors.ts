@@ -18,13 +18,13 @@ export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
   pipe(
-    state.player.id,
-    O.chain(playerId =>
+    state.player,
+    O.chain(player =>
       pipe(
         state.session,
         O.fold(
           () => O.none,
-          session => R.lookup(playerId, session.players),
+          session => R.lookup(player.id, session.players),
         ),
       ),
     ),
@@ -57,7 +57,7 @@ export const getPlays = (state: ReduxStore): Play[] => {
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
-  const playerId = O.isSome(state.player.id) ? state.player.id.value : '';
+  const playerId = O.isSome(state.player) ? state.player.value.id : '';
   if (O.isNone(state.session)) throw new Error('Cannot check players without session.');
 
   return pipe(

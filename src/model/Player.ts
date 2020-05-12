@@ -1,7 +1,7 @@
-import * as O from 'fp-ts/lib/Option';
 import { random } from 'faker';
-import { ID, Normalized } from './Session';
+
 import { Card } from './Card';
+import { ID, Normalized } from './Session';
 
 export function createAvatar(): PlayerAvatar {
   return {
@@ -27,6 +27,7 @@ export type SessionPlayer = {
 export type SessionPlayerWithId = SessionPlayer & ID;
 
 export type Player = {
-  id: O.Option<string>;
+  id: string;
+  position: number;
   hand: Normalized<Card>;
 };

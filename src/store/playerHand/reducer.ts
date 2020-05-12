@@ -1,34 +1,33 @@
 import * as O from 'fp-ts/lib/Option';
 import { Player } from '../../model/Player';
 import { PlayerActionTypes, SET_PLAYER, SET_PLAYER_HAND, SET_PLAYER_ID } from './actions';
+import { pipe } from 'fp-ts/lib/pipeable';
 
-const initialState: Player = {
-  id: O.none,
-  hand: {},
-};
+const initialState: O.Option<Player> = O.none;
 
-const starterState: Player = {
-  id: O.some('J8h4cn1KClXvziBKERdF'),
-  hand: {},
-};
-
-export function playerReducer(state = initialState, action: PlayerActionTypes): Player {
+export function playerReducer(state = initialState, action: PlayerActionTypes): O.Option<Player> {
   switch (action.type) {
     case SET_PLAYER:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return O.some(action.payload);
     case SET_PLAYER_HAND:
-      return {
-        ...state,
+      if (O.isNone(state)) throw new Error('Cannot set the hand of an inexistent player.');
+
+      return O.some({
+        ...state.value,
         hand: action.payload,
-      };
+      });
     case SET_PLAYER_ID:
-      return {
-        ...state,
-        id: O.some(action.payload),
-      };
+      return pipe(
+        state,
+        O.fold(
+          () => O.some({ id: action.payload, position: 0, hand: {} }),
+          state =>
+            O.some({
+              ...state,
+              id: action.payload,
+            }),
+        ),
+      );
     default:
       return state;
   }
