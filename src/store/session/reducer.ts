@@ -13,6 +13,7 @@ const starterSession: LocalSessionWithId = {
   players: {
     J8h4cn1KClXvziBKERdF: {
       status: 'READY',
+      position: 0,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
@@ -27,6 +28,7 @@ const starterSession: LocalSessionWithId = {
     },
     rmmfi2FbizScaJtIcqPO: {
       name: 'David',
+      position: 1,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
@@ -41,6 +43,7 @@ const starterSession: LocalSessionWithId = {
     },
     wnuIw3JU7FQMJTSAnNs4: {
       status: 'READY',
+      position: 2,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',

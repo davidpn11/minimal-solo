@@ -19,8 +19,8 @@ export function playerReducer(state = initialState, action: PlayerActionTypes): 
     case SET_PLAYER_ID:
       return pipe(
         state,
-        O.fold(
-          () => O.some({ id: action.payload, position: 0, hand: {} }),
+        O.fold<Player, O.Option<Player>>(
+          () => O.some({ id: action.payload, hand: {} }),
           state =>
             O.some({
               ...state,

@@ -82,8 +82,8 @@ export function joinGameSession(
 ): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
-      const session = await requestJoinSession(sessionCode);
-      const player = await requestAddPlayer(session.id, name, playerId);
+      const { session, playersCount } = await requestJoinSession(sessionCode);
+      const player = await requestAddPlayer(session.id, name, playerId, playersCount);
       dispatch(setGameSession(session));
       dispatch(addPlayers({ [playerId]: player }));
       return E.right(session);

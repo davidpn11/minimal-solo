@@ -11,6 +11,7 @@ export function PlayerDeckStory() {
   const cardCount = number('Card Count', 8);
   const player: SessionPlayer = {
     name: playerName,
+    position: 0,
     status: 'READY',
     avatar: createAvatar(),
     hand: A.range(1, cardCount).map(() => random.uuid()),

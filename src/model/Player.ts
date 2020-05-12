@@ -20,6 +20,7 @@ export type PlayerStatus = 'READY' | 'NOT_READY' | 'ADMIN';
 export type SessionPlayer = {
   name: string;
   hand: string[];
+  position: number;
   avatar: PlayerAvatar;
   status: PlayerStatus;
 };
@@ -28,6 +29,5 @@ export type SessionPlayerWithId = SessionPlayer & ID;
 
 export type Player = {
   id: string;
-  position: number;
   hand: Normalized<Card>;
 };
