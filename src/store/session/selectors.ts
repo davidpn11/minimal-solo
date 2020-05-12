@@ -1,9 +1,12 @@
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
+import * as A from 'fp-ts/lib/Array';
+import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
+import { pipe } from 'fp-ts/lib/pipeable';
+
 import { ReduxStore } from '../rootReducer';
 import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
 import { SessionPlayer } from '../../model/Player';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
 
@@ -47,6 +50,28 @@ export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
     O.fold(
       () => ({}),
       session => session.players,
+    ),
+  );
+
+export const ordPlayersByPosition: Ord<SessionPlayer> = pipe(
+  ordNumber,
+  contramap(player => player.position),
+);
+
+export const getOrderedPlayers = (state: ReduxStore): SessionPlayer[] =>
+  pipe(
+    state.session,
+    O.fold(
+      () => [],
+      session =>
+        pipe(
+          R.toArray(session.players),
+          A.map(([id, player]) => ({
+            id,
+            ...player,
+          })),
+          A.sort(ordPlayersByPosition),
+        ),
     ),
   );
 
