@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { TableWrapper } from './styles';
 import { PlayerDeck } from '../../../../components/PlayerDeck';
-import { getCurrentCard, getAllPlayers } from '../../../../store/session/selectors';
 import { ActionArea } from '../../../../components/ActionArea';
+import { getCurrentCard, getOrderedPlayers } from '../../../../store/session/selectors';
 
 export default function GameTable() {
-  const players = useSelector(getAllPlayers);
+  const players = useSelector(getOrderedPlayers);
   const currentCard = useSelector(getCurrentCard);
 
   return (
@@ -17,8 +17,8 @@ export default function GameTable() {
         onDeckClick={() => console.log('Deck')}
         onCurrentClick={() => console.log('Current')}
       />
-      {Object.values(players).map((player, index) => (
-        <PlayerDeck key={`${player.name}-player-${index}`} player={player} playerPosition={index} />
+      {players.map((player, index) => (
+        <PlayerDeck key={`${player.id}-player-${index}`} player={player} playerPosition={index} />
       ))}
     </TableWrapper>
   );
