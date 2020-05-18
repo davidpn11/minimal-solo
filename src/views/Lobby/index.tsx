@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
@@ -8,11 +8,10 @@ import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 import { Button } from '../../components/Button';
 import {
   allPlayersReady,
-  getAllPlayers,
   getCurrentSessionPlayer,
   getSessionValue,
 } from '../../store/session/selectors';
-import { isCurrentPlayerAdmin, getPlayerId } from '../../store/playerHand/selector';
+import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/selector';
 import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
 import { JoinModal } from './components/JoinModal';
@@ -20,7 +19,7 @@ import { JoinModal } from './components/JoinModal';
 export default function Lobby() {
   const currentSession = useSelector(getSessionValue);
   const isAllPlayersReady = useSelector(allPlayersReady);
-  const currentPlayerId = useSelector(getPlayerId);
+  const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();

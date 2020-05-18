@@ -3,6 +3,7 @@ import * as O from 'fp-ts/lib/Option';
 import { SessionActionTypes } from './actions';
 import { LocalSessionWithId } from '../../model/Session';
 import { createAvatar } from '../../model/Player';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 const initialState: O.Option<LocalSessionWithId> = O.none;
 
@@ -73,25 +74,36 @@ const starterSession: LocalSessionWithId = {
 };
 
 export function sessionReducer(
-  state = initialState,
+  stateO = initialState,
   action: SessionActionTypes,
 ): O.Option<LocalSessionWithId> {
   switch (action.type) {
     case 'CREATE_SESSION':
-      return O.some(action.payload);
+      return pipe(
+        stateO,
+        O.fold<LocalSessionWithId, O.Option<LocalSessionWithId>>(
+          () => O.some(action.payload),
+          state => {
+            return O.some({
+              ...state,
+              ...action.payload,
+            });
+          },
+        ),
+      );
     case 'CLEAR_SESSION':
       return initialState;
     case 'ADD_PLAYER':
-      if (O.isNone(state)) throw new Error('Cannot add player to unexistent session.');
+      if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
 
       return O.some({
-        ...state.value,
+        ...stateO.value,
         players: {
-          ...state.value.players,
+          ...stateO.value.players,
           ...action.payload,
         },
       });
     default:
-      return state;
+      return stateO;
   }
 }

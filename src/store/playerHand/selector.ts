@@ -1,9 +1,9 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as R from 'fp-ts/lib/Record';
+
 import { ReduxStore } from '../rootReducer';
 import { Player, SessionPlayer } from '../../model/Player';
-import * as R from 'fp-ts/lib/Record';
-import { getUniqueId } from '../../api/firebase';
 
 export const getPlayer = (state: ReduxStore): O.Option<Player> => state.player;
 
@@ -13,11 +13,13 @@ export const getPlayerValue = (state: ReduxStore): Player => {
   return state.player.value;
 };
 
-export const getPlayerId = (state: ReduxStore): string =>
+export const getPlayerIdValue = (state: ReduxStore): string =>
   pipe(
     state.player,
     O.fold(
-      () => getUniqueId(),
+      () => {
+        throw new Error('Cannot get playerId without a player');
+      },
       player => player.id,
     ),
   );

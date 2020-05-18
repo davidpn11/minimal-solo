@@ -6,13 +6,13 @@ import { useSelector } from 'react-redux';
 
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard';
 import { SessionPlayer } from '../model/Player';
-import { getPlayerId, isCurrentPlayerAdmin } from '../store/playerHand/selector';
+import { getPlayerIdValue, isCurrentPlayerAdmin } from '../store/playerHand/selector';
 import { getSessionValue } from '../store/session/selectors';
 import { AdminPlayer, CurrentPlayer, PlayersWrapper } from '../views/Lobby/styles';
 
 export function usePlayersGrid() {
   const currentSession = useSelector(getSessionValue);
-  const currentPlayerId = useSelector(getPlayerId);
+  const currentPlayerId = useSelector(getPlayerIdValue);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
 
   const isCurrentPlayer = (id: string) => currentPlayerId === id;

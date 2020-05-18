@@ -6,8 +6,9 @@ import * as O from 'fp-ts/lib/Option';
 import { LoadSession, loadSessionFromCache } from './helpers';
 import { setGameSession } from '../session/actions';
 import { setPlayerId } from '../playerHand/actions';
-import { ENTRANCE_ROUTE } from '../../App';
 import { unitJSX } from '../../utils/unit';
+import { getUniqueId } from '../../api/firebase';
+import { safeSetItem } from '../../utils/storage';
 
 type Props = {
   children: React.ReactNode;
@@ -16,6 +17,13 @@ type Props = {
 export function PersistGate(props: Props) {
   const [isReady, setReadyStatus] = useState<boolean>(false);
   const dispatch = useDispatch();
+
+  function setNewStorage() {
+    const newPlayerId = getUniqueId();
+    dispatch(setPlayerId(newPlayerId));
+    safeSetItem('playerId', newPlayerId);
+    setReadyStatus(true);
+  }
 
   function rehydrateSessionFromStorage({ session, playerId }: LoadSession) {
     batch(() => {
@@ -26,17 +34,9 @@ export function PersistGate(props: Props) {
   }
 
   useEffect(() => {
-    // We don't need to persist on the initial route
-    if (window.location.pathname === ENTRANCE_ROUTE) {
-      setReadyStatus(true);
-    } else {
-      loadSessionFromCache().then(sessionO => {
-        pipe(
-          sessionO,
-          O.fold(() => setReadyStatus(true), rehydrateSessionFromStorage),
-        );
-      });
-    }
+    loadSessionFromCache().then(sessionO => {
+      pipe(sessionO, O.fold(setNewStorage, rehydrateSessionFromStorage));
+    });
   }, [dispatch]);
 
   if (!isReady) {
