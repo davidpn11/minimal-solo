@@ -47,4 +47,5 @@ export type Play = {
   type: 'PLAY_CARD' | 'DRAW_CARD' | 'ACTION';
   card: Option<Card>;
   target: Option<SessionPlayer>;
+  position: number;
 };

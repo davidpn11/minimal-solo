@@ -93,6 +93,13 @@ export function sessionReducer(
       );
     case 'CLEAR_SESSION':
       return initialState;
+    case 'SET_GAME_PROGRESSION':
+      if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
+
+      return O.some({
+        ...stateO.value,
+        progression: action.payload,
+      });
     case 'ADD_PLAYER':
       if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
 

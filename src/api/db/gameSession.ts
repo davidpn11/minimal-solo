@@ -1,5 +1,5 @@
 import { getSessionRef } from '../firebase';
-import { Normalized } from '../../model/Session';
+import { Normalized, Play } from '../../model/Session';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import { Card } from '../../model/Card';
@@ -47,6 +47,23 @@ export async function requestPlayerHandListener(
             },
           ),
         );
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function requestProgressionListener(
+  sessionId: string,
+  callback: (plays: Normalized<Play>) => void,
+) {
+  try {
+    await getSessionRef(sessionId)
+      .collection('progression')
+      .onSnapshot(querySnapshot => {
+        const progression = normalizeQuery<Play>(querySnapshot);
+        console.log({ progression });
+        callback(progression);
       });
   } catch (error) {
     console.error(error);

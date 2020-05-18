@@ -81,6 +81,7 @@ export function HistoryItemStory() {
           type: playType,
           player,
           target: O.none,
+          position: 0,
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
@@ -93,6 +94,7 @@ export function HistoryItemStory() {
           type: playType,
           player,
           target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
+          position: 0,
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
@@ -106,6 +108,7 @@ export function HistoryItemStory() {
           return {
             type: playType,
             player,
+            position: 0,
             card: O.some({
               color: actionTargetColorKnob,
               value: actionTargetKnob,
@@ -124,6 +127,7 @@ export function HistoryItemStory() {
         return {
           type: playType,
           player,
+          position: 0,
           card: O.some({
             color: 'BLACK',
             value: actionValueKnob,
