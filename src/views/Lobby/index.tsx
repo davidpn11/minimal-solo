@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
@@ -6,8 +6,10 @@ import * as O from 'fp-ts/lib/Option';
 import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 import { JoinModal } from './components/JoinModal';
 import { Button } from '../../components/Button';
+import { ProgressBar } from '../../components/ProgressBar';
 import {
   allPlayersReady,
+  getAllPlayers,
   getCurrentSessionPlayer,
   getSessionValue,
 } from '../../store/session/selectors';
@@ -22,7 +24,9 @@ type Props = {
 };
 
 export default function Lobby(props: Props) {
+  const [progress, setProgress] = useState(0);
   const currentSession = useSelector(getSessionValue);
+  const allPlayers = useSelector(getAllPlayers);
   const isAllPlayersReady = useSelector(allPlayersReady);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
@@ -31,10 +35,27 @@ export default function Lobby(props: Props) {
   const isStarting = props.status === 'STARTING';
   useSessionListener();
 
+  useEffect(
+    function controlProgress() {
+      const playersList = Object.values(allPlayers);
+      const playersWithCards = playersList.filter(player => player.hand.length > 0).length;
+      const totalPlayerCount = playersList.length;
+
+      if (playersWithCards > 0) {
+        const handProgress = playersWithCards / totalPlayerCount;
+        const initPlaceholder = 0.1;
+        const currentProgress = handProgress - initPlaceholder;
+        setProgress(currentProgress * 100);
+      }
+    },
+    [allPlayers],
+  );
+
   const { toggleStatus, startGame } = useMatchMaker();
 
   return (
     <Page>
+      {isStarting && <ProgressBar progress={progress} />}
       <LobbyWrapper>
         <Title>Room Code</Title>
         <Code>{currentSession.code}</Code>
