@@ -15,6 +15,7 @@ import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/s
 import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
 import { LocalNoGameSession } from '../../model/Session';
+import { useSessionListener } from '../../hooks/useSessionListener';
 
 type Props = {
   status: LocalNoGameSession['status'];
@@ -28,6 +29,7 @@ export default function Lobby(props: Props) {
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();
   const isStarting = props.status === 'STARTING';
+  useSessionListener();
 
   const { toggleStatus, startGame } = useMatchMaker();
 
