@@ -1,49 +1,73 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 import { BoardWrapper, GameWrapper, Main } from './styles';
-import { PlayerHand } from '../../components/PlayerHand';
-import GameTable from './components/GameTable';
-import { getSession } from '../../store/session/selectors';
 import Lobby from '../Lobby';
 import GameEngine from '../../GameEngine';
+import GameTable from './components/GameTable';
+import { PlayerHand } from '../../components/PlayerHand';
+import { Side } from '../../components/Side';
+import { getSession } from '../../store/session/selectors';
 import { useSessionListener } from '../../hooks/useSessionListener';
 import { getPlayer } from '../../store/playerHand/selector';
-import { Side } from '../../components/Side';
-
-const TEST_MODE = true;
+import { unitJSX } from '../../utils/unit';
+import { getFullSessionByCode } from '../../api/firebase';
+import { setGameSession } from '../../store/session/actions';
 
 export default function GameRouter() {
-  const currentSession = useSelector(getSession);
-  const player = useSelector(getPlayer);
+  const currentSessionO = useSelector(getSession);
+  const playerO = useSelector(getPlayer);
+  const dispatch = useDispatch();
   const history = useHistory();
-  const hasSession = !!currentSession.code;
   useSessionListener();
 
-  if (!hasSession && !TEST_MODE) {
-    history.push('/');
-  }
+  const match = useRouteMatch<{ code: string }>();
 
-  switch (currentSession.status) {
-    case 'INITIAL':
-      return <Lobby />;
-    case 'STARTED':
-      return (
-        <GameEngine>
-          <GameWrapper>
-            <Main>
-              <BoardWrapper>
-                <GameTable />
-              </BoardWrapper>
-              {/* These props will come from the Engine */}
-              <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
-            </Main>
-            <Side />
-          </GameWrapper>
-        </GameEngine>
-      );
-    default:
-      throw new Error('Not a valid session status');
-  }
+  useEffect(() => {
+    pipe(match.params.code, getFullSessionByCode)
+      .then(session => dispatch(setGameSession(session)))
+      .catch(err => {
+        console.error(err);
+        return history.push('/');
+      });
+  }, [match.params]);
+
+  return pipe(
+    currentSessionO,
+    O.fold(
+      () => unitJSX,
+      session => {
+        switch (session.status) {
+          case 'INITIAL':
+            return <Lobby />;
+          case 'STARTED':
+            return pipe(
+              playerO,
+              O.fold(
+                () => unitJSX,
+                player => (
+                  <GameEngine>
+                    <GameWrapper>
+                      <Main>
+                        <BoardWrapper>
+                          <GameTable />
+                        </BoardWrapper>
+                        {/* These props will come from the Engine */}
+                        <PlayerHand pass="CANNOT_PASS" solo="CANNOT_SOLO" cards={player.hand} />
+                      </Main>
+                      <Side />
+                    </GameWrapper>
+                  </GameEngine>
+                ),
+              ),
+            );
+          default:
+            throw new Error('Not a valid session status');
+        }
+      },
+    ),
+  );
 }

@@ -1,5 +1,9 @@
+import { batch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
 
 import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
@@ -13,8 +17,6 @@ import {
 import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as A from 'fp-ts/lib/Array';
 
 export const CREATE_SESSION = 'CREATE_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
@@ -24,7 +26,6 @@ export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
 
-// export type SessionThunkResult = ThunkResult
 export function setGameSession(session: LocalSessionWithId) {
   return {
     type: CREATE_SESSION,
@@ -81,10 +82,12 @@ export function joinGameSession(
 ): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
   return async (dispatch: SessionThunkDispatch) => {
     try {
-      const session = await requestJoinSession(sessionCode);
-      const player = await requestAddPlayer(session.id, name, playerId);
-      dispatch(setGameSession(session));
-      dispatch(addPlayers({ [playerId]: player }));
+      const { session, playersCount } = await requestJoinSession(sessionCode);
+      const player = await requestAddPlayer(session.id, name, playerId, playersCount);
+      batch(() => {
+        dispatch(setGameSession(session));
+        dispatch(addPlayers({ [playerId]: player }));
+      });
       return E.right(session);
     } catch (error) {
       console.error(error);
@@ -118,11 +121,16 @@ export function startGameSession() {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     try {
       const state = getState();
+
+      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
+
       //Populates player hands
-      const players = await requestDealStartHands(state.session);
+      const players = await requestDealStartHands(state.session.value);
       //Set initial session
-      const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
-      console.log({ startedGameSession });
+      const startedGameSession = await initGameSession(
+        state.session.value,
+        normalizePlayers(players),
+      );
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);

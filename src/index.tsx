@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 
@@ -13,12 +14,14 @@ import { PersistGate } from './store/persistStore';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PersistGate>
-        <ThemeProvider theme={THEME}>
-          <GlobalStyles />
-          <App />
-        </ThemeProvider>
-      </PersistGate>
+      <Router>
+        <PersistGate>
+          <ThemeProvider theme={THEME}>
+            <GlobalStyles />
+            <App />
+          </ThemeProvider>
+        </PersistGate>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),

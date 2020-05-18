@@ -18,6 +18,7 @@ export function LobbyPlayerCardStory() {
   );
   const player: SessionPlayer = {
     name: nameKnob,
+    position: 0,
     status: statusKnob,
     avatar,
     hand: [],

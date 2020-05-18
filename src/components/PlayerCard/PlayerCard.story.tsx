@@ -19,6 +19,7 @@ export function PlayerCardStory() {
 
   const player: SessionPlayer = {
     name: nameKnob,
+    position: 0,
     status: 'READY',
     avatar,
     hand: A.range(1, cardCount).map(() => random.uuid()),

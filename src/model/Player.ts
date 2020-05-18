@@ -1,13 +1,13 @@
-import * as O from 'fp-ts/lib/Option';
 import { random } from 'faker';
-import { ID, Normalized } from './Session';
+
 import { Card } from './Card';
+import { ID, Normalized } from './Session';
 
 export function createAvatar(): PlayerAvatar {
   return {
-    positionX: random.number({ min: -1000, max: 700 }),
-    positionY: random.number({ min: -1000, max: 700 }),
-    scale: random.number({ min: 10, max: 50 }),
+    positionX: random.number({ min: -1400, max: -10 }),
+    positionY: random.number({ min: -1000, max: -10 }),
+    scale: random.number({ min: 5000, max: 5500 }),
   };
 }
 export type PlayerAvatar = {
@@ -20,6 +20,7 @@ export type PlayerStatus = 'READY' | 'NOT_READY' | 'ADMIN';
 export type SessionPlayer = {
   name: string;
   hand: string[];
+  position: number;
   avatar: PlayerAvatar;
   status: PlayerStatus;
 };
@@ -27,6 +28,6 @@ export type SessionPlayer = {
 export type SessionPlayerWithId = SessionPlayer & ID;
 
 export type Player = {
-  id: O.Option<string>;
+  id: string;
   hand: Normalized<Card>;
 };

@@ -12,14 +12,14 @@ import { Logo } from '../../components/Logo';
 import { LocalSessionWithId } from '../../model/Session';
 import { safeClearItem, safeSetItem } from '../../utils/storage';
 import { ReduxThunkDispatch } from '../../store/rootReducer';
-import { getPlayerId } from '../../store/playerHand/selector';
+import { getPlayerIdValue } from '../../store/playerHand/selector';
 import { setPlayerId } from '../../store/playerHand/actions';
 import { createGameSession, joinGameSession, clearSession } from '../../store/session/actions';
 
 export default function Entrance() {
   const dispatch = useDispatch<ReduxThunkDispatch>();
   const history = useHistory();
-  const playerId = useSelector(getPlayerId);
+  const playerId = useSelector(getPlayerIdValue);
 
   useEffect(
     function resetState() {
