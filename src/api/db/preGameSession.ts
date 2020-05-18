@@ -47,6 +47,7 @@ export async function requestCreateSession(
 
   const playerData: SessionPlayer = {
     name: adminName,
+    position: 0,
     hand: [],
     avatar: createAvatar(),
     status: 'ADMIN',
@@ -74,9 +75,12 @@ export async function requestCreateSession(
   };
 }
 
-export async function requestJoinSession(sessionCode: string) {
+export async function requestJoinSession(
+  sessionCode: string,
+): Promise<{ session: LocalSessionWithId; playersCount: number }> {
   const sessionRef = await getSessionRefByCode(sessionCode).get();
   const session = getQueryHead<LocalGameSession>(sessionRef);
+
   return pipe(
     session,
     O.fold(
@@ -88,7 +92,7 @@ export async function requestJoinSession(sessionCode: string) {
         if (size >= MAX_ROOM_SIZE) {
           throw new Error('ROOM IS FULL');
         }
-        return s;
+        return { session: s, playersCount: size };
       },
     ),
   );
@@ -148,9 +152,11 @@ export async function requestAddPlayer(
   sessionId: string,
   name: string,
   playerId: string,
+  position: number,
 ): Promise<SessionPlayerWithId> {
   const initialPlayerData: SessionPlayer = {
     name,
+    position,
     status: 'NOT_READY' as const,
     avatar: createAvatar(),
     hand: [],

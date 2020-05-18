@@ -39,6 +39,7 @@ export type LocalGameSession = Omit<GameSession, 'deck' | 'activeCards' | 'cemet
 
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
+export type LocalSession = LocalGameSession | LocalNoGameSession;
 export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
 
 export type Play = {

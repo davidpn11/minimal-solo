@@ -68,6 +68,7 @@ export function HistoryItemStory() {
 
   const player: SessionPlayer = {
     name: nameKnob,
+    position: 0,
     status: 'READY',
     avatar,
     hand: [],
@@ -91,7 +92,7 @@ export function HistoryItemStory() {
         return {
           type: playType,
           player,
-          target: O.some({ name: targetNameKnob, hand: [], avatar, status: 'READY' }),
+          target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
@@ -111,7 +112,13 @@ export function HistoryItemStory() {
               status: 'PLAY',
               createdAt: 0,
             } as ActionCard),
-            target: O.some({ name: targetNameKnob, hand: [], avatar, status: 'READY' }),
+            target: O.some({
+              name: targetNameKnob,
+              position: 1,
+              hand: [],
+              avatar,
+              status: 'READY',
+            }),
           };
         }
         return {

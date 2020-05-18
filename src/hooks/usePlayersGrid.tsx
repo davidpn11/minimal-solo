@@ -3,15 +3,16 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard';
 import { SessionPlayer } from '../model/Player';
-import { getPlayerId, isCurrentPlayerAdmin } from '../store/playerHand/selector';
-import { getSession } from '../store/session/selectors';
+import { getPlayerIdValue, isCurrentPlayerAdmin } from '../store/playerHand/selector';
+import { getSessionValue } from '../store/session/selectors';
 import { AdminPlayer, CurrentPlayer, PlayersWrapper } from '../views/Lobby/styles';
 
 export function usePlayersGrid() {
-  const currentSession = useSelector(getSession);
-  const currentPlayerId = useSelector(getPlayerId);
+  const currentSession = useSelector(getSessionValue);
+  const currentPlayerId = useSelector(getPlayerIdValue);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
 
   const isCurrentPlayer = (id: string) => currentPlayerId === id;

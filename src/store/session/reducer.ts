@@ -1,14 +1,11 @@
-import { LocalSessionWithId } from '../../model/Session';
-import { SessionActionTypes } from './actions';
-import { createAvatar } from '../../model/Player';
+import * as O from 'fp-ts/lib/Option';
 
-const initialState: LocalSessionWithId = {
-  id: '',
-  code: '',
-  status: 'INITIAL',
-  players: {},
-  admin: '',
-};
+import { SessionActionTypes } from './actions';
+import { LocalSessionWithId } from '../../model/Session';
+import { createAvatar } from '../../model/Player';
+import { pipe } from 'fp-ts/lib/pipeable';
+
+const initialState: O.Option<LocalSessionWithId> = O.none;
 
 const starterSession: LocalSessionWithId = {
   id: 'zXI3d1fis8XoNZUaoQT1',
@@ -17,6 +14,7 @@ const starterSession: LocalSessionWithId = {
   players: {
     J8h4cn1KClXvziBKERdF: {
       status: 'READY',
+      position: 0,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
@@ -31,6 +29,7 @@ const starterSession: LocalSessionWithId = {
     },
     rmmfi2FbizScaJtIcqPO: {
       name: 'David',
+      position: 1,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
@@ -45,6 +44,7 @@ const starterSession: LocalSessionWithId = {
     },
     wnuIw3JU7FQMJTSAnNs4: {
       status: 'READY',
+      position: 2,
       avatar: createAvatar(),
       hand: [
         '2VeveEJPTvYlZZyUHKUH',
@@ -74,23 +74,36 @@ const starterSession: LocalSessionWithId = {
 };
 
 export function sessionReducer(
-  state = initialState,
+  stateO = initialState,
   action: SessionActionTypes,
-): LocalSessionWithId {
+): O.Option<LocalSessionWithId> {
   switch (action.type) {
     case 'CREATE_SESSION':
-      return { ...state, ...action.payload };
+      return pipe(
+        stateO,
+        O.fold<LocalSessionWithId, O.Option<LocalSessionWithId>>(
+          () => O.some(action.payload),
+          state => {
+            return O.some({
+              ...state,
+              ...action.payload,
+            });
+          },
+        ),
+      );
     case 'CLEAR_SESSION':
       return initialState;
     case 'ADD_PLAYER':
-      return {
-        ...state,
+      if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
+
+      return O.some({
+        ...stateO.value,
         players: {
-          ...state.players,
+          ...stateO.value.players,
           ...action.payload,
         },
-      };
+      });
     default:
-      return state;
+      return stateO;
   }
 }

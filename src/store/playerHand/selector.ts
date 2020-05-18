@@ -1,41 +1,66 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as R from 'fp-ts/lib/Record';
+
 import { ReduxStore } from '../rootReducer';
 import { Player, SessionPlayer } from '../../model/Player';
-import * as R from 'fp-ts/lib/Record';
-import { getUniqueId } from '../../api/firebase';
 
-export const getPlayer = (state: ReduxStore): Player => state.player;
+export const getPlayer = (state: ReduxStore): O.Option<Player> => state.player;
 
-export const getPlayerId = (state: ReduxStore): string =>
+export const getPlayerValue = (state: ReduxStore): Player => {
+  if (O.isNone(state.player)) throw new Error('Cannot get player value when there is no player.');
+
+  return state.player.value;
+};
+
+export const getPlayerIdValue = (state: ReduxStore): string =>
   pipe(
-    state.player.id,
+    state.player,
     O.fold(
-      () => getUniqueId(),
-      playerId => playerId,
+      () => {
+        throw new Error('Cannot get playerId without a player');
+      },
+      player => player.id,
     ),
   );
 
 export const isCurrentPlayerAdmin = (state: ReduxStore): boolean =>
   pipe(
-    state.player.id,
+    state.player,
     O.fold(
       () => false,
-      playerId => playerId === state.session.admin,
+      player =>
+        pipe(
+          state.session,
+          O.fold(
+            () => false,
+            session => player.id === session.admin,
+          ),
+        ),
     ),
   );
 
 export const getPlayerHandIds = (state: ReduxStore) => {
-  const lookHand = (playerId: string) =>
+  const lookHand = (player: Player) =>
     pipe(
-      R.lookup(playerId, state.session.players),
+      state.session,
       O.fold(
-        () => [],
-        (p: SessionPlayer) => p.hand,
+        () => {
+          throw new Error('Cannot get the player hand without a session');
+        },
+        session =>
+          pipe(
+            R.lookup(player.id, session.players),
+            O.fold(
+              () => [],
+              (p: SessionPlayer) => p.hand,
+            ),
+          ),
       ),
     );
+
   return pipe(
-    state.player.id,
+    state.player,
     O.fold(() => [], lookHand),
   );
 };
