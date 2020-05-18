@@ -5,7 +5,7 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
+import { LocalGameSession, LocalSessionWithId, Normalized, Play } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
@@ -77,8 +77,10 @@ export const getOrderedPlayers = (state: ReduxStore): SessionPlayerWithId[] =>
 
 export const getPlays = (state: ReduxStore): Play[] => {
   if (O.isNone(state.session)) throw new Error('Cannot get plays without session.');
-  if (state.session.value.status === 'INITIAL') return [];
-  return Object.values(state.session.value.progression);
+  const { status } = state.session.value;
+  if (status === 'INITIAL' || status === 'STARTING') return [];
+
+  return Object.values((state.session.value as LocalGameSession).progression);
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {

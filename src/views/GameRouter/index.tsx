@@ -10,9 +10,8 @@ import GameEngine from '../../GameEngine';
 import GameTable from './components/GameTable';
 import { PlayerHand } from '../../components/PlayerHand';
 import { Side } from '../../components/Side';
-import { getSession } from '../../store/session/selectors';
-import { useSessionListener } from '../../hooks/useSessionListener';
-import { getPlayer } from '../../store/playerHand/selector';
+import { getAllPlayers, getSession } from '../../store/session/selectors';
+import { getPlayer, getPlayerIdValue } from '../../store/playerHand/selector';
 import { unitJSX } from '../../utils/unit';
 import { getFullSessionByCode } from '../../api/firebase';
 import { setGameSession } from '../../store/session/actions';
@@ -22,7 +21,9 @@ export default function GameRouter() {
   const playerO = useSelector(getPlayer);
   const dispatch = useDispatch();
   const history = useHistory();
-  useSessionListener();
+  const players = useSelector(getAllPlayers);
+  const currentPlayerId = useSelector(getPlayerIdValue);
+  const isPlaying = Object.keys(players).some(playerId => playerId === currentPlayerId);
 
   const match = useRouteMatch<{ code: string }>();
 
@@ -42,8 +43,14 @@ export default function GameRouter() {
       session => {
         switch (session.status) {
           case 'INITIAL':
-            return <Lobby />;
+          case 'STARTING':
+            return <Lobby status={session.status} />;
           case 'STARTED':
+            if (!isPlaying) {
+              history.push('/');
+              return unitJSX;
+            }
+
             return pipe(
               playerO,
               O.fold(

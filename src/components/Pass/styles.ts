@@ -24,6 +24,7 @@ export const PassButton = styled.button<PassButtonProps>`
     props.isPassable &&
     css`
       cursor: pointer;
+      border-color: ${props.theme.colors.blueBase};
 
       :hover {
         background: ${props.theme.colors.blueBase};
