@@ -9,8 +9,6 @@ import { LocalSessionWithId, Normalized, Play, LocalGameSession, ID } from '../.
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
-import { SoloButtonStates } from '../../components/Solo/styles';
-import { PassButtonStates } from '../../components/Pass';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
@@ -25,10 +23,10 @@ export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
 export const getStartedSession = (state: ReduxStore): LocalGameSession & ID => {
   const session = getSessionValue(state);
 
-  if (session.status === 'INITIAL') {
-    throw new Error('Session Not started');
+  if (session.status === 'STARTED') {
+    return session;
   }
-  return session;
+  throw new Error('Session Not started');
 };
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
@@ -89,8 +87,10 @@ export const getOrderedPlayers = (state: ReduxStore): SessionPlayerWithId[] =>
 
 export const getPlays = (state: ReduxStore): Play[] => {
   if (O.isNone(state.session)) throw new Error('Cannot get plays without session.');
-  if (state.session.value.status === 'INITIAL') return [];
-  return Object.values(state.session.value.progression);
+  const { status } = state.session.value;
+  if (status === 'INITIAL' || status === 'STARTING') return [];
+
+  return Object.values((state.session.value as LocalGameSession).progression);
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {

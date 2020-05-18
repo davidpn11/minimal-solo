@@ -3,7 +3,7 @@ import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
 import { UnionExclude } from './types';
 
-export type SessionStatus = 'INITIAL' | 'STARTED' | 'FINISHED';
+export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type ID = { id: string };
 
 export type Normalized<T> = {
@@ -12,7 +12,7 @@ export type Normalized<T> = {
 
 export type NoGameSession = {
   code: string;
-  status: 'INITIAL';
+  status: 'INITIAL' | 'STARTING';
   admin: string;
   deck: Normalized<Card>;
   players: Normalized<SessionPlayer>;
@@ -22,7 +22,7 @@ export type LocalNoGameSession = Omit<NoGameSession, 'deck'>;
 
 export type GameSession = {
   code: string;
-  status: UnionExclude<SessionStatus, 'INITIAL'>;
+  status: UnionExclude<SessionStatus, 'INITIAL' | 'STARTING'>;
   admin: string;
   deck: Normalized<Card>;
   activeCards: Normalized<Card>;

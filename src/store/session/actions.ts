@@ -18,18 +18,19 @@ import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
 
-export const CREATE_SESSION = 'CREATE_SESSION' as const;
+export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
 export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
+export const SETUP_GAME = 'SETUP_GAME' as const;
 
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
 
 export function setGameSession(session: LocalSessionWithId) {
   return {
-    type: CREATE_SESSION,
+    type: SET_SESSION,
     payload: session,
   };
 }
@@ -57,6 +58,12 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   return {
     type: ADD_PLAYER,
     payload: player,
+  };
+}
+
+function setupGame() {
+  return {
+    type: SETUP_GAME,
   };
 }
 
@@ -131,6 +138,9 @@ export function startGameSession() {
 
       if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
 
+      // Set game starting
+      dispatch(setupGame());
+
       //Populates player hands
       const players = await requestDealStartHands(state.session.value);
       //Set initial session
@@ -151,4 +161,5 @@ export type SessionActionTypes = ReturnType<
   | typeof clearSession
   | typeof setPlayer
   | typeof setGameProgression
+  | typeof setupGame
 >;

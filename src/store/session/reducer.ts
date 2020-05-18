@@ -1,6 +1,13 @@
 import * as O from 'fp-ts/lib/Option';
 
-import { SessionActionTypes } from './actions';
+import {
+  ADD_PLAYER,
+  CLEAR_SESSION,
+  SessionActionTypes,
+  SET_SESSION,
+  SETUP_GAME,
+  SET_GAME_PROGRESSION,
+} from './actions';
 import { LocalSessionWithId } from '../../model/Session';
 import { createAvatar } from '../../model/Player';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -78,7 +85,7 @@ export function sessionReducer(
   action: SessionActionTypes,
 ): O.Option<LocalSessionWithId> {
   switch (action.type) {
-    case 'CREATE_SESSION':
+    case SET_SESSION:
       return pipe(
         stateO,
         O.fold<LocalSessionWithId, O.Option<LocalSessionWithId>>(
@@ -91,16 +98,16 @@ export function sessionReducer(
           },
         ),
       );
-    case 'CLEAR_SESSION':
+    case CLEAR_SESSION:
       return initialState;
-    case 'SET_GAME_PROGRESSION':
+    case SET_GAME_PROGRESSION:
       if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
 
       return O.some({
         ...stateO.value,
         progression: action.payload,
       });
-    case 'ADD_PLAYER':
+    case ADD_PLAYER:
       if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
 
       return O.some({
@@ -109,6 +116,13 @@ export function sessionReducer(
           ...stateO.value.players,
           ...action.payload,
         },
+      });
+    case SETUP_GAME:
+      if (O.isNone(stateO)) throw new Error('Cannot setup game on unexistent session.');
+
+      return O.some({
+        ...stateO.value,
+        status: 'STARTING',
       });
     default:
       return stateO;
