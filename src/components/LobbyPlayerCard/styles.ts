@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
+import { rgba } from 'polished';
+
 import { WithMinimalSoloTheme } from '../../theme';
 import { PlayerAvatar } from '../../model/Player';
-import { rgba } from 'polished';
 
 export type LobbyPlayerStatus = 'ADMIN' | 'READY' | 'NOT_READY';
 type WrapperProps = { status: LobbyPlayerStatus };
@@ -50,9 +51,9 @@ export const PlayerImage = styled.div<{ src: string; avatar: PlayerAvatar }>`
   min-height: 32px;
   min-width: 32px;
   background: url("${props => props.src}");
-  background-repeat: repeat;
+  background-repeat: no-repeat;
   background-size: ${props => props.avatar.scale}%;
-  background-position-x: -${props => props.avatar.positionX}px;
+  background-position-x: ${props => props.avatar.positionX}px;
   background-position-y: ${props => props.avatar.positionY}px;
 `;
 

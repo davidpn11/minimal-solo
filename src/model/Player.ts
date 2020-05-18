@@ -5,9 +5,9 @@ import { ID, Normalized } from './Session';
 
 export function createAvatar(): PlayerAvatar {
   return {
-    positionX: random.number({ min: -1000, max: 700 }),
-    positionY: random.number({ min: -1000, max: 700 }),
-    scale: random.number({ min: 10, max: 50 }),
+    positionX: random.number({ min: -1400, max: -10 }),
+    positionY: random.number({ min: -1000, max: -10 }),
+    scale: random.number({ min: 5000, max: 5500 }),
   };
 }
 export type PlayerAvatar = {
