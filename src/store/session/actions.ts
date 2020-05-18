@@ -26,6 +26,8 @@ export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
 export const SETUP_GAME = 'SETUP_GAME' as const;
+export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER' as const;
+export const SET_CURRENT_PLAY = 'SET_CURRENT_PLAY' as const;
 
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
@@ -66,6 +68,20 @@ function addPlayers(player: Normalized<SessionPlayer>) {
 function setupGame() {
   return {
     type: SETUP_GAME,
+  };
+}
+
+export function setCurrentPlayer(playerId: string) {
+  return {
+    type: SET_CURRENT_PLAYER,
+    payload: playerId,
+  };
+}
+
+export function setCurrentPlay(playId: string) {
+  return {
+    type: SET_CURRENT_PLAY,
+    payload: playId,
   };
 }
 
@@ -179,4 +195,6 @@ export type SessionActionTypes = ReturnType<
   | typeof setPlayer
   | typeof setGameProgression
   | typeof setupGame
+  | typeof setCurrentPlayer
+  | typeof setCurrentPlay
 >;

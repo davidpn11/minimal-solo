@@ -4,7 +4,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import { Card } from '../../model/Card';
 import * as A from 'fp-ts/lib/Array';
-import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 import { SessionPlayer } from '../../model/Player';
 import { Play } from '../../model/Play';

@@ -2,9 +2,10 @@ import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import * as O from 'fp-ts/lib/Option';
+import { random } from 'faker';
 
 import { HistoryItem } from './';
-import { createAvatar, SessionPlayer } from '../../model/Player';
+import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
 import { Play } from '../../model/Play';
@@ -66,7 +67,8 @@ export function HistoryItemStory() {
   const actionValueKnob = select('Action Cards', ACTION_VALUES, 'SWAP_ALL');
   const actionTargetKnob = select('Action Cards with Target', ACTION_TARGET_VALUES, 'SWAP');
 
-  const player: SessionPlayer = {
+  const player: SessionPlayerWithId = {
+    id: random.uuid(),
     name: nameKnob,
     position: 0,
     status: 'READY',

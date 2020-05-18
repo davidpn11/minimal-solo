@@ -1,16 +1,24 @@
-import { SessionPlayer } from './Player';
+import { SessionPlayer, SessionPlayerWithId } from './Player';
 import * as O from 'fp-ts/lib/Option';
 import { Card } from './Card';
+import { ID } from './Session';
 
 export type Play = {
-  player: SessionPlayer;
+  player: SessionPlayerWithId;
   type: 'PLAY_CARD' | 'DRAW_CARD' | 'ACTION' | 'PASS';
   card: O.Option<Card>;
   target: O.Option<SessionPlayer>;
   position: number;
 };
 
-export function createPassPlay(player: SessionPlayer, position: number): Play {
+export type PlayWithId = Play & ID;
+
+export const isCardPlay = (play: Play) => play.type === 'PLAY_CARD';
+export const isCardDraw = (play: Play) => play.type === 'DRAW_CARD';
+export const isAction = (play: Play) => play.type === 'ACTION';
+export const isPass = (play: Play) => play.type === 'PASS';
+
+export function createPassPlay(player: SessionPlayerWithId, position: number): Play {
   return {
     player,
     type: 'PASS',

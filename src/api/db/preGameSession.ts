@@ -7,7 +7,13 @@ import {
   ID,
 } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
-import { SessionPlayer, PlayerStatus, SessionPlayerWithId, createAvatar } from '../../model/Player';
+import {
+  SessionPlayer,
+  PlayerStatus,
+  SessionPlayerWithId,
+  createAvatar,
+  getSessionPlayerByPosition,
+} from '../../model/Player';
 import { buildOne, sortDeck, Card } from '../../model/Card';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
@@ -273,16 +279,13 @@ export async function initGameSession(
 ): Promise<LocalSessionWithId> {
   const sessionRef = getSessionRef(session.id);
   const { players, ...sessionRest } = session;
-  const randPlayer = () => {
-    const array = pipe(session.players, R.keys);
-    return array[Math.floor(Math.random() * array.length)];
-  };
 
   const currentCard = await requestSetCurrentCard(sessionRef);
   const newSession: Partial<LocalSessionWithId> = {
     ...sessionRest,
     status: 'STARTED',
-    currentPlayer: randPlayer(),
+    currentPlayer: getSessionPlayerByPosition(players, 0).id,
+    currentPlay: '',
     direction: 'RIGHT',
     winner: O.none,
     currentCard: currentCard,

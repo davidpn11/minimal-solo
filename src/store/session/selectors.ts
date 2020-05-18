@@ -10,7 +10,7 @@ import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
-import { Play } from '../../model/Play';
+import { Play, PlayWithId } from '../../model/Play';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
 
@@ -127,4 +127,36 @@ export const getPlayerActions = (state: ReduxStore): PlayerActions => {
   }
 
   return initialPlayerActions;
+};
+
+const ordPlaysByPosition: Ord<PlayWithId> = pipe(
+  ordNumber,
+  contramap(play => play.position),
+);
+
+export const getOrderedProgression = (state: ReduxStore): PlayWithId[] => {
+  const session = getStartedSession(state);
+
+  return pipe(
+    session.progression,
+    R.toArray,
+    A.map(([id, play]) => ({ id, ...play })),
+    A.sort(ordPlaysByPosition),
+  );
+};
+
+export function getLastPlayPosition(state: ReduxStore): number {
+  return pipe(
+    state,
+    getOrderedProgression,
+    A.last,
+    O.fold(
+      () => -1, // will become 0 if it's the first
+      play => play.position,
+    ),
+  );
+}
+
+export const getCurrentPlay = (state: ReduxStore): string => {
+  return pipe(getStartedSession(state), session => session.currentPlay);
 };

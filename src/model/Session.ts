@@ -31,6 +31,7 @@ export type GameSession = {
   currentCard: Card;
   players: Normalized<SessionPlayer>;
   currentPlayer: string;
+  currentPlay: string;
   direction: 'LEFT' | 'RIGHT';
   progression: Normalized<Play>;
   winner: Option<SessionPlayer>;

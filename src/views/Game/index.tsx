@@ -5,8 +5,8 @@ import { BoardWrapper, GameWrapper, Main } from './styles';
 import GameTable from './components/GameTable';
 import { PlayerHand } from '../../components/PlayerHand';
 import { Side } from '../../components/Side';
-import { useHandListener } from '../../hooks/useHandListener';
-import { useProgressionListener } from '../../hooks/useProgressionListener';
+import { useHandListener } from './hooks/useHandListener';
+import { useProgressionListener } from './hooks/useProgressionListener';
 import { getPlayerValue } from '../../store/playerHand/selector';
 
 export function Game() {
