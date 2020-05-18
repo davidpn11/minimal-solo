@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './store';
 import { THEME } from './theme';
 import { GlobalStyles } from './styles';
+import App from './views/App';
+import Entrance from './views/Entrance';
 import { PersistGate } from './store/persistStore';
+
+export const ENTRANCE_ROUTE = '/' as const;
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,7 +21,10 @@ ReactDOM.render(
         <PersistGate>
           <ThemeProvider theme={THEME}>
             <GlobalStyles />
-            <App />
+            <Switch>
+              <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
+              <Route path="/room/:code" component={App} />
+            </Switch>
           </ThemeProvider>
         </PersistGate>
       </Router>
