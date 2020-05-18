@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
 import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
-
+import { JoinModal } from './components/JoinModal';
 import { Button } from '../../components/Button';
 import {
   allPlayersReady,
@@ -14,15 +14,20 @@ import {
 import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/selector';
 import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
-import { JoinModal } from './components/JoinModal';
+import { LocalNoGameSession } from '../../model/Session';
 
-export default function Lobby() {
+type Props = {
+  status: LocalNoGameSession['status'];
+};
+
+export default function Lobby(props: Props) {
   const currentSession = useSelector(getSessionValue);
   const isAllPlayersReady = useSelector(allPlayersReady);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();
+  const isStarting = props.status === 'STARTING';
 
   const { toggleStatus, startGame } = useMatchMaker();
 
@@ -40,11 +45,12 @@ export default function Lobby() {
               () => <div />,
               player =>
                 isAdmin ? (
-                  <Button onClick={startGame} disabled={!isAllPlayersReady}>
+                  <Button onClick={startGame} disabled={!isAllPlayersReady || isStarting}>
                     Start Game
                   </Button>
                 ) : (
                   <Button
+                    disabled={isStarting}
                     variant={player.status === 'READY' ? 'secondary' : 'primary'}
                     onClick={toggleStatus(currentPlayerId, player.status)}
                   >

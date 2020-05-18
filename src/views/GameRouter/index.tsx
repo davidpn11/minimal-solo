@@ -42,7 +42,8 @@ export default function GameRouter() {
       session => {
         switch (session.status) {
           case 'INITIAL':
-            return <Lobby />;
+          case 'STARTING':
+            return <Lobby status={session.status} />;
           case 'STARTED':
             return pipe(
               playerO,
