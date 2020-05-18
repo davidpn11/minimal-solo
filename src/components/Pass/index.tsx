@@ -26,7 +26,12 @@ export function Pass(props: Props) {
   const { isPassable, isActive } = mapStates(props.state);
 
   return (
-    <PassButton isPassable={isPassable} isActive={isActive} onClick={props.onClick}>
+    <PassButton
+      isPassable={isPassable}
+      isActive={isActive}
+      onClick={props.onClick}
+      disabled={props.state !== 'CAN_PASS'}
+    >
       <PassIcon />
     </PassButton>
   );

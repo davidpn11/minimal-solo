@@ -2,6 +2,7 @@ import { SessionPlayer } from './Player';
 import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
 import { UnionExclude } from './types';
+import { Play } from './Play';
 
 export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type ID = { id: string };
@@ -41,11 +42,3 @@ export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
 export type LocalSession = LocalGameSession | LocalNoGameSession;
 export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
-
-export type Play = {
-  player: SessionPlayer;
-  type: 'PLAY_CARD' | 'DRAW_CARD' | 'ACTION';
-  card: Option<Card>;
-  target: Option<SessionPlayer>;
-  position: number;
-};

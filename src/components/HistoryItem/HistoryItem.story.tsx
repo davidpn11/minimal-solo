@@ -5,9 +5,9 @@ import * as O from 'fp-ts/lib/Option';
 
 import { HistoryItem } from './';
 import { createAvatar, SessionPlayer } from '../../model/Player';
-import { Play } from '../../model/Session';
 import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
+import { Play } from '../../model/Play';
 
 const avatar = createAvatar();
 

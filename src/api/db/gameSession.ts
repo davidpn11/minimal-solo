@@ -1,5 +1,5 @@
 import { getSessionRef } from '../firebase';
-import { Normalized, Play } from '../../model/Session';
+import { Normalized } from '../../model/Session';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import { Card } from '../../model/Card';
@@ -7,6 +7,7 @@ import * as A from 'fp-ts/lib/Array';
 import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 import { SessionPlayer } from '../../model/Player';
+import { Play } from '../../model/Play';
 
 export async function requestGetPlayerHand(
   sessionId: string,
@@ -68,4 +69,11 @@ export async function requestProgressionListener(
   } catch (error) {
     console.error(error);
   }
+}
+
+export async function requestAddPlay(sessionId: string, play: Play) {
+  const sessionRef = getSessionRef(sessionId);
+
+  const progression = await sessionRef.collection('progression').add(play);
+  return progression;
 }

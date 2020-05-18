@@ -1,14 +1,15 @@
 import * as O from 'fp-ts/lib/Option';
-import { Play } from '../../../model/Session';
 import { Value } from '../../../model/Card';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { SessionPlayer } from '../../../model/Player';
+import { Play } from '../../../model/Play';
 
 type Story = string;
 
 const isCardPlay = (play: Play) => play.type === 'PLAY_CARD';
 const isCardDraw = (play: Play) => play.type === 'DRAW_CARD';
 const isAction = (play: Play) => play.type === 'ACTION';
+const isPass = (play: Play) => play.type === 'PASS';
 
 function mapCardValue(value: Value): string {
   switch (value) {
@@ -104,9 +105,14 @@ function mapActionToStory(play: Play): Story {
   return pipe(play.target, O.fold(mapGameActionToStory(play), mapTargetActionToStory(play)));
 }
 
+function mapPassToStory(play: Play): Story {
+  return `Passed his turn.`;
+}
+
 export function tellThisPlayStory(play: Play): Story {
   if (isCardDraw(play)) return 'Drew a card.';
   if (isCardPlay(play)) return mapCardPlayToStory(play);
   if (isAction(play)) return mapActionToStory(play);
+  if (isPass(play)) return mapPassToStory(play);
   throw new Error('Impossible state while trying to tell a story.');
 }

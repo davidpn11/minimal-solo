@@ -14,9 +14,11 @@ import {
   requestDealStartHands,
   initGameSession,
 } from '../../api/db/preGameSession';
-import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
+import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
+import { Play } from '../../model/Play';
+import { requestAddPlay } from '../../api/db/gameSession';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
@@ -149,6 +151,21 @@ export function startGameSession() {
         normalizePlayers(players),
       );
       dispatch(setGameSession(startedGameSession));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
+
+export function addPlay(play: Play) {
+  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+    try {
+      const state = getState();
+
+      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
+
+      const result = await requestAddPlay(state.session.value.id, play);
+      console.log({ result });
     } catch (error) {
       console.error(error);
     }

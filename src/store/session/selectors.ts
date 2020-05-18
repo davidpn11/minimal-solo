@@ -5,11 +5,12 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import { LocalSessionWithId, Normalized, Play, LocalGameSession, ID } from '../../model/Session';
+import { LocalSessionWithId, Normalized, LocalGameSession, ID } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
+import { Play } from '../../model/Play';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
 
