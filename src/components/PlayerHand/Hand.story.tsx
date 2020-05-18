@@ -31,7 +31,9 @@ export function PlayerHandStory() {
 
   return (
     <PlayerHand
+      onSolo={() => {}}
       solo={soloStatesKnob}
+      onPass={() => {}}
       pass={passStatesKnob}
       cards={pipe(
         deck,

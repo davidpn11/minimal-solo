@@ -8,7 +8,6 @@ import { setGameProgression } from '../store/session/actions';
 export function useProgressionListener() {
   const currentSession = useSelector(getSessionValue);
   const [hasListener, setHasListener] = useState<boolean>(false);
-  const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {

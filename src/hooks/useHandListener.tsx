@@ -3,19 +3,45 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as A from 'fp-ts/lib/Array';
 import { eqString } from 'fp-ts/lib/Eq';
 
-import { getSessionValue } from '../store/session/selectors';
+import {
+  getCurrentSessionPlayer,
+  getPlayerActions,
+  getSessionValue,
+} from '../store/session/selectors';
 import { getPlayerHandIds, getPlayerValue } from '../store/playerHand/selector';
 import { getPlayerHand } from '../store/playerHand/actions';
 import { requestPlayerHandListener } from '../api/db/gameSession';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
+import { createPassPlay } from '../model/Play';
+import { addPlay } from '../store/session/actions';
+
+const ArrayEq = A.getEq(eqString);
 
 export function useHandListener() {
   const currentSession = useSelector(getSessionValue);
-  const playerHand = useSelector(getPlayerHandIds);
+  const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const player = useSelector(getPlayerValue);
+  const playerHand = useSelector(getPlayerHandIds);
+  const playerActions = useSelector(getPlayerActions);
   const [hasListener, setHasListener] = useState<boolean>(false);
   const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
-  const ArrayEq = A.getEq(eqString);
+
+  function handlePass() {
+    pipe(
+      currentSessionPlayer,
+      O.fold(
+        () => {
+          throw new Error('Cannot pass without a section player.');
+        },
+        sessionPlayer => {
+          const play = createPassPlay(sessionPlayer, 0);
+          dispatch(addPlay(play));
+        },
+      ),
+    );
+  }
 
   useEffect(() => {
     if (!ArrayEq.equals(currPlayerHand, playerHand)) {
@@ -36,5 +62,5 @@ export function useHandListener() {
     }
   }, [currentSession.id, hasListener, dispatch]);
 
-  return { playerHand };
+  return { playerHand, playerActions, handlePass };
 }
