@@ -15,17 +15,15 @@ import {
 import { isCurrentPlayerAdmin, getPlayerId } from '../../store/playerHand/selector';
 import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
+import { JoinModal } from './components/JoinModal';
 
 export default function Lobby() {
   const currentSession = useSelector(getSessionValue);
   const isAllPlayersReady = useSelector(allPlayersReady);
-  const players = useSelector(getAllPlayers);
   const currentPlayerId = useSelector(getPlayerId);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();
-  const playerIds = Object.keys(players);
-  const isPlaying = playerIds.some(playerId => playerId === currentPlayerId);
 
   const { toggleStatus, startGame } = useMatchMaker();
 
@@ -57,6 +55,7 @@ export default function Lobby() {
             ),
           )}
         </ActionWrapper>
+        <JoinModal />
       </LobbyWrapper>
     </Page>
   );
