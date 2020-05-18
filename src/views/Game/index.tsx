@@ -12,7 +12,7 @@ import { getPlayerValue } from '../../store/playerHand/selector';
 export function Game() {
   const player = useSelector(getPlayerValue);
   const { playerActions, handlePass } = useHandListener();
-  useProgressionListener();
+  const { isCurrentPlayer } = useProgressionListener();
 
   return (
     <GameWrapper>

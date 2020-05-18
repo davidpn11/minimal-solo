@@ -11,6 +11,7 @@ import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
 import { Play, PlayWithId } from '../../model/Play';
+import { getPlayerValue } from '../playerHand/selector';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
 
@@ -114,14 +115,13 @@ export const getCurrentCard = (state: ReduxStore): O.Option<Card> =>
   );
 
 export const getPlayerActions = (state: ReduxStore): PlayerActions => {
-  if (
-    O.isSome(state.player) &&
-    O.isSome(state.session) &&
-    state.session.value.status === 'STARTED' &&
-    state.player.value.id === state.session.value.currentPlayer
-  ) {
+  const player = getPlayerValue(state);
+  const currentPlayer = getCurrentPlayer(state);
+
+  if (player.id === currentPlayer) {
     return {
       ...initialPlayerActions,
+      soloAction: Object.keys(player.hand).length === 1 ? 'CAN_SOLO' : 'CANNOT_SOLO',
       passAction: 'CAN_PASS',
     };
   }
@@ -156,6 +156,10 @@ export function getLastPlayPosition(state: ReduxStore): number {
     ),
   );
 }
+
+export const getCurrentPlayer = (state: ReduxStore): string => {
+  return pipe(getStartedSession(state), session => session.currentPlayer);
+};
 
 export const getCurrentPlay = (state: ReduxStore): string => {
   return pipe(getStartedSession(state), session => session.currentPlay);

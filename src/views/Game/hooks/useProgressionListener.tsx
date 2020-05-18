@@ -6,6 +6,7 @@ import * as O from 'fp-ts/lib/Option';
 
 import {
   getCurrentPlay,
+  getCurrentPlayer,
   getOrderedProgression,
   getStartedSession,
 } from '../../../store/session/selectors';
@@ -24,6 +25,7 @@ export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
   const currentSession = useSelector(getStartedSession);
   const currentPlay = useSelector(getCurrentPlay);
+  const currentPlayer = useSelector(getCurrentPlayer);
   const orderedProgression = useSelector(getOrderedProgression);
   const [hasListener, setHasListener] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -70,4 +72,8 @@ export function useProgressionListener() {
       }),
     );
   }, [orderedProgression]);
+
+  return {
+    isCurrentPlayer: currentPlayer === player.id,
+  };
 }

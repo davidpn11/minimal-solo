@@ -1,57 +1,73 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
 
-import { EventCount, HistoryWrapper, PlayersWrapper, Title, Wrapper } from './styles';
-import { PlayerCard } from '../PlayerCard';
 import {
-  getAllPlayers,
-  getPlays,
-  getSessionValue,
-  getStartedSession,
-} from '../../store/session/selectors';
+  EventCount,
+  HeightWrapper,
+  HistoryWrapper,
+  PlayersWrapper,
+  Title,
+  Wrapper,
+} from './styles';
+import { PlayerCard } from '../PlayerCard';
+import { getAllPlayers, getPlays, getStartedSession } from '../../store/session/selectors';
 import { HistoryItem } from '../HistoryItem';
 import { HISTORY_ITEM_HEIGHT } from '../HistoryItem/styles';
-import { getPlayerIdValue } from '../../store/playerHand/selector';
 
 export function Side() {
   const [showCount, setShowCount] = useState(false);
+  const [itemSlots, setItemSlots] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const historyRef = useRef<HTMLDivElement>(null);
+  const heightRef = useRef<HTMLDivElement>(null);
   const players = useSelector(getAllPlayers);
   const plays = useSelector(getPlays);
-  const playerId = useSelector(getPlayerIdValue);
   const currentSession = useSelector(getStartedSession);
 
   useEffect(() => {
-    if (!!wrapperRef.current && !!historyRef.current) {
+    if (!!wrapperRef.current && !!heightRef.current) {
       const wrapperHeight = wrapperRef.current.clientHeight;
-      const historyHeight = historyRef.current.clientHeight;
-      const spaceToUse = wrapperHeight - historyHeight;
-      const itemSlots = Math.floor(spaceToUse / HISTORY_ITEM_HEIGHT);
+      const othersHeight = heightRef.current.clientHeight;
+      const spaceToUse = wrapperHeight - othersHeight - 32;
+      const calculatedSlots = Math.floor(spaceToUse / (HISTORY_ITEM_HEIGHT + 8));
 
-      if (plays.length > itemSlots) setShowCount(true);
-      else setShowCount(false);
+      setItemSlots(calculatedSlots);
     }
-  }, [wrapperRef, historyRef, plays]);
+  }, [wrapperRef, heightRef, plays]);
+
+  useEffect(() => {
+    if (plays.length > itemSlots) {
+      setShowCount(true);
+    } else {
+      setShowCount(false);
+    }
+  }, [itemSlots]);
 
   return (
     <Wrapper ref={wrapperRef}>
-      <Title>Players</Title>
-      <PlayersWrapper>
-        {Object.entries(players).map(([id, player], index) => (
-          <PlayerCard
-            isCurrentPlayer={currentSession.currentPlayer === id}
-            key={`${player.name}-${index}`}
-            player={player}
-          />
-        ))}
-      </PlayersWrapper>
-      <Title>History</Title>
-      <HistoryWrapper ref={historyRef}>
-        {plays.map((play, index) => (
-          <HistoryItem key={`${play.type}-${play.player.name}-${index}`} play={play} />
-        ))}
-        {showCount && <EventCount>{plays.length} more actions happened.</EventCount>}
+      <HeightWrapper ref={heightRef}>
+        <Title>Players</Title>
+        <PlayersWrapper>
+          {Object.entries(players).map(([id, player], index) => (
+            <PlayerCard
+              isCurrentPlayer={currentSession.currentPlayer === id}
+              key={`${player.name}-${index}`}
+              player={player}
+            />
+          ))}
+        </PlayersWrapper>
+        <Title>History</Title>
+      </HeightWrapper>
+      <HistoryWrapper>
+        {pipe(
+          plays,
+          A.takeRight(itemSlots),
+          A.mapWithIndex((index, play) => (
+            <HistoryItem key={`${play.type}-${play.player.name}-${index}`} play={play} />
+          )),
+        )}
+        {showCount && <EventCount>{plays.length - itemSlots} more actions happened.</EventCount>}
       </HistoryWrapper>
     </Wrapper>
   );
