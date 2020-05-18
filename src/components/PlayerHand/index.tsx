@@ -9,6 +9,8 @@ import { Pass, PassButtonStates } from '../Pass';
 import { Card } from '../../model/Card';
 import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
+import { useSelector } from 'react-redux';
+import { getPlayerActions } from '../../store/session/selectors';
 
 type Props = {
   solo: SoloButtonStates;
@@ -17,6 +19,7 @@ type Props = {
 };
 
 export function PlayerHand(props: Props) {
+  const playerActions = useSelector(getPlayerActions);
   function renderCards(): React.ReactNode {
     return pipe(
       props.cards,
@@ -35,9 +38,9 @@ export function PlayerHand(props: Props) {
 
   return (
     <HandWrapper>
-      <Solo state={props.solo} onClick={() => {}} />
+      <Solo state={playerActions.soloAction} onClick={() => {}} />
       <HandCardsWrapper>{renderCards()}</HandCardsWrapper>
-      <Pass state={props.pass} onClick={() => {}} />
+      <Pass state={playerActions.passAction} onClick={() => {}} />
     </HandWrapper>
   );
 }

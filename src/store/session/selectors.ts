@@ -5,10 +5,13 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import { LocalSessionWithId, Normalized, Play } from '../../model/Session';
+import { LocalSessionWithId, Normalized, Play, LocalGameSession, ID } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
+import { SoloButtonStates } from '../../components/Solo/styles';
+import { PassButtonStates } from '../../components/Pass';
+import { PlayerActions, initialPlayerActions } from './helpers/types';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
 
@@ -17,6 +20,15 @@ export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
     throw new Error("Get Session Value can only be used when there's a session");
 
   return state.session.value;
+};
+
+export const getStartedSession = (state: ReduxStore): LocalGameSession & ID => {
+  const session = getSessionValue(state);
+
+  if (session.status === 'INITIAL') {
+    throw new Error('Session Not started');
+  }
+  return session;
 };
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
@@ -99,3 +111,19 @@ export const getCurrentCard = (state: ReduxStore): O.Option<Card> =>
       session => (session.status === 'STARTED' ? O.fromNullable(session.currentCard) : O.none),
     ),
   );
+
+export const getPlayerActions = (state: ReduxStore): PlayerActions => {
+  if (
+    O.isSome(state.player) &&
+    O.isSome(state.session) &&
+    state.session.value.status === 'STARTED' &&
+    state.player.value.id === state.session.value.currentPlayer
+  ) {
+    return {
+      ...initialPlayerActions,
+      passAction: 'CAN_PASS',
+    };
+  }
+
+  return initialPlayerActions;
+};
