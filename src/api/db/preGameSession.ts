@@ -16,7 +16,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 
 export const MAX_ROOM_SIZE = 10;
-export const MIN_ROOM_SIZE = 3;
+export const MIN_ROOM_SIZE = 2;
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
 };
@@ -217,7 +217,17 @@ async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef
       ),
     )
   ) {
-    currentCard = popDeckCards(deck, 'GAME');
+    const newDeck = pipe(
+      deck,
+      R.filterWithIndex(key =>
+        pipe(
+          currentCard.keys,
+          A.findFirst(cardKey => key == cardKey),
+          O.isNone,
+        ),
+      ),
+    );
+    currentCard = popDeckCards(newDeck, 'GAME');
   }
 
   const key = pipe(currentCard.keys, A.head);
@@ -254,27 +264,25 @@ export async function initGameSession(
   newPlayers: Normalized<SessionPlayer>,
 ): Promise<LocalSessionWithId> {
   const sessionRef = getSessionRef(session.id);
-
+  const { players, ...sessionRest } = session;
   const randPlayer = () => {
     const array = pipe(session.players, R.keys);
     return array[Math.floor(Math.random() * array.length)];
   };
 
   const currentCard = await requestSetCurrentCard(sessionRef);
-  const newSession: LocalSessionWithId = {
-    ...session,
-    players: newPlayers,
+  const newSession: Partial<LocalSessionWithId> = {
+    ...sessionRest,
     status: 'STARTED',
     currentPlayer: randPlayer(),
     direction: 'RIGHT',
-    progression: {},
     winner: O.none,
     currentCard: currentCard,
   };
   const { id, ...newSessionRest } = newSession;
   await sessionRef.set(newSessionRest);
 
-  return newSession;
+  return { ...newSession, progression: {} } as LocalSessionWithId;
 }
 
 export async function requestDealStartHands(session: LocalSessionWithId) {

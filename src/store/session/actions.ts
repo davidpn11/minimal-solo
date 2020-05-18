@@ -122,6 +122,7 @@ export function startGameSession() {
       const players = await requestDealStartHands(state.session);
       //Set initial session
       const startedGameSession = await initGameSession(state.session, normalizePlayers(players));
+      console.log({ startedGameSession });
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);

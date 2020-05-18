@@ -29,7 +29,8 @@ export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
 
 export const getPlays = (state: ReduxStore): Play[] => {
   if (state.session.status === 'INITIAL') return [];
-  return Object.values(state.session.progression);
+  return [];
+  // return Object.values(state.session.progression);
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
