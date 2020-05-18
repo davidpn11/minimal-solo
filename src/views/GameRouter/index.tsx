@@ -11,7 +11,6 @@ import GameTable from './components/GameTable';
 import { PlayerHand } from '../../components/PlayerHand';
 import { Side } from '../../components/Side';
 import { getSession } from '../../store/session/selectors';
-import { useSessionListener } from '../../hooks/useSessionListener';
 import { getPlayer } from '../../store/playerHand/selector';
 import { unitJSX } from '../../utils/unit';
 import { getFullSessionByCode } from '../../api/firebase';
@@ -22,7 +21,6 @@ export default function GameRouter() {
   const playerO = useSelector(getPlayer);
   const dispatch = useDispatch();
   const history = useHistory();
-  useSessionListener();
 
   const match = useRouteMatch<{ code: string }>();
 

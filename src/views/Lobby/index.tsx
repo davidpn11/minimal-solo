@@ -15,6 +15,7 @@ import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/s
 import { useMatchMaker } from '../../hooks/useMatchMaker';
 import { usePlayersGrid } from '../../hooks/usePlayersGrid';
 import { JoinModal } from './components/JoinModal';
+import { useSessionListener } from '../../hooks/useSessionListener';
 
 export default function Lobby() {
   const currentSession = useSelector(getSessionValue);
@@ -23,6 +24,7 @@ export default function Lobby() {
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const playersGrid = usePlayersGrid();
+  useSessionListener();
 
   const { toggleStatus, startGame } = useMatchMaker();
 

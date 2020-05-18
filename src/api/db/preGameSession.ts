@@ -138,9 +138,11 @@ export async function requestSessionStatusListener(
 ) {
   try {
     await getSessionRef(sessionId).onSnapshot(documentSnapshot => {
-      const newSession = extractDocumentData<LocalSessionWithId>(documentSnapshot);
+      const newSession = extractDocumentData<Omit<LocalSessionWithId, 'progression'>>(
+        documentSnapshot,
+      );
       if (O.isSome(newSession)) {
-        callback(newSession.value);
+        callback({ ...newSession.value, progression: {} } as LocalSessionWithId);
       }
     });
   } catch (error) {
