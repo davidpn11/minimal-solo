@@ -12,7 +12,6 @@ import { unitJSX } from '../../utils/unit';
 type Props = {
   currentCard: O.Option<Card>;
   onDeckClick: () => void;
-  onCurrentClick: () => void;
 };
 
 export function ActionArea(props: Props) {
@@ -21,7 +20,7 @@ export function ActionArea(props: Props) {
       <LogoWrapper>
         <Logo variant="WHITE" />
       </LogoWrapper>
-      <SectionWrapper onClick={props.onCurrentClick}>
+      <SectionWrapper>
         {pipe(
           props.currentCard,
           O.fold(

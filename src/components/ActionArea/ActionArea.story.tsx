@@ -17,7 +17,7 @@ export function ActionAreaStory() {
   const colorKnob = select('Color', COLORS, 'BLUE');
   const card = buildCommon(colorKnob)[numberKnob - 1];
 
-  return <ActionArea currentCard={O.some(card)} onDeckClick={() => {}} onCurrentClick={() => {}} />;
+  return <ActionArea currentCard={O.some(card)} onDeckClick={() => {}} />;
 }
 
 export default {

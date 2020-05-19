@@ -1,23 +1,23 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import * as O from 'fp-ts/lib/Option';
 
 import { TableWrapper } from './styles';
 import { PlayerDeck } from '../../../../components/PlayerDeck';
 import { ActionArea } from '../../../../components/ActionArea';
-import { getCurrentCard, getOrderedPlayers } from '../../../../store/session/selectors';
+import { SessionPlayerWithId } from '../../../../model/Player';
+import { Card } from '../../../../model/Card';
 
-export default function GameTable() {
-  const players = useSelector(getOrderedPlayers);
-  const currentCard = useSelector(getCurrentCard);
+type Props = {
+  players: SessionPlayerWithId[];
+  currentCard: O.Option<Card>;
+  isActive: boolean;
+};
 
+export default function GameTable(props: Props) {
   return (
     <TableWrapper>
-      <ActionArea
-        currentCard={currentCard}
-        onDeckClick={() => console.log('Deck')}
-        onCurrentClick={() => console.log('Current')}
-      />
-      {players.map((player, index) => (
+      <ActionArea currentCard={props.currentCard} onDeckClick={() => console.log('deck')} />
+      {props.players.map((player, index) => (
         <PlayerDeck key={`${player.id}-player-${index}`} player={player} playerPosition={index} />
       ))}
     </TableWrapper>

@@ -8,8 +8,11 @@ import { Side } from '../../components/Side';
 import { useHandListener } from './hooks/useHandListener';
 import { useProgressionListener } from './hooks/useProgressionListener';
 import { getPlayerValue } from '../../store/playerHand/selector';
+import { getCurrentCard, getOrderedPlayers } from '../../store/session/selectors';
 
 export function Game() {
+  const players = useSelector(getOrderedPlayers);
+  const currentCard = useSelector(getCurrentCard);
   const player = useSelector(getPlayerValue);
   const { playerActions, handlePass } = useHandListener();
   const { isCurrentPlayer } = useProgressionListener();
@@ -18,7 +21,7 @@ export function Game() {
     <GameWrapper>
       <Main>
         <BoardWrapper>
-          <GameTable />
+          <GameTable players={players} currentCard={currentCard} isActive={isCurrentPlayer} />
         </BoardWrapper>
         {/* These props will come from the Engine */}
         <PlayerHand
