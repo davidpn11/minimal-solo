@@ -12,7 +12,11 @@ import {
   Wrapper,
 } from './styles';
 import { PlayerCard } from '../PlayerCard';
-import { getAllPlayers, getPlays, getStartedSession } from '../../store/session/selectors';
+import {
+  getAllPlayers,
+  getOrderedProgression,
+  getStartedSession,
+} from '../../store/session/selectors';
 import { HistoryItem } from '../HistoryItem';
 import { HISTORY_ITEM_HEIGHT } from '../HistoryItem/styles';
 
@@ -22,7 +26,7 @@ export function Side() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef<HTMLDivElement>(null);
   const players = useSelector(getAllPlayers);
-  const plays = useSelector(getPlays);
+  const plays = useSelector(getOrderedProgression);
   const currentSession = useSelector(getStartedSession);
 
   useEffect(() => {
@@ -42,7 +46,7 @@ export function Side() {
     } else {
       setShowCount(false);
     }
-  }, [itemSlots]);
+  }, [plays, itemSlots]);
 
   return (
     <Wrapper ref={wrapperRef}>
@@ -62,7 +66,8 @@ export function Side() {
       <HistoryWrapper>
         {pipe(
           plays,
-          A.takeRight(itemSlots),
+          A.reverse,
+          A.takeLeft(itemSlots),
           A.mapWithIndex((index, play) => (
             <HistoryItem key={`${play.type}-${play.player.name}-${index}`} play={play} />
           )),
