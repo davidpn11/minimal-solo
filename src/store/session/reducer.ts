@@ -54,9 +54,9 @@ export function sessionReducer(
       });
     case SETUP_GAME:
       if (O.isNone(stateO)) throw new Error('Cannot setup game on unexistent session.');
-
       return O.some({
         ...stateO.value,
+        loadingStatus: O.some(action.payload),
         status: 'STARTING',
       });
     case SET_CURRENT_PLAY:

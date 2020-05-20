@@ -16,7 +16,7 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { isPass, Play, PlayWithId } from '../../../model/Play';
+import { isPass, PlayWithId } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
@@ -60,7 +60,7 @@ export function useProgressionListener() {
         dispatch(setGameProgression(progression));
       });
     }
-  }, [currentSession.id, hasListener, dispatch]);
+  }, [currentSession.id, currentSession.status, hasListener, dispatch]);
 
   useEffect(() => {
     return pipe(

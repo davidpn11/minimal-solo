@@ -49,6 +49,7 @@ export async function requestCreateSession(
     code: codeGenerator(),
     status: 'INITIAL' as NoGameSession['status'],
     admin: playerId,
+    loadingStatus: O.none,
   };
 
   const playerData: SessionPlayer = {
@@ -236,7 +237,7 @@ async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef
       R.filterWithIndex(key =>
         pipe(
           currentCard.keys,
-          A.findFirst(cardKey => key == cardKey),
+          A.findFirst(cardKey => key === cardKey),
           O.isNone,
         ),
       ),

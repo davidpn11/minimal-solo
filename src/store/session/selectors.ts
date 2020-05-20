@@ -5,30 +5,38 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import { LocalSessionWithId, Normalized, LocalGameSession, ID } from '../../model/Session';
+import {
+  LocalSessionWithId,
+  Normalized,
+  LocalGameSession,
+  LocalGameSessionWithId,
+} from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
 import { Play, PlayWithId } from '../../model/Play';
 import { getPlayerValue } from '../playerHand/selector';
+import { foldGameSession, getOrThrow } from './helpers/foldSession';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
+
+//Real usage
+export const getStartedSession = (state: ReduxStore): LocalGameSessionWithId => {
+  return pipe(
+    state,
+    foldGameSession({
+      whenGameStarted: session => session,
+    }),
+    getOrThrow,
+  );
+};
 
 export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
   if (O.isNone(state.session))
     throw new Error("Get Session Value can only be used when there's a session");
 
   return state.session.value;
-};
-
-export const getStartedSession = (state: ReduxStore): LocalGameSession & ID => {
-  const session = getSessionValue(state);
-
-  if (session.status === 'STARTED') {
-    return session;
-  }
-  throw new Error('Session Not started');
 };
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>

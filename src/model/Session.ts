@@ -13,10 +13,11 @@ export type Normalized<T> = {
 
 export type NoGameSession = {
   code: string;
-  status: 'INITIAL' | 'STARTING';
+  status: UnionExclude<SessionStatus, 'STARTED' | 'FINISHED'>;
   admin: string;
   deck: Normalized<Card>;
   players: Normalized<SessionPlayer>;
+  loadingStatus: Option<number>;
 };
 
 export type LocalNoGameSession = Omit<NoGameSession, 'deck'>;
@@ -42,4 +43,6 @@ export type LocalGameSession = Omit<GameSession, 'deck' | 'activeCards' | 'cemet
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
 export type LocalSession = LocalGameSession | LocalNoGameSession;
-export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
+export type LocalGameSessionWithId = LocalGameSession & ID;
+export type LocalNoGameSessionWithId = LocalNoGameSession & ID;
+export type LocalSessionWithId = LocalGameSessionWithId | LocalNoGameSessionWithId;

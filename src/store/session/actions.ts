@@ -65,9 +65,10 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-function setupGame() {
+function setupGame(loadingValue = 0) {
   return {
     type: SETUP_GAME,
+    payload: loadingValue,
   };
 }
 

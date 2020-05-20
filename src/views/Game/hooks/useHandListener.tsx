@@ -50,7 +50,7 @@ export function useHandListener() {
       setCurrPlayerHand(playerHand);
       dispatch(getPlayerHand(currentSession.id, playerHand));
     }
-  }, [playerHand]);
+  }, [playerHand, dispatch, currentSession.id]);
 
   //Player hand listener
   useEffect(() => {

@@ -1,10 +1,8 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { LocalSessionWithId, Session } from '../../../model/Session';
+import { LocalSessionWithId } from '../../../model/Session';
 import { getStorage } from '../../../utils/storage';
-import { getFullSessionByCode, getSessionRef } from '../../../api/firebase';
-import { extractDocumentData } from '../../../api/helpers';
 import { requestFullSession } from '../../../api/db/session';
 
 export type LoadSession = { session: LocalSessionWithId; playerId: string };

@@ -25,7 +25,7 @@ export default function App() {
         console.error(err);
         return history.push('/');
       });
-  }, [match.params]);
+  }, [match.params, dispatch, history]);
 
   return pipe(
     currentSessionO,
