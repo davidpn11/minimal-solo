@@ -14,7 +14,7 @@ export function Game() {
   const players = useSelector(getOrderedPlayers);
   const currentCard = useSelector(getCurrentCard);
   const player = useSelector(getPlayerValue);
-  const { playerActions, handlePass } = useHandListener();
+  const { playerActions, handlePass, handleCardClick } = useHandListener();
   const { isCurrentPlayer } = useProgressionListener();
 
   return (
@@ -30,6 +30,7 @@ export function Game() {
           onSolo={() => {}}
           solo={playerActions.soloAction}
           cards={player.hand}
+          onCardClick={handleCardClick}
         />
       </Main>
       <Side />

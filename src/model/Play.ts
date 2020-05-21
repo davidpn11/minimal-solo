@@ -1,6 +1,6 @@
 import { SessionPlayer, SessionPlayerWithId } from './Player';
 import * as O from 'fp-ts/lib/Option';
-import { Card } from './Card';
+import { Card, CommonCard } from './Card';
 import { ID } from './Session';
 
 export type Play = {
@@ -23,6 +23,20 @@ export function createPassPlay(player: SessionPlayerWithId, position: number): P
     player,
     type: 'PASS',
     card: O.none,
+    target: O.none,
+    position,
+  };
+}
+
+export function createCommonNumberPlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'PLAY_CARD',
+    card: O.some(card),
     target: O.none,
     position,
   };

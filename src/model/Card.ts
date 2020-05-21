@@ -29,14 +29,21 @@ export type CommonCard = {
   status: CardStatus;
 };
 
-export type ActionCard = {
-  color: 'BLACK';
-  value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
-  createdAt: number;
-  status: CardStatus;
-};
-
 const colors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE', 'BLACK'];
+const commonColors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE'];
+
+const numberValues: Value[] = [
+  'ONE',
+  'TWO',
+  'THREE',
+  'FOUR',
+  'FIVE',
+  'SIX',
+  'SEVEN',
+  'EIGHT',
+  'NINE',
+];
+
 const commonValues: Value[] = [
   'ONE',
   'TWO',
@@ -52,6 +59,21 @@ const commonValues: Value[] = [
   'PLUS_TWO',
   'SWAP',
 ];
+
+export function isCommonCard(card: Card): boolean {
+  return commonColors.includes(card.color) && commonValues.includes(card.value);
+}
+
+export function isCommonNumberCard(card: Card): boolean {
+  return commonColors.includes(card.color) && numberValues.includes(card.value);
+}
+
+export type ActionCard = {
+  color: 'BLACK';
+  value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
+  createdAt: number;
+  status: CardStatus;
+};
 
 export type Card = CommonCard | ActionCard;
 

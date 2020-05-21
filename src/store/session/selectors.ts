@@ -53,6 +53,17 @@ export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlay
     ),
   );
 
+export const getCurrentSessionPlayerValue = (state: ReduxStore): SessionPlayer =>
+  pipe(
+    getCurrentSessionPlayer(state),
+    O.fold(
+      () => {
+        throw new Error('Cannot read current session player without being a part of it.');
+      },
+      player => player,
+    ),
+  );
+
 export const allPlayersReady = (state: ReduxStore): boolean => {
   if (O.isNone(state.session)) throw new Error('Cannot check players without session.');
 
@@ -119,6 +130,17 @@ export const getCurrentCard = (state: ReduxStore): O.Option<Card> =>
     O.fold(
       () => O.none,
       session => (session.status === 'STARTED' ? O.fromNullable(session.currentCard) : O.none),
+    ),
+  );
+
+export const getCurrentCardValue = (state: ReduxStore): Card =>
+  pipe(
+    getCurrentCard(state),
+    O.fold(
+      () => {
+        throw new Error('Cannot get card value without a current card.');
+      },
+      card => card,
     ),
   );
 

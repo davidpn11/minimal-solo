@@ -16,6 +16,7 @@ type Props = {
   pass: PassButtonStates;
   onPass: () => void;
   cards: Normalized<Card>;
+  onCardClick: (card: Card) => void;
 };
 
 export function PlayerHand(props: Props) {
@@ -29,7 +30,7 @@ export function PlayerHand(props: Props) {
           value={card.value}
           status="HAND"
           color={card.color}
-          onClick={() => {}}
+          onClick={() => props.onCardClick(card)}
         />,
       ]),
     );
