@@ -19,6 +19,7 @@ import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
 import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
+import { Card } from '../../model/Card';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
@@ -28,6 +29,7 @@ export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
 export const SETUP_GAME = 'SETUP_GAME' as const;
 export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER' as const;
 export const SET_CURRENT_PLAY = 'SET_CURRENT_PLAY' as const;
+export const SET_CURRENT_CARD = 'SET_CURRENT_CARD' as const;
 
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
@@ -83,6 +85,13 @@ export function setCurrentPlay(playId: string) {
   return {
     type: SET_CURRENT_PLAY,
     payload: playId,
+  };
+}
+
+export function setCurrentCard(card: Card) {
+  return {
+    type: SET_CURRENT_CARD,
+    payload: card,
   };
 }
 
@@ -179,7 +188,7 @@ export function addPlay(play: Play) {
     try {
       const state = getState();
 
-      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
+      if (O.isNone(state.session)) throw new Error('Cannot add a play without a session.');
 
       const result = await requestAddPlay(state.session.value.id, play);
       console.log({ result });
@@ -198,4 +207,5 @@ export type SessionActionTypes = ReturnType<
   | typeof setupGame
   | typeof setCurrentPlayer
   | typeof setCurrentPlay
+  | typeof setCurrentCard
 >;

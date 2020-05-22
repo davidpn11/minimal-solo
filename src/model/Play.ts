@@ -12,13 +12,23 @@ export type Play = {
 };
 
 export type PlayWithId = Play & ID;
+export type PassPlay = Play & {
+  type: 'PASS';
+  card: typeof O.none;
+  target: typeof O.none;
+};
+export type CommonNumberCardPlay = PlayWithId & {
+  type: 'PLAY_CARD';
+  card: O.Some<CommonCard>;
+  target: typeof O.none;
+};
 
 export const isCardPlay = (play: Play) => play.type === 'PLAY_CARD';
 export const isCardDraw = (play: Play) => play.type === 'DRAW_CARD';
 export const isAction = (play: Play) => play.type === 'ACTION';
 export const isPass = (play: Play) => play.type === 'PASS';
 
-export function createPassPlay(player: SessionPlayerWithId, position: number): Play {
+export function createPassPlay(player: SessionPlayerWithId, position: number): PassPlay {
   return {
     player,
     type: 'PASS',

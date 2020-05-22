@@ -7,7 +7,7 @@ import { PlayingCard } from '../PlayingCard';
 import { Solo } from '../Solo';
 import { SoloButtonStates } from '../Solo/styles';
 import { Pass, PassButtonStates } from '../Pass';
-import { Card } from '../../model/Card';
+import { Card, CardWithId } from '../../model/Card';
 import { Normalized } from '../../model/Session';
 
 type Props = {
@@ -16,21 +16,21 @@ type Props = {
   pass: PassButtonStates;
   onPass: () => void;
   cards: Normalized<Card>;
-  onCardClick: (card: Card) => void;
+  onCardClick: (card: CardWithId) => void;
 };
 
 export function PlayerHand(props: Props) {
   function renderCards(): React.ReactNode {
     return pipe(
       props.cards,
-      R.reduceWithIndex<string, Card, JSX.Element[]>([], (key, acc, card) => [
+      R.reduceWithIndex<string, Card, JSX.Element[]>([], (id, acc, card) => [
         ...acc,
         <PlayingCard
-          key={key}
+          key={id}
           value={card.value}
           status="HAND"
           color={card.color}
-          onClick={() => props.onCardClick(card)}
+          onClick={() => props.onCardClick({ id, ...card })}
         />,
       ]),
     );

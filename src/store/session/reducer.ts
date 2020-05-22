@@ -9,6 +9,7 @@ import {
   SET_GAME_PROGRESSION,
   SET_CURRENT_PLAY,
   SET_CURRENT_PLAYER,
+  SET_CURRENT_CARD,
 } from './actions';
 import { LocalSessionWithId } from '../../model/Session';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -72,6 +73,13 @@ export function sessionReducer(
       return O.some({
         ...stateO.value,
         currentPlayer: action.payload,
+      });
+    case SET_CURRENT_CARD:
+      if (O.isNone(stateO)) throw new Error('Cannot set current player on unexistent session.');
+
+      return O.some({
+        ...stateO.value,
+        currentCard: action.payload,
       });
     default:
       return stateO;

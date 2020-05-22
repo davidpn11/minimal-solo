@@ -12,14 +12,16 @@ import {
 } from '../../../store/session/selectors';
 import { requestProgressionListener } from '../../../api/db/gameSession';
 import {
+  setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { isPass, PlayWithId } from '../../../model/Play';
+import { CommonNumberCardPlay, isCardPlay, isPass, PlayWithId } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
+import { isCommonNumberCard } from '../../../model/Card';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -39,8 +41,21 @@ export function useProgressionListener() {
     });
   }
 
+  function runCardPlayEffect(play: CommonNumberCardPlay) {
+    const nextPlayer = getNextPlayer(play, currentSession);
+
+    if (isCommonNumberCard(play.card.value)) {
+      batch(() => {
+        dispatch(setCurrentPlay(play.id));
+        dispatch(setCurrentPlayer(nextPlayer.id));
+        dispatch(setCurrentCard(play.card.value));
+      });
+    }
+  }
+
   function runPostPlayHook(play: PlayWithId) {
     if (isPass(play)) return runNextEffect(play);
+    if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
   }
 
   function handleLastPlay(play: PlayWithId, playerId: string) {
@@ -71,7 +86,7 @@ export function useProgressionListener() {
         }
       }),
     );
-  }, [orderedProgression]);
+  }, [orderedProgression, currentPlay, player]);
 
   return {
     isCurrentPlayer: currentPlayer === player.id,

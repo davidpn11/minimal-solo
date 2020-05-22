@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import * as A from 'fp-ts/lib/Array';
 import { eqString } from 'fp-ts/lib/Eq';
 
@@ -17,7 +17,14 @@ import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
 import { createCommonNumberPlay, createPassPlay } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import { Card, CommonCard, isCommonNumberCard } from '../../../model/Card';
+import {
+  Card,
+  CardWithId,
+  CommonCard,
+  CommonCardWithId,
+  isCommonNumberCard,
+} from '../../../model/Card';
+import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
 const ArrayEq = A.getEq(eqString);
 
@@ -36,7 +43,7 @@ export function useHandListener() {
   const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
 
-  function handleCommonNumberCard(card: CommonCard) {
+  function handleCommonNumberCard(card: CommonCardWithId) {
     const isSameCardColor = currentCard.color === card.color;
     const isSameCardValue = currentCard.value === card.value;
     const isSameCard = isSameCardValue && isSameCardColor;
@@ -48,8 +55,12 @@ export function useHandListener() {
       if (isSameCardColor || isSameCardValue) {
         // play the card
         const play = createCommonNumberPlay(currentSessionPlayerWithId, card, lastPlayPosition + 1);
-        dispatch(addPlay(play));
-        return;
+        // delete it from hand
+        return requestRemoveCardFromHand(
+          currentSession.id,
+          currentSessionPlayerWithId,
+          card.id,
+        ).then(() => dispatch(addPlay(play))); // add the play
       }
       // Show message cannot play this card
       return;
@@ -59,8 +70,8 @@ export function useHandListener() {
     }
   }
 
-  function handleCardClick(card: Card) {
-    if (isCommonNumberCard(card)) return handleCommonNumberCard(card as CommonCard);
+  function handleCardClick(card: CardWithId) {
+    if (isCommonNumberCard(card)) return handleCommonNumberCard(card as CommonCardWithId);
   }
 
   function handlePass() {
@@ -68,21 +79,22 @@ export function useHandListener() {
     dispatch(addPlay(play));
   }
 
-  useEffect(() => {
-    if (!ArrayEq.equals(currPlayerHand, playerHand)) {
-      setCurrPlayerHand(playerHand);
-      dispatch(getPlayerHand(currentSession.id, playerHand));
-    }
-  }, [playerHand, dispatch, currentSession.id]);
+  // useEffect(() => {
+  //   if (!ArrayEq.equals(currPlayerHand, playerHand)) {
+  //     setCurrPlayerHand(playerHand);
+  //     dispatch(getPlayerHand(currentSession.id, playerHand));
+  //   }
+  // }, [playerHand, dispatch, currentSession.id]);
 
   //Player hand listener
   useEffect(() => {
     if (currentSession.id && !hasListener) {
       setHasListener(true);
       if (player) {
-        requestPlayerHandListener(player.id, currentSession.id, hand =>
-          dispatch(getPlayerHand(currentSession.id, hand)),
-        );
+        requestPlayerHandListener(player.id, currentSession.id, hand => {
+          console.log({ handFromListener: hand });
+          dispatch(getPlayerHand(currentSession.id, hand));
+        });
       }
     }
   }, [currentSession.id, hasListener, dispatch]);

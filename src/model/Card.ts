@@ -1,5 +1,6 @@
 import * as A from 'fp-ts/lib/Array';
 import { UnionExclude } from './types';
+import { ID } from './Session';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -28,6 +29,7 @@ export type CommonCard = {
   createdAt?: number;
   status: CardStatus;
 };
+export type CommonCardWithId = CommonCard & ID;
 
 const colors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE', 'BLACK'];
 const commonColors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE'];
@@ -76,6 +78,7 @@ export type ActionCard = {
 };
 
 export type Card = CommonCard | ActionCard;
+export type CardWithId = Card & ID;
 
 export function buildCommon(color: Color): CommonCard[] {
   return commonValues.map(
