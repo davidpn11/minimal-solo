@@ -2,12 +2,10 @@ import * as Sentry from '@sentry/browser';
 import { sentryConfig } from '../api/config';
 import { LocalSessionWithId } from '../model/Session';
 
-if (process.env.REACT_APP_SENTRY_RELEASE) {
-  Sentry.init({
-    dsn: sentryConfig.dsn,
-    release: process.env.REACT_APP_SENTRY_RELEASE,
-  });
-}
+Sentry.init({
+  dsn: sentryConfig.dsn,
+  release: `minimal-solo@${process.env.npm_package_version}`,
+});
 
 export function setSentryUserContext(userId: string) {
   Sentry.configureScope(scope => scope.setUser({ id: userId }));

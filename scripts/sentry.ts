@@ -2,9 +2,9 @@
 const SentryCli = require("@sentry/cli");
 
 async function createReleaseAndUpload() {
-  const release = process.env.REACT_APP_SENTRY_RELEASE;
+  const release = `minimal-solo@${process.env.npm_package_version}`;
   if (!release) {
-    console.warn("REACT_APP_SENTRY_RELEASE is not set");
+    console.warn("Release version is not set");
     return;
   }
 
