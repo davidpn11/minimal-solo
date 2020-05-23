@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "(export REACT_APP_SENTRY_RELEASE=$(git rev-parse --short HEAD); react-scripts build && node scripts/sentry.js)",
     "deploy": "yarn build && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@sentry/cli": "^1.53.0",
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",
     "@storybook/addon-links": "^5.3.18",

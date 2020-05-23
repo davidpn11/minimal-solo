@@ -1,8 +1,13 @@
-import * as Sentry from "@sentry/browser";
-import {sentryConfig} from "../api/config";
-import {LocalSessionWithId} from "../model/Session";
+import * as Sentry from '@sentry/browser';
+import { sentryConfig } from '../api/config';
+import { LocalSessionWithId } from '../model/Session';
 
-Sentry.init(sentryConfig);
+if (process.env.REACT_APP_SENTRY_RELEASE) {
+  Sentry.init({
+    dsn: sentryConfig.dsn,
+    release: process.env.REACT_APP_SENTRY_RELEASE,
+  });
+}
 
 export function setSentryUserContext(userId: string) {
   Sentry.configureScope(scope => scope.setUser({ id: userId }));
@@ -15,5 +20,5 @@ export function setSentrySessionTags(session: LocalSessionWithId) {
       sessionStatus: session.status,
       sessionCode: session.code,
     });
-  })
+  });
 }
