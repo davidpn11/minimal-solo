@@ -243,7 +243,6 @@ function getCurrentCard(deck: Normalized<Card>) {
       ),
     );
 
-    // isInvalid = checkCurrentCardValid(newDeck);
     currentCard = popDeckCards(newDeck, 'GAME');
   }
 
