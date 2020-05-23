@@ -274,6 +274,17 @@ async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef
   return card.value;
 }
 
+export async function requestRemoveCardFromHand(
+  sessionId: string,
+  { id: playerId, ...player }: SessionPlayerWithId,
+  cardId: string,
+) {
+  await getSessionRef(sessionId)
+    .collection('players')
+    .doc(playerId)
+    .set({ ...player, hand: player.hand.filter(id => id !== cardId) });
+}
+
 export async function initGameSession(
   session: LocalSessionWithId,
   newPlayers: Normalized<SessionPlayer>,

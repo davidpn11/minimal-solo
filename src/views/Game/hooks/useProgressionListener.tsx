@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
@@ -12,14 +12,16 @@ import {
 } from '../../../store/session/selectors';
 import { requestProgressionListener } from '../../../api/db/gameSession';
 import {
+  setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { isPass, PlayWithId } from '../../../model/Play';
+import { CommonNumberCardPlay, isCardPlay, isPass, PlayWithId } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
+import { isCommonNumberCard } from '../../../model/Card';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -39,17 +41,28 @@ export function useProgressionListener() {
     });
   }
 
-  function runPostPlayHook(play: PlayWithId) {
-    if (isPass(play)) return runNextEffect(play);
-  }
-
-  function handleLastPlay(play: PlayWithId, playerId: string) {
-    runPostPlayHook(play);
-
-    if (isOwnerOfPlay(play, playerId)) {
-      console.log('owner');
+  function runCardPlayEffect(play: CommonNumberCardPlay) {
+    if (isCommonNumberCard(play.card.value)) {
+      dispatch(setCurrentCard(play.card.value));
+      runNextEffect(play);
     }
   }
+
+  function runPostPlayHook(play: PlayWithId) {
+    if (isPass(play)) return runNextEffect(play);
+    if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
+  }
+
+  const handleLastPlay = useCallback(
+    (play: PlayWithId, playerId: string) => {
+      runPostPlayHook(play);
+
+      if (isOwnerOfPlay(play, playerId)) {
+        console.log('owner');
+      }
+    },
+    [runPostPlayHook],
+  );
 
   useEffect(() => {
     if (currentSession.id && !hasListener && currentSession.status === 'STARTED') {
@@ -71,7 +84,7 @@ export function useProgressionListener() {
         }
       }),
     );
-  }, [orderedProgression]);
+  }, [orderedProgression, currentPlay, player, handleLastPlay]);
 
   return {
     isCurrentPlayer: currentPlayer === player.id,

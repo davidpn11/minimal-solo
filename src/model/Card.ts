@@ -1,5 +1,6 @@
 import * as A from 'fp-ts/lib/Array';
 import { UnionExclude } from './types';
+import { ID } from './Session';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -28,15 +29,23 @@ export type CommonCard = {
   createdAt?: number;
   status: CardStatus;
 };
-
-export type ActionCard = {
-  color: 'BLACK';
-  value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
-  createdAt: number;
-  status: CardStatus;
-};
+export type CommonCardWithId = CommonCard & ID;
 
 const colors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE', 'BLACK'];
+const commonColors: Color[] = ['GREEN', 'GOLD', 'RED', 'BLUE'];
+
+const numberValues: Value[] = [
+  'ONE',
+  'TWO',
+  'THREE',
+  'FOUR',
+  'FIVE',
+  'SIX',
+  'SEVEN',
+  'EIGHT',
+  'NINE',
+];
+
 const commonValues: Value[] = [
   'ONE',
   'TWO',
@@ -53,7 +62,23 @@ const commonValues: Value[] = [
   'SWAP',
 ];
 
+export function isCommonCard(card: Card): boolean {
+  return commonColors.includes(card.color) && commonValues.includes(card.value);
+}
+
+export function isCommonNumberCard(card: Card): boolean {
+  return commonColors.includes(card.color) && numberValues.includes(card.value);
+}
+
+export type ActionCard = {
+  color: 'BLACK';
+  value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
+  createdAt: number;
+  status: CardStatus;
+};
+
 export type Card = CommonCard | ActionCard;
+export type CardWithId = Card & ID;
 
 export function buildCommon(color: Color): CommonCard[] {
   return commonValues.map(

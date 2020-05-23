@@ -35,6 +35,7 @@ export function PlayerHandStory() {
       solo={soloStatesKnob}
       onPass={() => {}}
       pass={passStatesKnob}
+      onCardClick={() => {}}
       cards={pipe(
         deck,
         A.takeLeft(cardAmount),
