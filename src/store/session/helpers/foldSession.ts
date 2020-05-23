@@ -46,7 +46,6 @@ export const foldGameSession = <B>({
             break;
           default:
             throw new Error('No Status found');
-            break;
         }
       },
     ),

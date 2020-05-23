@@ -37,7 +37,7 @@ export function PersistGate(props: Props) {
     loadSessionFromCache().then(sessionO => {
       pipe(sessionO, O.fold(setNewStorage, rehydrateSessionFromStorage));
     });
-  }, [dispatch]);
+  }, [setNewStorage, rehydrateSessionFromStorage, dispatch]);
 
   if (!isReady) {
     return unitJSX;

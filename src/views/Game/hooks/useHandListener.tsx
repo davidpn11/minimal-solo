@@ -1,10 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch, batch } from 'react-redux';
-import * as A from 'fp-ts/lib/Array';
-import { eqString } from 'fp-ts/lib/Eq';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  getCurrentCard,
   getCurrentCardValue,
   getCurrentPlayer,
   getCurrentSessionPlayerValue,
@@ -17,16 +14,10 @@ import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
 import { createCommonNumberPlay, createPassPlay } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import {
-  Card,
-  CardWithId,
-  CommonCard,
-  CommonCardWithId,
-  isCommonNumberCard,
-} from '../../../model/Card';
+import { CardWithId, CommonCardWithId, isCommonNumberCard } from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
-const ArrayEq = A.getEq(eqString);
+// const ArrayEq = A.getEq(eqString);
 
 export function useHandListener() {
   const player = useSelector(getPlayerValue);
@@ -40,7 +31,7 @@ export function useHandListener() {
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
   const isYourTurn = useMemo<boolean>(() => player.id === currentPlayer, [player, currentPlayer]);
   const [hasListener, setHasListener] = useState<boolean>(false);
-  const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
+  // const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
 
   function handleCommonNumberCard(card: CommonCardWithId) {
@@ -50,7 +41,13 @@ export function useHandListener() {
 
     if (isSameCard) {
       // play the card
-      return;
+      const play = createCommonNumberPlay(currentSessionPlayerWithId, card, lastPlayPosition + 1);
+      // delete it from hand
+      return requestRemoveCardFromHand(
+        currentSession.id,
+        currentSessionPlayerWithId,
+        card.id,
+      ).then(() => dispatch(addPlay(play))); // add the play
     } else if (isYourTurn) {
       if (isSameCardColor || isSameCardValue) {
         // play the card

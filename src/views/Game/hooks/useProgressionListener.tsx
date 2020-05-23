@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
@@ -58,13 +58,16 @@ export function useProgressionListener() {
     if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
   }
 
-  function handleLastPlay(play: PlayWithId, playerId: string) {
-    runPostPlayHook(play);
+  const handleLastPlay = useCallback(
+    (play: PlayWithId, playerId: string) => {
+      runPostPlayHook(play);
 
-    if (isOwnerOfPlay(play, playerId)) {
-      console.log('owner');
-    }
-  }
+      if (isOwnerOfPlay(play, playerId)) {
+        console.log('owner');
+      }
+    },
+    [runPostPlayHook],
+  );
 
   useEffect(() => {
     if (currentSession.id && !hasListener && currentSession.status === 'STARTED') {
@@ -86,7 +89,7 @@ export function useProgressionListener() {
         }
       }),
     );
-  }, [orderedProgression, currentPlay, player]);
+  }, [orderedProgression, currentPlay, player, handleLastPlay]);
 
   return {
     isCurrentPlayer: currentPlayer === player.id,
