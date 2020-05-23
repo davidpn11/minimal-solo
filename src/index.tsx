@@ -12,6 +12,7 @@ import { GlobalStyles } from './styles';
 import App from './views/App';
 import Entrance from './views/Entrance';
 import { PersistGate } from './store/persistStore';
+import {ErrorBoundary} from "./components/ErrorBoundary";
 
 export const ENTRANCE_ROUTE = '/' as const;
 
@@ -22,10 +23,12 @@ ReactDOM.render(
         <PersistGate>
           <ThemeProvider theme={THEME}>
             <GlobalStyles />
-            <Switch>
-              <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
-              <Route path="/room/:code" component={App} />
-            </Switch>
+            <ErrorBoundary>
+              <Switch>
+                <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
+                <Route path="/room/:code" component={App} />
+              </Switch>
+            </ErrorBoundary>
           </ThemeProvider>
         </PersistGate>
       </Router>
