@@ -4,7 +4,7 @@ import { LocalSessionWithId } from '../model/Session';
 
 Sentry.init({
   dsn: sentryConfig.dsn,
-  release: `minimal-solo@${process.env.npm_package_version}`,
+  release: process.env.REACT_APP_VERSION,
 });
 
 export function setSentryUserContext(userId: string) {
