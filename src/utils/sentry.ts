@@ -44,6 +44,6 @@ export function captureLog(
       }),
     );
 
-    Sentry.captureException(new Error(error.message || 'Unknown Error'));
+    Sentry.captureException(error);
   });
 }
