@@ -23,7 +23,6 @@ export function Game() {
         <BoardWrapper>
           <GameTable players={players} currentCard={currentCard} isActive={isCurrentPlayer} />
         </BoardWrapper>
-        {/* These props will come from the Engine */}
         <PlayerHand
           onPass={handlePass}
           pass={playerActions.passAction}

@@ -29,8 +29,8 @@ export function getNextPlayer(play: Play, session: LocalGameSession & ID): Sessi
   let nextPlayerPosition = 0;
   if (currentDirection === 'LEFT') {
     nextPlayerPosition = isFirstPosition(currentPlayerPosition)
-      ? currentPlayerPosition + 1
-      : lastPlayerPosition;
+      ? lastPlayerPosition
+      : currentPlayerPosition + 1;
   } else {
     nextPlayerPosition = isLastPosition(currentPlayerPosition, lastPlayerPosition)
       ? 0
