@@ -9,6 +9,7 @@ import { setPlayerId } from '../playerHand/actions';
 import { unitJSX } from '../../utils/unit';
 import { getUniqueId } from '../../api/firebase';
 import { safeSetItem } from '../../utils/storage';
+import { setSentryUserContext } from '../../utils/sentry';
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export function PersistGate(props: Props) {
     const newPlayerId = getUniqueId();
     dispatch(setPlayerId(newPlayerId));
     safeSetItem('playerId', newPlayerId);
+    setSentryUserContext(newPlayerId);
     setReadyStatus(true);
   }
 
@@ -30,6 +32,7 @@ export function PersistGate(props: Props) {
       dispatch(setGameSession(session));
       dispatch(setPlayerId(playerId));
     });
+    setSentryUserContext(playerId);
     setReadyStatus(true);
   }
 
