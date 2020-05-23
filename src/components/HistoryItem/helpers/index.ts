@@ -17,10 +17,10 @@ import {
   SwapAllPlay,
   ReversePlay,
   ColorPlay,
-  foldPlay,
 } from '../../../model/Play';
 import { GameDirection } from '../../../model/Session';
 import { getOrThrow } from '../../../store/session/helpers/foldSession';
+import { foldPlay } from '../../../store/playerHand/helpers/foldPlay';
 
 type Story = string;
 

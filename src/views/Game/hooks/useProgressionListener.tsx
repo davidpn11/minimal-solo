@@ -17,12 +17,13 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, NumberCardPlay, foldPlayWithId } from '../../../model/Play';
+import { PlayWithId, NumberCardPlay } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import { isCommonNumberCard } from '../../../model/Card';
 import { ID } from '../../../model/Session';
+import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
