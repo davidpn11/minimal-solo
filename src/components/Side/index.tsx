@@ -5,22 +5,24 @@ import * as A from 'fp-ts/lib/Array';
 
 import {
   EventCount,
-  HeightWrapper,
+  HeightWrapper, HISTORY_ITEM_MARGIN_TOP,
   HistoryWrapper,
   PlayersWrapper,
   Title,
   Wrapper,
 } from './styles';
 import { PlayerCard } from '../PlayerCard';
+import { HistoryItem } from '../HistoryItem';
+import { HISTORY_ITEM_HEIGHT } from '../HistoryItem/styles';
 import {
   getAllPlayers,
   getOrderedProgression,
   getStartedSession,
 } from '../../store/session/selectors';
-import { HistoryItem } from '../HistoryItem';
-import { HISTORY_ITEM_HEIGHT } from '../HistoryItem/styles';
+import { useWindowSize } from '../../hooks/useWindowSize';
 
 export function Side() {
+  const { height } = useWindowSize();
   const [showCount, setShowCount] = useState(false);
   const [itemSlots, setItemSlots] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -33,12 +35,12 @@ export function Side() {
     if (!!wrapperRef.current && !!heightRef.current) {
       const wrapperHeight = wrapperRef.current.clientHeight;
       const othersHeight = heightRef.current.clientHeight;
-      const spaceToUse = wrapperHeight - othersHeight - 32;
-      const calculatedSlots = Math.floor(spaceToUse / (HISTORY_ITEM_HEIGHT + 8));
+      const spaceToUse = wrapperHeight - othersHeight - 32; // 32 is the title height
+      const calculatedSlots = Math.floor(spaceToUse / (HISTORY_ITEM_HEIGHT + HISTORY_ITEM_MARGIN_TOP));
 
       setItemSlots(calculatedSlots);
     }
-  }, [wrapperRef, heightRef, plays]);
+  }, [wrapperRef, heightRef, height, plays]);
 
   useEffect(() => {
     if (plays.length > itemSlots) {

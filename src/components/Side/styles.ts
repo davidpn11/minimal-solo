@@ -8,8 +8,9 @@ export const Wrapper = styled.aside`
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
-  width: 256px;
+  overflow: hidden;
   padding: 16px 16px;
+  width: 256px;
 `;
 
 export const HeightWrapper = styled.div`
@@ -44,13 +45,14 @@ export const PlayersWrapper = styled.div`
   }
 `;
 
+export const HISTORY_ITEM_MARGIN_TOP = 8;
 export const HistoryWrapper = styled.div`
   padding: 0;
   width: 100%;
   height: 100%;
 
   & > * + * {
-    margin-top: ${props => props.theme.spacing.base}px;
+    margin-top: ${HISTORY_ITEM_MARGIN_TOP}px;
   }
 `;
 

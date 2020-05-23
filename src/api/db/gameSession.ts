@@ -12,7 +12,6 @@ export async function requestGetPlayerHand(
   sessionId: string,
   hand: string[],
 ): Promise<Normalized<Card>> {
-  console.log(hand);
   const session = getSessionRef(sessionId);
   const getCard = async (cardId: string) => {
     return normalizeDocument<Card>(await session.collection('activeCards').doc(cardId).get());
@@ -63,6 +62,7 @@ export async function requestProgressionListener(
       .collection('progression')
       .onSnapshot(querySnapshot => {
         const progression = normalizeQuery<Play>(querySnapshot);
+        console.log({ progression });
         callback(progression);
       });
   } catch (error) {
@@ -71,6 +71,5 @@ export async function requestProgressionListener(
 }
 
 export async function requestAddPlay(sessionId: string, play: Play) {
-  const sessionRef = getSessionRef(sessionId);
-  return await sessionRef.collection('progression').add(play);
+  return await getSessionRef(sessionId).collection('progression').add(play);
 }
