@@ -23,7 +23,7 @@ type Props = {
   status: LocalNoGameSession['status'];
 };
 
-export default function Lobby(props: Props) {
+export function Lobby(props: Props) {
   const [progress, setProgress] = useState(0);
   const currentSession = useSelector(getSessionValue);
   const allPlayers = useSelector(getAllPlayers);

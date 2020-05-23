@@ -3,8 +3,8 @@ import React from 'react';
 import { CardWrapper, PlayerInfo, PlayerName, PlayerStatus } from './styles';
 import { AVATAR_BACKGROUND } from '../../theme';
 import { PlayerImage } from '../LobbyPlayerCard/styles';
-import { Play } from '../../model/Session';
 import { tellThisPlayStory } from './helpers';
+import { Play } from '../../model/Play';
 
 type Props = {
   play: Play;

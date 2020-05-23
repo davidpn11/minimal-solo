@@ -23,7 +23,6 @@ export const SectionWrapper = styled.div`
   height: 190px;
   padding: 8px;
   width: 150px;
-  cursor: pointer;
 
   ${CardWrapper} {
     width: 120px;

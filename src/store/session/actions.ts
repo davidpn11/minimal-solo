@@ -17,12 +17,17 @@ import {
 import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
+import { Play } from '../../model/Play';
+import { requestAddPlay } from '../../api/db/gameSession';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
 export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
+export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
 export const SETUP_GAME = 'SETUP_GAME' as const;
+export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER' as const;
+export const SET_CURRENT_PLAY = 'SET_CURRENT_PLAY' as const;
 
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
@@ -31,6 +36,12 @@ export function setGameSession(session: LocalSessionWithId) {
   return {
     type: SET_SESSION,
     payload: session,
+  };
+}
+export function setGameProgression(progression: Normalized<Play>) {
+  return {
+    type: SET_GAME_PROGRESSION,
+    payload: progression,
   };
 }
 
@@ -54,9 +65,24 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   };
 }
 
-function setupGame() {
+function setupGame(loadingValue = 0) {
   return {
     type: SETUP_GAME,
+    payload: loadingValue,
+  };
+}
+
+export function setCurrentPlayer(playerId: string) {
+  return {
+    type: SET_CURRENT_PLAYER,
+    payload: playerId,
+  };
+}
+
+export function setCurrentPlay(playId: string) {
+  return {
+    type: SET_CURRENT_PLAY,
+    payload: playId,
   };
 }
 
@@ -148,10 +174,28 @@ export function startGameSession() {
   };
 }
 
+export function addPlay(play: Play) {
+  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+    try {
+      const state = getState();
+
+      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
+
+      const result = await requestAddPlay(state.session.value.id, play);
+      console.log({ result });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
+
 export type SessionActionTypes = ReturnType<
   | typeof setGameSession
   | typeof addPlayers
   | typeof clearSession
   | typeof setPlayer
+  | typeof setGameProgression
   | typeof setupGame
+  | typeof setCurrentPlayer
+  | typeof setCurrentPlay
 >;

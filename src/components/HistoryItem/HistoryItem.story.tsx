@@ -2,12 +2,13 @@ import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import * as O from 'fp-ts/lib/Option';
+import { random } from 'faker';
 
 import { HistoryItem } from './';
-import { createAvatar, SessionPlayer } from '../../model/Player';
-import { Play } from '../../model/Session';
+import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
+import { Play } from '../../model/Play';
 
 const avatar = createAvatar();
 
@@ -66,7 +67,8 @@ export function HistoryItemStory() {
   const actionValueKnob = select('Action Cards', ACTION_VALUES, 'SWAP_ALL');
   const actionTargetKnob = select('Action Cards with Target', ACTION_TARGET_VALUES, 'SWAP');
 
-  const player: SessionPlayer = {
+  const player: SessionPlayerWithId = {
+    id: random.uuid(),
     name: nameKnob,
     position: 0,
     status: 'READY',
@@ -81,6 +83,7 @@ export function HistoryItemStory() {
           type: playType,
           player,
           target: O.none,
+          position: 0,
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
@@ -93,6 +96,7 @@ export function HistoryItemStory() {
           type: playType,
           player,
           target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
+          position: 0,
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
@@ -106,6 +110,7 @@ export function HistoryItemStory() {
           return {
             type: playType,
             player,
+            position: 0,
             card: O.some({
               color: actionTargetColorKnob,
               value: actionTargetKnob,
@@ -124,6 +129,7 @@ export function HistoryItemStory() {
         return {
           type: playType,
           player,
+          position: 0,
           card: O.some({
             color: 'BLACK',
             value: actionValueKnob,

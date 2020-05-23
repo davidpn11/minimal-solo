@@ -4,9 +4,9 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import { Card } from '../../model/Card';
 import * as A from 'fp-ts/lib/Array';
-import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 import { SessionPlayer } from '../../model/Player';
+import { Play } from '../../model/Play';
 
 export async function requestGetPlayerHand(
   sessionId: string,
@@ -51,4 +51,25 @@ export async function requestPlayerHandListener(
   } catch (error) {
     console.error(error);
   }
+}
+
+export async function requestProgressionListener(
+  sessionId: string,
+  callback: (plays: Normalized<Play>) => void,
+) {
+  try {
+    await getSessionRef(sessionId)
+      .collection('progression')
+      .onSnapshot(querySnapshot => {
+        const progression = normalizeQuery<Play>(querySnapshot);
+        console.log({ progression });
+        callback(progression);
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function requestAddPlay(sessionId: string, play: Play) {
+  return await getSessionRef(sessionId).collection('progression').add(play);
 }

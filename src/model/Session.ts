@@ -2,6 +2,7 @@ import { SessionPlayer } from './Player';
 import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
 import { UnionExclude } from './types';
+import { Play } from './Play';
 
 export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type ID = { id: string };
@@ -12,10 +13,11 @@ export type Normalized<T> = {
 
 export type NoGameSession = {
   code: string;
-  status: 'INITIAL' | 'STARTING';
+  status: UnionExclude<SessionStatus, 'STARTED' | 'FINISHED'>;
   admin: string;
   deck: Normalized<Card>;
   players: Normalized<SessionPlayer>;
+  loadingStatus: Option<number>;
 };
 
 export type LocalNoGameSession = Omit<NoGameSession, 'deck'>;
@@ -30,6 +32,7 @@ export type GameSession = {
   currentCard: Card;
   players: Normalized<SessionPlayer>;
   currentPlayer: string;
+  currentPlay: string;
   direction: 'LEFT' | 'RIGHT';
   progression: Normalized<Play>;
   winner: Option<SessionPlayer>;
@@ -40,11 +43,6 @@ export type LocalGameSession = Omit<GameSession, 'deck' | 'activeCards' | 'cemet
 export type Session = GameSession | NoGameSession;
 export type SessionWithId = (GameSession | NoGameSession) & ID;
 export type LocalSession = LocalGameSession | LocalNoGameSession;
-export type LocalSessionWithId = (LocalGameSession | LocalNoGameSession) & ID;
-
-export type Play = {
-  player: SessionPlayer;
-  type: 'PLAY_CARD' | 'DRAW_CARD' | 'ACTION';
-  card: Option<Card>;
-  target: Option<SessionPlayer>;
-};
+export type LocalGameSessionWithId = LocalGameSession & ID;
+export type LocalNoGameSessionWithId = LocalNoGameSession & ID;
+export type LocalSessionWithId = LocalGameSessionWithId | LocalNoGameSessionWithId;

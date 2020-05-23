@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { rgba } from 'polished';
 
 export const Wrapper = styled.aside`
   align-items: center;
@@ -7,8 +8,16 @@ export const Wrapper = styled.aside`
   display: flex;
   flex-flow: column nowrap;
   height: 100vh;
-  width: 256px;
+  overflow: hidden;
   padding: 16px 16px;
+  width: 256px;
+`;
+
+export const HeightWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
 `;
 
 export const Title = styled.h1`
@@ -32,19 +41,24 @@ export const PlayersWrapper = styled.div`
   width: 100%;
 
   & > div + div {
-    margin-top: 8px;
+    margin-top: ${props => props.theme.spacing.base}px;
   }
 `;
 
+export const HISTORY_ITEM_MARGIN_TOP = 8;
 export const HistoryWrapper = styled.div`
-  padding: 0 8px;
+  padding: 0;
   width: 100%;
   height: 100%;
+
+  & > * + * {
+    margin-top: ${HISTORY_ITEM_MARGIN_TOP}px;
+  }
 `;
 
 export const EventCount = styled.p`
   align-items: center;
-  color: ${props => props.theme.colors.border};
+  color: ${props => rgba(props.theme.colors.white, 0.2)};
   display: flex;
   font-size: 12px;
   justify-content: flex-start;

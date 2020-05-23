@@ -5,12 +5,32 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import { LocalGameSession, LocalSessionWithId, Normalized, Play } from '../../model/Session';
+import {
+  LocalSessionWithId,
+  Normalized,
+  LocalGameSession,
+  LocalGameSessionWithId,
+} from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { Card } from '../../model/Card';
+import { PlayerActions, initialPlayerActions } from './helpers/types';
+import { Play, PlayWithId } from '../../model/Play';
+import { getPlayerValue } from '../playerHand/selector';
+import { foldGameSession, getOrThrow } from './helpers/foldSession';
 
 export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
+
+//Real usage
+export const getStartedSession = (state: ReduxStore): LocalGameSessionWithId => {
+  return pipe(
+    state,
+    foldGameSession({
+      whenGameStarted: session => session,
+    }),
+    getOrThrow,
+  );
+};
 
 export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
   if (O.isNone(state.session))
@@ -101,3 +121,54 @@ export const getCurrentCard = (state: ReduxStore): O.Option<Card> =>
       session => (session.status === 'STARTED' ? O.fromNullable(session.currentCard) : O.none),
     ),
   );
+
+export const getPlayerActions = (state: ReduxStore): PlayerActions => {
+  const player = getPlayerValue(state);
+  const currentPlayer = getCurrentPlayer(state);
+
+  if (player.id === currentPlayer) {
+    return {
+      ...initialPlayerActions,
+      soloAction: Object.keys(player.hand).length === 1 ? 'CAN_SOLO' : 'CANNOT_SOLO',
+      passAction: 'CAN_PASS',
+    };
+  }
+
+  return initialPlayerActions;
+};
+
+const ordPlaysByPosition: Ord<PlayWithId> = pipe(
+  ordNumber,
+  contramap(play => play.position),
+);
+
+export const getOrderedProgression = (state: ReduxStore): PlayWithId[] => {
+  const session = getStartedSession(state);
+
+  return pipe(
+    session.progression,
+    R.toArray,
+    A.map(([id, play]) => ({ id, ...play })),
+    A.sort(ordPlaysByPosition),
+  );
+};
+
+export function getLastPlayPosition(state: ReduxStore): number {
+  return pipe(
+    state,
+    getOrderedProgression,
+    A.last,
+    O.fold(
+      () => -1, // will become 0 if it's the first
+      play => play.position,
+    ),
+  );
+}
+
+export const getCurrentPlayer = (state: ReduxStore): string => {
+  return pipe(getStartedSession(state), session => session.currentPlayer);
+};
+
+export const getCurrentPlay = (state: ReduxStore): string => {
+  return pipe(getStartedSession(state), session => session.currentPlay);
+};
