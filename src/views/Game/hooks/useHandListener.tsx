@@ -17,8 +17,6 @@ import { addPlay } from '../../../store/session/actions';
 import { CardWithId, CommonCardWithId, isCommonNumberCard } from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
-// const ArrayEq = A.getEq(eqString);
-
 export function useHandListener() {
   const player = useSelector(getPlayerValue);
   const playerHand = useSelector(getPlayerHandIds);
@@ -31,7 +29,6 @@ export function useHandListener() {
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
   const isYourTurn = useMemo<boolean>(() => player.id === currentPlayer, [player, currentPlayer]);
   const [hasListener, setHasListener] = useState<boolean>(false);
-  // const [currPlayerHand, setCurrPlayerHand] = useState<string[]>([]);
   const dispatch = useDispatch();
 
   function handleCommonNumberCard(card: CommonCardWithId) {
@@ -76,20 +73,12 @@ export function useHandListener() {
     dispatch(addPlay(play));
   }
 
-  // useEffect(() => {
-  //   if (!ArrayEq.equals(currPlayerHand, playerHand)) {
-  //     setCurrPlayerHand(playerHand);
-  //     dispatch(getPlayerHand(currentSession.id, playerHand));
-  //   }
-  // }, [playerHand, dispatch, currentSession.id]);
-
   //Player hand listener
   useEffect(() => {
     if (currentSession.id && !hasListener) {
       setHasListener(true);
       if (player) {
         requestPlayerHandListener(player.id, currentSession.id, hand => {
-          console.log({ handFromListener: hand });
           dispatch(getPlayerHand(currentSession.id, hand));
         });
       }
@@ -98,3 +87,9 @@ export function useHandListener() {
 
   return { playerHand, playerActions, handlePass, handleCardClick };
 }
+
+
+// Pre        ---   Game   --   Post
+// canPlayType |            |   play types
+// canPlayFold |            |   play fold
+// useHandListener |        |   useProgressionListener

@@ -42,14 +42,9 @@ export function useProgressionListener() {
   }
 
   function runCardPlayEffect(play: CommonNumberCardPlay) {
-    const nextPlayer = getNextPlayer(play, currentSession);
-
     if (isCommonNumberCard(play.card.value)) {
-      batch(() => {
-        dispatch(setCurrentPlay(play.id));
-        dispatch(setCurrentPlayer(nextPlayer.id));
-        dispatch(setCurrentCard(play.card.value));
-      });
+      dispatch(setCurrentCard(play.card.value));
+      runNextEffect(play);
     }
   }
 
