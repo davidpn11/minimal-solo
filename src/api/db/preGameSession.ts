@@ -213,37 +213,47 @@ export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) =>
   return { ...player, hand: newHand };
 };
 
-async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
-  const deckRef = sessionRef.collection('deck');
-  const deck = normalizeQuery<Card>(await deckRef.get());
+function checkCurrentCardValid(cards: Normalized<Card>): boolean {
+  return pipe(
+    cards,
+    R.some(
+      c =>
+        c.color === 'BLACK' ||
+        c.value === 'REVERSE' ||
+        c.value === 'PLUS_TWO' ||
+        c.value === 'SWAP' ||
+        c.value === 'BLOCK',
+    ),
+  );
+}
 
+function getCurrentCard(deck: Normalized<Card>) {
   let currentCard = popDeckCards(deck, 'GAME');
+  let isInvalid = checkCurrentCardValid(currentCard.cards);
 
-  while (
-    pipe(
-      currentCard.cards,
-      R.some(
-        c =>
-          c.color === 'BLACK' ||
-          c.value === 'REVERSE' ||
-          c.value === 'PLUS_TWO' ||
-          c.value === 'SWAP' ||
-          c.value === 'BLOCK',
-      ),
-    )
-  ) {
+  while (isInvalid) {
     const newDeck = pipe(
       deck,
       R.filterWithIndex(key =>
         pipe(
-          currentCard.keys,
+          popDeckCards(deck, 'GAME').keys,
           A.findFirst(cardKey => key === cardKey),
           O.isNone,
         ),
       ),
     );
+
+    // isInvalid = checkCurrentCardValid(newDeck);
     currentCard = popDeckCards(newDeck, 'GAME');
   }
+
+  return currentCard;
+}
+
+async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
+  const deckRef = sessionRef.collection('deck');
+  const deck = normalizeQuery<Card>(await deckRef.get());
+  const currentCard = getCurrentCard(deck);
 
   const key = pipe(currentCard.keys, A.head);
 

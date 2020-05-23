@@ -14,8 +14,6 @@ export async function requestFullSession(sessionId: string): Promise<LocalSessio
 
   const players = await getSessionRef(sessionId).collection('players').get();
 
-  console.log('rehydrating');
-
   if (sessionData.value.status === 'STARTED' || sessionData.value.status === 'FINISHED') {
     const progression = await getSessionRef(sessionId).collection('progression').get();
     return {
