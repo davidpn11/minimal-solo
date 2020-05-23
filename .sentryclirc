@@ -1,3 +1,6 @@
 [defaults]
 project=minimal-solo
 org=minimal-solo
+
+[auth]
+token=28e8fe649dd54fbe871150237da9bcec1a23c32ac08e405690ad635fd03d6646
