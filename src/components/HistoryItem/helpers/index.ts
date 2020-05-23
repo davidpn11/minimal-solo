@@ -1,9 +1,26 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { Value } from '../../../model/Card';
+import { Value, Color } from '../../../model/Card';
 import { SessionPlayer } from '../../../model/Player';
-import { isAction, isCardDraw, isCardPlay, isPass, Play } from '../../../model/Play';
+import {
+  isAction,
+  isCardDraw,
+  isCardPlay,
+  isPass,
+  Play,
+  BlockPlay,
+  PlusFourPlay,
+  PlusTwoPlay,
+  SwapPlay,
+  NumberCardPlay,
+  SwapAllPlay,
+  ReversePlay,
+  ColorPlay,
+  foldPlay,
+} from '../../../model/Play';
+import { GameDirection } from '../../../model/Session';
+import { getOrThrow } from '../../../store/session/helpers/foldSession';
 
 type Story = string;
 
@@ -46,65 +63,82 @@ function mapCardValue(value: Value): string {
   }
 }
 
-function mapCardPlayToStory(play: Play): Story {
-  if (O.isNone(play.card)) throw new Error('Impossible state while mapping card to story.');
+function mapColorValue(color: Color): string {
+  switch (color) {
+    case 'GOLD':
+      return 'gold';
+    case 'BLUE':
+      return 'blue';
+    case 'RED':
+      return 'red';
+    case 'GREEN':
+      return 'green';
 
-  const { color, value } = play.card.value;
+    default:
+      throw new Error('Invalid color (probably black)');
+  }
+}
+
+function mapGameDirection(direction: GameDirection): string {
+  switch (direction) {
+    case 'LEFT':
+      return 'left';
+    case 'RIGHT':
+      return 'right';
+    default:
+      throw new Error('Invalid direction');
+  }
+}
+
+function mapCardPlayToStory(play: NumberCardPlay): Story {
+  const { color, value } = play.card;
   const mappedValue = mapCardValue(value);
 
   return `Played a ${color} ${mappedValue} card.`;
 }
 
-function mapGameActionToStory(play: Play): () => Story {
-  return () => {
-    if (O.isNone(play.card))
-      throw new Error('Impossible state while mapping game action to story.');
-    const card = play.card.value;
-
-    switch (card.value) {
-      case 'SWAP_ALL':
-        return 'Swapped all the cards around.';
-      case 'COLOR':
-        return 'Played a color card and chose a color.';
-      case 'REVERSE':
-        return `Reversed the game direction with a ${card.color} card.`;
-      default:
-        throw new Error('Impossible state while mapping action to story.');
-    }
-  };
+function mapGameActionToStory(play: SwapAllPlay | ColorPlay | ReversePlay): Story {
+  switch (play.type) {
+    case 'SWAP_ALL_PLAY':
+      return 'Swapped all the cards around.';
+    case 'COLOR_PLAY':
+      return `Played a color card and chose the color ${mapColorValue(play.color)}`;
+    case 'REVERSE_PLAY':
+      return `Reversed the game direction to ${mapGameDirection(play.direction)}.`;
+    default:
+      throw new Error('Impossible state while mapping action to story.');
+  }
 }
 
-function mapTargetActionToStory(play: Play): (target: SessionPlayer) => Story {
-  return target => {
-    if (O.isNone(play.card))
-      throw new Error('Impossible state while mapping target action to story.');
-    const card = play.card.value;
-
-    switch (card.value) {
-      case 'BLOCK':
-        return `Blocked ${target.name} with a ${card.color} card.`;
-      case 'PLUS_FOUR':
-        return `Applied a +4 to ${target.name}.`;
-      case 'PLUS_TWO':
-        return `Applied a +2 to ${target.name} with a ${card.color} card.`;
-      case 'SWAP':
-        return `Swapped hands with ${target.name} with a ${card.color} card.`;
-    }
-
-    return '';
-  };
-}
-
-function mapActionToStory(play: Play): Story {
-  if (O.isNone(play.card)) throw new Error('Impossible state while mapping action to story.');
-
-  return pipe(play.target, O.fold(mapGameActionToStory(play), mapTargetActionToStory(play)));
+function mapTargetActionToStory(play: BlockPlay | PlusFourPlay | PlusTwoPlay | SwapPlay): Story {
+  switch (play.type) {
+    case 'BLOCK_PLAY':
+      return `Blocked ${play.target.name} with a ${play.card.color} card.`;
+    case 'PLUS_FOUR_PLAY':
+      return `Applied a +4 to ${play.target.name}.`;
+    case 'PLUS_TWO_PLAY':
+      return `Applied a +2 to ${play.target.name} with a ${play.card.color} play.card.`;
+    case 'SWAP_PLAY':
+      return `Swapped hands with ${play.target.name} with a ${play.card.color} card.`;
+  }
 }
 
 export function tellThisPlayStory(play: Play): Story {
-  if (isCardDraw(play)) return 'Drew a card.';
-  if (isPass(play)) return 'Passed his turn.';
-  if (isCardPlay(play)) return mapCardPlayToStory(play);
-  if (isAction(play)) return mapActionToStory(play);
-  throw new Error('Impossible state while trying to tell a story.');
+  return pipe(
+    play,
+    foldPlay({
+      whenDrawPlay: () => 'Drew a card.',
+      whenPassPlay: () => 'Passed his turn.',
+      whenUnoPlay: () => 'Called Uno',
+      whenSwapAllPlay: mapGameActionToStory,
+      whenColorPlay: mapGameActionToStory,
+      whenReversePlay: mapGameActionToStory,
+      whenBlockPlay: mapTargetActionToStory,
+      whenPlusFourPlay: mapTargetActionToStory,
+      whenPlusTwoPlay: mapTargetActionToStory,
+      whenSwapPlay: mapTargetActionToStory,
+      whenNumberCardPlay: mapCardPlayToStory,
+    }),
+    getOrThrow,
+  );
 }
