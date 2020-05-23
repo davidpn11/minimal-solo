@@ -195,7 +195,7 @@ export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) =>
 
   //write on activeCards structrure
   const batch = database.batch();
-  userCards.keys.map(key => {
+  userCards.keys.forEach(key => {
     const cardRef = sessionRef.collection('activeCards').doc(key);
     batch.set(cardRef, userCards.cards[key]);
   });

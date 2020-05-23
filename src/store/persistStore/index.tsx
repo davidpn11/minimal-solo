@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { batch, useDispatch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
@@ -19,22 +19,25 @@ export function PersistGate(props: Props) {
   const [isReady, setReadyStatus] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  function setNewStorage() {
+  const setNewStorage = useCallback(() => {
     const newPlayerId = getUniqueId();
     dispatch(setPlayerId(newPlayerId));
     safeSetItem('playerId', newPlayerId);
     setSentryUserContext(newPlayerId);
     setReadyStatus(true);
-  }
+  }, [dispatch]);
 
-  function rehydrateSessionFromStorage({ session, playerId }: LoadSession) {
-    batch(() => {
-      dispatch(setGameSession(session));
-      dispatch(setPlayerId(playerId));
-    });
-    setSentryUserContext(playerId);
-    setReadyStatus(true);
-  }
+  const rehydrateSessionFromStorage = useCallback(
+    ({ session, playerId }: LoadSession) => {
+      batch(() => {
+        dispatch(setGameSession(session));
+        dispatch(setPlayerId(playerId));
+      });
+      setSentryUserContext(playerId);
+      setReadyStatus(true);
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     loadSessionFromCache().then(sessionO => {
