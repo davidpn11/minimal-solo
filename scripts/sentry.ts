@@ -2,8 +2,7 @@
 const SentryCli = require("@sentry/cli");
 
 async function createReleaseAndUpload() {
-  const release = `minimal-solo@${process.env.npm_package_version}`;
-  if (!release) {
+  if (!process.env.npm_package_version) {
     console.warn("Release version is not set");
     return;
   }
@@ -14,6 +13,7 @@ async function createReleaseAndUpload() {
     return;
   }
 
+  const release = `minimal-solo@${process.env.npm_package_version}`;
   const cli = new SentryCli();
   try {
     console.log("Creating sentry release " + release);
