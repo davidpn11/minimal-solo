@@ -71,8 +71,5 @@ export async function requestProgressionListener(
 }
 
 export async function requestAddPlay(sessionId: string, play: Play) {
-  const sessionRef = getSessionRef(sessionId);
-
-  const progression = await sessionRef.collection('progression').add(play);
-  return progression;
+  return await getSessionRef(sessionId).collection('progression').add(play);
 }
