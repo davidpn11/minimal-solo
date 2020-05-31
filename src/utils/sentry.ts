@@ -9,6 +9,7 @@ import { Breadcrumb, BreadcrumbHint } from '@sentry/browser';
 
 function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Breadcrumb | null {
   const hintO = O.fromNullable(hintP);
+
   switch (breadcrumb.category) {
     case 'ui.click':
       return pipe(
