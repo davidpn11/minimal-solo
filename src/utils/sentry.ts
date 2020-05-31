@@ -36,7 +36,7 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
             const { target } = hint.event;
 
             if (target.ariaLabel) {
-              breadcrumb.message = `${target.ariaLabel}. Value: ${target.value}`;
+              breadcrumb.message = `${target.ariaLabel}. Previous Value: ${target.value}`;
             }
 
             return breadcrumb;
