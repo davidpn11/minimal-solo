@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/browser';
 import * as R from 'fp-ts/lib/Record';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 import { sentryConfig } from '../api/config';
 import { LocalSessionWithId } from '../model/Session';
-import { pipe } from 'fp-ts/lib/pipeable';
 
 Sentry.init({
   dsn: sentryConfig.dsn,
