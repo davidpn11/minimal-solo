@@ -5,9 +5,11 @@ import * as O from 'fp-ts/lib/Option';
 
 import { sentryConfig } from '../api/config';
 import { LocalSessionWithId } from '../model/Session';
-import { Breadcrumb, BreadcrumbHint } from '@sentry/browser';
 
-function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Breadcrumb | null {
+function beforeBreadcrumb(
+  breadcrumb: Sentry.Breadcrumb,
+  hintP?: Sentry.BreadcrumbHint,
+): Sentry.Breadcrumb | null {
   const hintO = O.fromNullable(hintP);
 
   switch (breadcrumb.category) {
@@ -35,8 +37,10 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
           hint => {
             const { target } = hint.event;
 
-            if (target.ariaLabel) {
+            if (target.value) {
               breadcrumb.message = `${target.ariaLabel}. Previous Value: ${target.value}`;
+            } else if (target.ariaLabel) {
+              breadcrumb.message = target.ariaLabel;
             }
 
             return breadcrumb;
@@ -48,7 +52,7 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
   }
 }
 
-export function addBreadcrumb(breadcrumb: Breadcrumb) {
+export function addBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
   Sentry.addBreadcrumb(breadcrumb);
 }
 
