@@ -1,14 +1,39 @@
 import * as Sentry from '@sentry/browser';
 import * as R from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as O from 'fp-ts/lib/Option';
 
 import { sentryConfig } from '../api/config';
 import { LocalSessionWithId } from '../model/Session';
+import { Breadcrumb, BreadcrumbHint } from '@sentry/browser';
 
-Sentry.init({
-  dsn: sentryConfig.dsn,
-  release: process.env.REACT_APP_VERSION,
-});
+function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Breadcrumb | null {
+  const hintO = O.fromNullable(hintP);
+  switch (breadcrumb.category) {
+    case 'ui.click':
+      return pipe(
+        hintO,
+        O.fold(
+          () => breadcrumb,
+          hint => {
+            const { target } = hint.event;
+
+            if (target.ariaLabel) {
+              breadcrumb.message = target.ariaLabel;
+            }
+
+            return breadcrumb;
+          },
+        ),
+      );
+    default:
+      return breadcrumb;
+  }
+}
+
+export function addBreadcrumb(breadcrumb: Breadcrumb) {
+  Sentry.addBreadcrumb(breadcrumb);
+}
 
 export function setSentryUserContext(userId: string) {
   Sentry.configureScope(scope => scope.setUser({ id: userId }));
@@ -47,3 +72,9 @@ export function captureLog(
     Sentry.captureException(error);
   });
 }
+
+Sentry.init({
+  dsn: sentryConfig.dsn,
+  release: process.env.REACT_APP_VERSION,
+  beforeBreadcrumb,
+});
