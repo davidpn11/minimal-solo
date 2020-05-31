@@ -9,6 +9,7 @@ import { firebaseConfig } from './config';
 import { normalizeQuery } from './helpers';
 import { LocalSession, LocalSessionWithId } from '../model/Session';
 import { SessionPlayer } from '../model/Player';
+import { SessionNotFoundError } from '../model/Error';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -37,7 +38,8 @@ export const getFullSessionByCode: (code: string) => Promise<LocalSessionWithId>
     ),
     O.fold(
       () => {
-        throw new Error('Session not found');
+        const SessionNotFound = SessionNotFoundError(code);
+        throw new SessionNotFound();
       },
       async localSession => {
         const players = normalizeQuery<SessionPlayer>(

@@ -40,3 +40,11 @@ export const GameSessionError = createErrorClass(
   false,
   Severity.Fatal,
 );
+
+export const SessionNotFoundError = (sessionCode: string) =>
+  createErrorClass(
+    'SessionNotFound',
+    `Couldn't find a session with code ${sessionCode}`,
+    true,
+    Severity.Error,
+  );

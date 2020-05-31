@@ -10,8 +10,9 @@ import { getFullSessionByCode } from '../api/firebase';
 import { getSession } from '../store/session/selectors';
 import { setGameSession } from '../store/session/actions';
 import { getPlayerValue } from '../store/playerHand/selector';
-import { noop, unitJSX } from '../utils/unit';
 import { isPlayerInTheGame } from '../store/playerHand/helpers/player';
+import { noop, unitJSX } from '../utils/unit';
+import { captureLog } from '../utils/sentry';
 
 export default function App() {
   const currentSessionO = useSelector(getSession);
@@ -25,7 +26,7 @@ export default function App() {
     pipe(match.params.code, getFullSessionByCode)
       .then(session => dispatch(setGameSession(session)))
       .catch(err => {
-        console.error(err);
+        captureLog(err);
         return history.push('/');
       });
   }, [match.params, dispatch, history]);
