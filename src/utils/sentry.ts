@@ -12,7 +12,6 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
 
   switch (breadcrumb.category) {
     case 'ui.click':
-    case 'ui.input':
       return pipe(
         hintO,
         O.fold(
@@ -22,6 +21,22 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
 
             if (target.ariaLabel) {
               breadcrumb.message = target.ariaLabel;
+            }
+
+            return breadcrumb;
+          },
+        ),
+      );
+    case 'ui.input':
+      return pipe(
+        hintO,
+        O.fold(
+          () => breadcrumb,
+          hint => {
+            const { target } = hint.event;
+
+            if (target.ariaLabel) {
+              breadcrumb.message = `${target.ariaLabel}. Value: ${target.value}`;
             }
 
             return breadcrumb;
