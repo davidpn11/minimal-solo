@@ -1,5 +1,10 @@
 import { Severity } from '@sentry/browser';
 
+export type CustomError = Error & {
+  expected: boolean;
+  level: Severity;
+};
+
 export function createErrorClass(
   name: string,
   message: string,
