@@ -10,7 +10,12 @@ type Props = {
 
 export function Solo(props: Props) {
   return (
-    <SoloButton state={props.state} onClick={props.onClick} disabled={props.state !== 'CAN_SOLO'}>
+    <SoloButton
+      aria-label={`Solo Button: ${props.state}`}
+      state={props.state}
+      onClick={props.onClick}
+      disabled={props.state !== 'CAN_SOLO'}
+    >
       <SoloIcon />
     </SoloButton>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { PassButtonProps, PassButton } from './styles';
 
 import { ReactComponent as PassIcon } from '../../assets/svg/PassIcon.svg';
+import { SoloButton } from '../Solo/styles';
 
 export type PassButtonStates = 'CAN_PASS' | 'CANNOT_PASS' | 'PASSED';
 export type Props = {
@@ -27,6 +28,7 @@ export function Pass(props: Props) {
 
   return (
     <PassButton
+      aria-label={`Pass Button: ${props.state}`}
       isPassable={isPassable}
       isActive={isActive}
       onClick={props.onClick}

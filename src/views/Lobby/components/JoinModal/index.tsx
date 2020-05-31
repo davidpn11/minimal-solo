@@ -68,6 +68,7 @@ export function JoinModal() {
             <ModalTitle>Do you want to join this room?</ModalTitle>
             <ModalContent>
               <Field
+                aria-label="Join Room by Code Player Name Field"
                 component={TextField}
                 name="userName"
                 label="Your Name"
@@ -77,10 +78,16 @@ export function JoinModal() {
               />
             </ModalContent>
             <ModalFooter>
-              <Button variant="cancel" onClick={() => history.push('/')}>
+              <Button
+                aria-label="Join Room by Code Cancel Button"
+                variant="cancel"
+                onClick={() => history.push('/')}
+              >
                 Cancel
               </Button>
-              <Button type="submit">Join</Button>
+              <Button aria-label="Join Room by Code Join Button" type="submit">
+                Join
+              </Button>
             </ModalFooter>
           </Form>
         </ModalCard>

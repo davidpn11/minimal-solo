@@ -25,11 +25,18 @@ export function ActionArea(props: Props) {
           props.currentCard,
           O.fold(
             () => unitJSX,
-            card => <PlayingCard value={card.value} color={card.color} status="PLAY" />,
+            card => (
+              <PlayingCard
+                aria-label={`Current Card: ${card.color} ${card.value}`}
+                value={card.value}
+                color={card.color}
+                status="PLAY"
+              />
+            ),
           ),
         )}
       </SectionWrapper>
-      <SectionWrapper onClick={props.onDeckClick}>
+      <SectionWrapper aria-label="Card Deck" onClick={props.onDeckClick}>
         <CardDeck />
       </SectionWrapper>
     </AreaWrapper>
