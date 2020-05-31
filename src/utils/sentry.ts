@@ -12,6 +12,7 @@ function beforeBreadcrumb(breadcrumb: Breadcrumb, hintP?: BreadcrumbHint): Bread
 
   switch (breadcrumb.category) {
     case 'ui.click':
+    case 'ui.input':
       return pipe(
         hintO,
         O.fold(

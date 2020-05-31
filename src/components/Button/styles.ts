@@ -74,5 +74,6 @@ export const ButtonWrapper = styled.button<ButtonWrapperProps>`
     line-height: 16px;
     text-align: center;
     width: 100%;
+    pointer-events: none;
   }
 `;
