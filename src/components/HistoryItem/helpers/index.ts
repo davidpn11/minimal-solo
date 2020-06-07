@@ -1,13 +1,7 @@
-import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { Value, Color } from '../../../model/Card';
-import { SessionPlayer } from '../../../model/Player';
 import {
-  isAction,
-  isCardDraw,
-  isCardPlay,
-  isPass,
   Play,
   BlockPlay,
   PlusFourPlay,

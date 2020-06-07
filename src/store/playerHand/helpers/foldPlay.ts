@@ -68,9 +68,11 @@ type FoldPlayParams<B = void> = {
 export const foldPlayWithId = (
   whenPassPlay: (p: PassPlay & ID) => void,
   whenNumberCardPlay: (p: NumberCardPlay & ID) => void,
+  whenBlockCardPlay: (p: BlockPlay & ID) => void,
 ) => (play: PlayWithId) => {
   if (play.type === 'PASS_PLAY') whenPassPlay(play);
   if (play.type === 'NUMBER_CARD_PLAY') whenNumberCardPlay(play);
+  if (play.type === 'BLOCK_PLAY') return whenBlockCardPlay(play);
 };
 
 export const foldPlay = <B>({
@@ -85,40 +87,40 @@ export const foldPlay = <B>({
   whenSwapAllPlay,
   whenColorPlay,
   whenPlusFourPlay,
-}: FoldPlayParams<B> = foldPlayDefault) => (play: Play): B | void => {
+}: FoldPlayParams<B> = foldPlayDefault) => (play: Play | PlayWithId): B | void => {
   switch (play.type) {
     case 'PASS_PLAY':
-      if (whenPassPlay) whenPassPlay(play);
+      if (whenPassPlay) return whenPassPlay(play);
       break;
     case 'UNO_PLAY':
-      if (whenUnoPlay) whenUnoPlay(play);
+      if (whenUnoPlay) return whenUnoPlay(play);
       break;
     case 'DRAW_PLAY':
-      if (whenDrawPlay) whenDrawPlay(play);
+      if (whenDrawPlay) return whenDrawPlay(play);
       break;
     case 'NUMBER_CARD_PLAY':
-      if (whenNumberCardPlay) whenNumberCardPlay(play);
+      if (whenNumberCardPlay) return whenNumberCardPlay(play);
       break;
     case 'PLUS_TWO_PLAY':
-      if (whenPlusTwoPlay) whenPlusTwoPlay(play);
+      if (whenPlusTwoPlay) return whenPlusTwoPlay(play);
       break;
     case 'BLOCK_PLAY':
-      if (whenBlockPlay) whenBlockPlay(play);
+      if (whenBlockPlay) return whenBlockPlay(play);
       break;
     case 'REVERSE_PLAY':
-      if (whenReversePlay) whenReversePlay(play);
+      if (whenReversePlay) return whenReversePlay(play);
       break;
     case 'SWAP_PLAY':
-      if (whenSwapPlay) whenSwapPlay(play);
+      if (whenSwapPlay) return whenSwapPlay(play);
       break;
     case 'SWAP_ALL_PLAY':
-      if (whenSwapAllPlay) whenSwapAllPlay(play);
+      if (whenSwapAllPlay) return whenSwapAllPlay(play);
       break;
     case 'COLOR_PLAY':
-      if (whenColorPlay) whenColorPlay(play);
+      if (whenColorPlay) return whenColorPlay(play);
       break;
     case 'PLUS_FOUR_PLAY':
-      if (whenPlusFourPlay) whenPlusFourPlay(play);
+      if (whenPlusFourPlay) return whenPlusFourPlay(play);
       break;
     default:
       throw new Error('Invalid Play type');

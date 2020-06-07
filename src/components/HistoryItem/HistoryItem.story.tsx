@@ -5,8 +5,8 @@ import * as O from 'fp-ts/lib/Option';
 import { random } from 'faker';
 
 import { HistoryItem } from './';
-import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
-import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
+import { createAvatar, SessionPlayerWithId } from '../../model/Player';
+import { Card, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
 import { Play } from '../../model/Play';
 
@@ -17,9 +17,8 @@ const Wrapper = styled.div`
 `;
 
 const PLAY_TYPES: Record<string, Play['type']> = {
-  DrawCard: 'DRAW_CARD',
-  PlayCard: 'PLAY_CARD',
-  Action: 'ACTION',
+  DrawCard: 'DRAW_PLAY',
+  PassPlay: 'PASS_PLAY',
 };
 
 const COLORS: Record<string, UnionExclude<Color, 'BLACK'>> = {
@@ -76,22 +75,23 @@ export function HistoryItemStory() {
     hand: [],
   };
 
+  // @ts-ignore
   const play: Play = useMemo<Play>(() => {
     switch (playType) {
-      case 'DRAW_CARD':
+      case 'DRAW_PLAY':
         return {
           type: playType,
           player,
-          target: O.none,
           position: 0,
           card: O.some({
             color: colorKnob,
             value: commonValueKnob,
             status: 'PLAY',
             createdAt: 0,
-          } as CommonCard),
+          }),
         };
-      case 'PLAY_CARD':
+      case 'PASS_PLAY':
+      default:
         return {
           type: playType,
           player,
@@ -102,41 +102,7 @@ export function HistoryItemStory() {
             value: commonValueKnob,
             status: 'PLAY',
             createdAt: 0,
-          } as CommonCard),
-        };
-      case 'ACTION':
-      default:
-        if (targetKnob) {
-          return {
-            type: playType,
-            player,
-            position: 0,
-            card: O.some({
-              color: actionTargetColorKnob,
-              value: actionTargetKnob,
-              status: 'PLAY',
-              createdAt: 0,
-            } as ActionCard),
-            target: O.some({
-              name: targetNameKnob,
-              position: 1,
-              hand: [],
-              avatar,
-              status: 'READY',
-            }),
-          };
-        }
-        return {
-          type: playType,
-          player,
-          position: 0,
-          card: O.some({
-            color: 'BLACK',
-            value: actionValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as ActionCard),
-          target: O.none,
+          }),
         };
     }
   }, [

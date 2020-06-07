@@ -17,9 +17,9 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, NumberCardPlay } from '../../../model/Play';
+import { PlayWithId, NumberCardPlay, BlockPlay } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
-import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
+import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import { ID } from '../../../model/Session';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
@@ -35,7 +35,7 @@ export function useProgressionListener() {
 
   const runNextEffect = useCallback(
     (play: PlayWithId) => {
-      const nextPlayer = getNextPlayer(play, currentSession);
+      const nextPlayer = getNextPlayerByPlay(play, currentSession);
 
       batch(() => {
         dispatch(setCurrentPlay(play.id));
@@ -45,21 +45,27 @@ export function useProgressionListener() {
     [dispatch, currentSession],
   );
 
-
-  const runNumberCardPlayEffect = useCallback(
-    function runNumberCardPlayEffect(play: NumberCardPlay & ID) {
+  const runBlockCardEffect = useCallback(
+    function (play: BlockPlay & ID) {
       dispatch(setCurrentCard(play.card));
       runNextEffect(play);
     },
     [dispatch, runNextEffect],
   );
 
+  const runNumberCardPlayEffect = useCallback(
+    function (play: NumberCardPlay & ID) {
+      dispatch(setCurrentCard(play.card));
+      runNextEffect(play);
+    },
+    [dispatch, runNextEffect],
+  );
 
   const runPostPlayHook = useCallback(
     function runPostPlayHook(play: PlayWithId) {
-      pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect));
+      pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect, runBlockCardEffect));
     },
-    [runNextEffect, runNumberCardPlayEffect],
+    [runNextEffect, runNumberCardPlayEffect, runBlockCardEffect],
   );
 
   const handleLastPlay = useCallback(
@@ -68,6 +74,7 @@ export function useProgressionListener() {
       //TODO Run game state reader
 
       if (isOwnerOfPlay(play, playerId)) {
+        // TODO: Update Firebase Session
         console.log('owner');
       }
     },

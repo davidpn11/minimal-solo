@@ -10,6 +10,8 @@ import {
   Normalized,
   LocalGameSession,
   LocalGameSessionWithId,
+  LocalNoGameSessionWithId,
+  GameDirection,
 } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
@@ -64,22 +66,24 @@ export const getCurrentSessionPlayerValue = (state: ReduxStore): SessionPlayer =
     ),
   );
 
-export const allPlayersReady = (state: ReduxStore): boolean => {
+function handleSession(session: LocalNoGameSessionWithId) {
+  if (R.size(session.players) < MIN_ROOM_SIZE) return false;
   return pipe(
+    session.players,
+    R.filter(player => player.status !== 'ADMIN'),
+    R.every(player => player.status === 'READY'),
+  );
+}
+
+export const allPlayersReady = (state: ReduxStore): boolean =>
+  pipe(
     state,
     foldGameSession({
-      whenNoGameSession: session => {
-        if (R.size(session.players) < MIN_ROOM_SIZE) return false;
-        return pipe(
-          session.players,
-          R.filter(player => player.status !== 'ADMIN'),
-          R.every(player => player.status === 'READY'),
-        );
-      },
+      whenNoGameSession: handleSession,
+      whenLoadingSession: handleSession,
     }),
     getOrThrow,
   );
-};
 
 export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
   pipe(
@@ -87,6 +91,54 @@ export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
     O.fold(
       () => ({}),
       session => session.players,
+    ),
+  );
+
+export function getNextPosition(session: LocalGameSessionWithId, currentPlayerPosition: number) {
+  const currentDirection = session.direction;
+  const lastPlayerPosition = R.keys(session.players).length - 1;
+  const isFirstPosition = currentPlayerPosition === 0;
+  const isLastPosition = currentPlayerPosition === lastPlayerPosition;
+
+  switch (currentDirection) {
+    case 'LEFT':
+      return isFirstPosition ? lastPlayerPosition : currentPlayerPosition + 1;
+    case 'RIGHT':
+      return isLastPosition ? 0 : currentPlayerPosition + 1;
+  }
+}
+
+export const getNextPlayerPosition = (state: ReduxStore): number => {
+  return pipe(
+    state,
+    foldGameSession({
+      whenGameStarted: session => {
+        const currentPlayerPosition = pipe(
+          R.lookup(session.currentPlayer, session.players),
+          O.fold(
+            () => {
+              throw new Error('');
+            },
+            player => player.position,
+          ),
+        );
+
+        return getNextPosition(session, currentPlayerPosition);
+      },
+    }),
+    getOrThrow,
+  );
+};
+
+export const getNextPlayer = (state: ReduxStore) =>
+  pipe(
+    getOrderedPlayers(state),
+    A.findFirst(player => player.position === getNextPlayerPosition(state)),
+    O.fold(
+      () => {
+        throw new Error(`Cannot get player position ${getNextPlayerPosition(state)}`);
+      },
+      player => player,
     ),
   );
 
