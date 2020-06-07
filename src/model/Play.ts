@@ -1,39 +1,117 @@
 import { SessionPlayer, SessionPlayerWithId } from './Player';
 import * as O from 'fp-ts/lib/Option';
-import { Card, CommonCard } from './Card';
-import { ID } from './Session';
+import { Card, CommonCard, Color } from './Card';
+import { ID, GameDirection } from './Session';
 
-export type Play = {
+export type PassPlay = {
+  type: 'PASS_PLAY';
   player: SessionPlayerWithId;
-  type: 'PLAY_CARD' | 'DRAW_CARD' | 'ACTION' | 'PASS';
-  card: O.Option<Card>;
-  target: O.Option<SessionPlayer>;
   position: number;
 };
 
+export type UnoPlay = {
+  type: 'UNO_PLAY';
+  player: SessionPlayerWithId;
+  position: number;
+};
+export type DrawPlay = {
+  type: 'DRAW_PLAY';
+  card: Card;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type NumberCardPlay = {
+  type: 'NUMBER_CARD_PLAY';
+  card: Card;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type PlusTwoPlay = {
+  type: 'PLUS_TWO_PLAY';
+  card: Card;
+  target: SessionPlayerWithId;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type BlockPlay = {
+  type: 'BLOCK_PLAY';
+  card: Card;
+  target: SessionPlayerWithId;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type ReversePlay = {
+  type: 'REVERSE_PLAY';
+  card: Card;
+  direction: GameDirection;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type SwapPlay = {
+  type: 'SWAP_PLAY';
+  card: Card;
+  target: SessionPlayerWithId;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type SwapAllPlay = {
+  type: 'SWAP_ALL_PLAY';
+  card: Card;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type ColorPlay = {
+  type: 'COLOR_PLAY';
+  card: Card;
+  color: Color;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type PlusFourPlay = {
+  type: 'PLUS_FOUR_PLAY';
+  card: Card;
+  target: SessionPlayerWithId;
+  player: SessionPlayerWithId;
+  position: number;
+};
+
+export type Play =
+  | PassPlay
+  | UnoPlay
+  | DrawPlay
+  | NumberCardPlay
+  | PlusTwoPlay
+  | BlockPlay
+  | ReversePlay
+  | SwapPlay
+  | SwapAllPlay
+  | ColorPlay
+  | PlusFourPlay;
+
 export type PlayWithId = Play & ID;
-export type PassPlay = Play & {
-  type: 'PASS';
-  card: typeof O.none;
-  target: typeof O.none;
-};
-export type CommonNumberCardPlay = PlayWithId & {
-  type: 'PLAY_CARD';
-  card: O.Some<CommonCard>;
-  target: typeof O.none;
-};
 
-export const isCardPlay = (play: Play) => play.type === 'PLAY_CARD';
-export const isCardDraw = (play: Play) => play.type === 'DRAW_CARD';
-export const isAction = (play: Play) => play.type === 'ACTION';
-export const isPass = (play: Play) => play.type === 'PASS';
+export const isCardPlay = (play: Play) => play.type === 'NUMBER_CARD_PLAY';
+export const isCardDraw = (play: Play) => play.type === 'DRAW_PLAY';
+export const isAction = (play: Play) =>
+  play.type === 'BLOCK_PLAY' ||
+  play.type === 'PLUS_FOUR_PLAY' ||
+  play.type === 'PLUS_TWO_PLAY' ||
+  play.type === 'SWAP_PLAY';
+export const isPass = (play: Play) => play.type === 'PASS_PLAY';
+export const isUno = (play: Play) => play.type === 'UNO_PLAY';
 
-export function createPassPlay(player: SessionPlayerWithId, position: number): PassPlay {
+export function createPassPlay(player: SessionPlayerWithId, position: number): Play {
   return {
     player,
-    type: 'PASS',
-    card: O.none,
-    target: O.none,
+    type: 'PASS_PLAY',
     position,
   };
 }
@@ -45,9 +123,8 @@ export function createCommonNumberPlay(
 ): Play {
   return {
     player,
-    type: 'PLAY_CARD',
-    card: O.some(card),
-    target: O.none,
+    type: 'NUMBER_CARD_PLAY',
+    card: card,
     position,
   };
 }

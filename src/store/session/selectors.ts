@@ -65,13 +65,19 @@ export const getCurrentSessionPlayerValue = (state: ReduxStore): SessionPlayer =
   );
 
 export const allPlayersReady = (state: ReduxStore): boolean => {
-  if (O.isNone(state.session)) throw new Error('Cannot check players without session.');
-
-  if (R.size(state.session.value.players) < MIN_ROOM_SIZE) return false;
   return pipe(
-    state.session.value.players,
-    R.filter(player => player.status !== 'ADMIN'),
-    R.every(player => player.status === 'READY'),
+    state,
+    foldGameSession({
+      whenNoGameSession: session => {
+        if (R.size(session.players) < MIN_ROOM_SIZE) return false;
+        return pipe(
+          session.players,
+          R.filter(player => player.status !== 'ADMIN'),
+          R.every(player => player.status === 'READY'),
+        );
+      },
+    }),
+    getOrThrow,
   );
 };
 

@@ -5,6 +5,7 @@ import { UnionExclude } from './types';
 import { Play } from './Play';
 
 export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
+export type GameDirection = 'LEFT' | 'RIGHT';
 export type ID = { id: string };
 
 export type Normalized<T> = {
@@ -21,7 +22,6 @@ export type NoGameSession = {
 };
 
 export type LocalNoGameSession = Omit<NoGameSession, 'deck'>;
-
 export type GameSession = {
   code: string;
   status: UnionExclude<SessionStatus, 'INITIAL' | 'STARTING'>;
@@ -33,7 +33,7 @@ export type GameSession = {
   players: Normalized<SessionPlayer>;
   currentPlayer: string;
   currentPlay: string;
-  direction: 'LEFT' | 'RIGHT';
+  direction: GameDirection;
   progression: Normalized<Play>;
   winner: Option<SessionPlayer>;
 };
