@@ -62,7 +62,6 @@ export async function requestProgressionListener(
       .collection('progression')
       .onSnapshot(querySnapshot => {
         const progression = normalizeQuery<Play>(querySnapshot);
-        console.log({ progression });
         callback(progression);
       });
   } catch (error) {

@@ -32,26 +32,35 @@ export function useProgressionListener() {
   const [hasListener, setHasListener] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  function runNextEffect(play: PlayWithId) {
-    const nextPlayer = getNextPlayer(play, currentSession);
+  const runNextEffect = useCallback(
+    (play: PlayWithId) => {
+      const nextPlayer = getNextPlayer(play, currentSession);
 
-    batch(() => {
-      dispatch(setCurrentPlay(play.id));
-      dispatch(setCurrentPlayer(nextPlayer.id));
-    });
-  }
+      batch(() => {
+        dispatch(setCurrentPlay(play.id));
+        dispatch(setCurrentPlayer(nextPlayer.id));
+      });
+    },
+    [dispatch, currentSession],
+  );
 
-  function runCardPlayEffect(play: CommonNumberCardPlay) {
-    if (isCommonNumberCard(play.card.value)) {
-      dispatch(setCurrentCard(play.card.value));
-      runNextEffect(play);
-    }
-  }
+  const runCardPlayEffect = useCallback(
+    (play: CommonNumberCardPlay) => {
+      if (isCommonNumberCard(play.card.value)) {
+        dispatch(setCurrentCard(play.card.value));
+        runNextEffect(play);
+      }
+    },
+    [dispatch, runNextEffect],
+  );
 
-  function runPostPlayHook(play: PlayWithId) {
-    if (isPass(play)) return runNextEffect(play);
-    if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
-  }
+  const runPostPlayHook = useCallback(
+    (play: PlayWithId) => {
+      if (isPass(play)) return runNextEffect(play);
+      if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
+    },
+    [runNextEffect, runCardPlayEffect],
+  );
 
   const handleLastPlay = useCallback(
     (play: PlayWithId, playerId: string) => {

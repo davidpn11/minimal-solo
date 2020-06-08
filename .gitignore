@@ -13,6 +13,8 @@
 
 # key
 /src/api/config.ts
+.sentryclirc
+
 # misc
 .DS_Store
 .env.local

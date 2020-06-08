@@ -5,12 +5,14 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 
 import * as serviceWorker from './serviceWorker';
+import './utils/sentry';
 import store from './store';
 import { THEME } from './theme';
 import { GlobalStyles } from './styles';
 import App from './views/App';
 import Entrance from './views/Entrance';
 import { PersistGate } from './store/persistStore';
+import {ErrorBoundary} from "./components/ErrorBoundary";
 
 export const ENTRANCE_ROUTE = '/' as const;
 
@@ -21,10 +23,12 @@ ReactDOM.render(
         <PersistGate>
           <ThemeProvider theme={THEME}>
             <GlobalStyles />
-            <Switch>
-              <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
-              <Route path="/room/:code" component={App} />
-            </Switch>
+            <ErrorBoundary>
+              <Switch>
+                <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
+                <Route path="/room/:code" component={App} />
+              </Switch>
+            </ErrorBoundary>
           </ThemeProvider>
         </PersistGate>
       </Router>

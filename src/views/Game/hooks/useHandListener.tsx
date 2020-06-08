@@ -83,7 +83,7 @@ export function useHandListener() {
         });
       }
     }
-  }, [currentSession.id, hasListener, dispatch]);
+  }, [currentSession.id, hasListener, player, dispatch]);
 
   return { playerHand, playerActions, handlePass, handleCardClick };
 }
