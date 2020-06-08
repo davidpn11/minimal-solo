@@ -20,6 +20,7 @@ import * as R from 'fp-ts/lib/Record';
 import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
+import { SessionNotFoundError } from '../../model/Error';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
@@ -92,7 +93,8 @@ export async function requestJoinSession(
     session,
     O.fold(
       () => {
-        throw new Error('SESSION NOT FOUND');
+        const SessionNotFound = SessionNotFoundError(sessionCode);
+        throw new SessionNotFound();
       },
       async (s: LocalSessionWithId) => {
         const size = (await getSessionRef(s.id).collection('players').get()).size;

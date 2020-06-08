@@ -35,6 +35,7 @@ export function JoinRoomForm(props: Props) {
       <Form>
         <Title>Join an existing Room</Title>
         <Field
+          aria-label="Entrance Join Room Code Field"
           component={TextField}
           name="roomCode"
           label="Room Code"
@@ -43,6 +44,7 @@ export function JoinRoomForm(props: Props) {
           required
         />
         <Field
+          aria-label="Entrance Join Player Name Field"
           component={TextField}
           name="userName"
           label="Your name"
@@ -50,7 +52,9 @@ export function JoinRoomForm(props: Props) {
           autoComplete="off"
           required
         />
-        <Button type="submit">JOIN</Button>
+        <Button aria-label="Entrance Join Button" type="submit">
+          JOIN
+        </Button>
       </Form>
     </Formik>
   );

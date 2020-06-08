@@ -2,6 +2,7 @@ import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { ReduxStore } from '../../rootReducer';
 import { LocalNoGameSessionWithId, LocalGameSessionWithId } from '../../../model/Session';
+import { NoGameSessionError, NoLoadingSessionError, GameSessionError } from '../../../model/Error';
 
 type FoldParams<B = void> = {
   whenNoGameSession?: (s: LocalNoGameSessionWithId) => B | void;
@@ -11,13 +12,13 @@ type FoldParams<B = void> = {
 
 const foldGameSessionDefault = {
   whenNoGameSession: () => {
-    throw new Error('Should not have No game session');
+    throw new NoGameSessionError();
   },
   whenLoadingSession: () => {
-    throw new Error('Should not have loading session');
+    throw new NoLoadingSessionError();
   },
   whenGameStarted: () => {
-    throw new Error('Should not have No game session');
+    throw new GameSessionError();
   },
 };
 

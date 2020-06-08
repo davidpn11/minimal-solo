@@ -27,6 +27,7 @@ export function PlayerHand(props: Props) {
         ...acc,
         <PlayingCard
           key={id}
+          aria-label={`Playing Card on Hand: ${card.color} ${card.value}`}
           value={card.value}
           status="HAND"
           color={card.color}

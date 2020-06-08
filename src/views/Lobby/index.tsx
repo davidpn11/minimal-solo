@@ -58,7 +58,7 @@ export function Lobby(props: Props) {
       {isStarting && <ProgressBar progress={progress} />}
       <LobbyWrapper>
         <Title>Room Code</Title>
-        <Code>{currentSession.code}</Code>
+        <Code aria-label="Lobby Room Code">{currentSession.code}</Code>
         <Title>Players</Title>
         {playersGrid}
         <ActionWrapper>
@@ -68,11 +68,16 @@ export function Lobby(props: Props) {
               () => <div />,
               player =>
                 isAdmin ? (
-                  <Button onClick={startGame} disabled={!isAllPlayersReady || isStarting}>
+                  <Button
+                    aria-label="Lobby Start Game Button"
+                    onClick={startGame}
+                    disabled={!isAllPlayersReady || isStarting}
+                  >
                     Start Game
                   </Button>
                 ) : (
                   <Button
+                    aria-label="Lobby Ready Button"
                     disabled={isStarting}
                     variant={player.status === 'READY' ? 'secondary' : 'primary'}
                     onClick={toggleStatus(currentPlayerId, player.status)}
