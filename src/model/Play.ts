@@ -23,10 +23,10 @@ export type CommonNumberCardPlay = PlayWithId & {
   target: typeof O.none;
 };
 
-export const isCardPlay = (play: Play) => play.type === 'PLAY_CARD';
+export const isCardPlay = (play: Play): play is CommonNumberCardPlay => play.type === 'PLAY_CARD';
 export const isCardDraw = (play: Play) => play.type === 'DRAW_CARD';
 export const isAction = (play: Play) => play.type === 'ACTION';
-export const isPass = (play: Play) => play.type === 'PASS';
+export const isPass = (play: Play): play is PassPlay => play.type === 'PASS';
 
 export function createPassPlay(player: SessionPlayerWithId, position: number): PassPlay {
   return {

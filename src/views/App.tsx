@@ -22,25 +22,31 @@ export default function App() {
 
   const match = useRouteMatch<{ code: string }>();
 
-  useEffect(() => {
-    pipe(match.params.code, getFullSessionByCode)
-      .then(session => dispatch(setGameSession(session)))
-      .catch(err => {
-        captureLog(err);
-        return history.push('/');
-      });
-  }, [match.params, dispatch, history]);
+  useEffect(
+    function rehydrateSession() {
+      pipe(match.params.code, getFullSessionByCode)
+        .then(session => dispatch(setGameSession(session)))
+        .catch(err => {
+          captureLog(err);
+          return history.push('/');
+        });
+    },
+    [match.params, dispatch, history],
+  );
 
-  useEffect(() => {
-    pipe(
-      currentSessionO,
-      O.fold(noop, session => {
-        if (session.status === 'STARTED' && !isPlayerInTheGame(player, session)) {
-          history.push('/');
-        }
-      }),
-    );
-  }, [currentSessionO, player, history]);
+  useEffect(
+    function rejectNonPlayers() {
+      pipe(
+        currentSessionO,
+        O.fold(noop, session => {
+          if (session.status === 'STARTED' && !isPlayerInTheGame(player, session)) {
+            history.push('/');
+          }
+        }),
+      );
+    },
+    [currentSessionO, player, history],
+  );
 
   return pipe(
     currentSessionO,

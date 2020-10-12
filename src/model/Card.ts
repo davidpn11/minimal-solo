@@ -66,7 +66,7 @@ export function isCommonCard(card: Card): boolean {
   return commonColors.includes(card.color) && commonValues.includes(card.value);
 }
 
-export function isCommonNumberCard(card: Card): boolean {
+export function isCommonNumberCard(card: Card): card is CommonCard {
   return commonColors.includes(card.color) && numberValues.includes(card.value);
 }
 
