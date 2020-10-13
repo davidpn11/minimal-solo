@@ -1,11 +1,11 @@
-import { database, getSessionRef, getUniqueId, getSessionRefByCode } from '../firebase';
-import {
-  Normalized,
-  NoGameSession,
-  LocalSessionWithId,
-  LocalGameSession,
-  ID,
-} from '../../model/Session';
+import axios from 'axios';
+import * as O from 'fp-ts/lib/Option';
+import * as R from 'fp-ts/lib/Record';
+import * as A from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/pipeable';
+
+import { database, getSessionRef, getSessionRefByCode } from '../firebase';
+import { Normalized, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
 import {
   SessionPlayer,
@@ -14,19 +14,12 @@ import {
   createAvatar,
   getSessionPlayerByPosition,
 } from '../../model/Player';
-import { buildOne, sortDeck, Card } from '../../model/Card';
-import * as O from 'fp-ts/lib/Option';
-import * as R from 'fp-ts/lib/Record';
-import * as A from 'fp-ts/lib/Array';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { Card } from '../../model/Card';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 import { SessionNotFoundError } from '../../model/Error';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
-const codeGenerator = () => {
-  return String(Math.round(Math.random() * 100000));
-};
 
 function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
   if (!doc.empty && doc.size === 1) {
@@ -43,44 +36,21 @@ function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
 }
 
 export async function requestCreateSession(
-  adminName: string,
+  playerName: string,
   playerId: string,
 ): Promise<LocalSessionWithId> {
-  const initialSession = {
-    code: codeGenerator(),
-    status: 'INITIAL' as NoGameSession['status'],
-    admin: playerId,
-    loadingStatus: O.none,
-  };
-
-  const playerData: SessionPlayer = {
-    name: adminName,
-    position: 0,
-    hand: [],
-    avatar: createAvatar(),
-    status: 'ADMIN',
-  };
-
-  const session = await database.collection('session').add(initialSession);
-  const sessionRef = getSessionRef(session.id);
-  await sessionRef.collection('players').doc(playerId).set(playerData);
-
-  const generateCards = sortDeck(buildOne());
-
-  const batch = database.batch();
-  const deckRef = sessionRef.collection('deck');
-  generateCards.forEach(async card => {
-    batch.set(deckRef.doc(getUniqueId()), card);
-  });
-  await batch.commit();
-
-  return {
-    id: session.id,
-    players: {
-      [playerId]: playerData,
-    },
-    ...initialSession,
-  };
+  try {
+    const response = await axios.get<LocalSessionWithId>(
+      'http://127.0.0.1:5001/minimal-solo-f820d/us-central1/newGame',
+      {
+        params: { playerName, playerId },
+      },
+    );
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
 export async function requestJoinSession(

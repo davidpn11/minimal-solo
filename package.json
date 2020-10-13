@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "@sentry/browser": "^5.15.5",
+    "axios": "^0.20.0",
     "firebase": "^7.14.0",
     "formik": "^2.1.4",
     "fp-ts": "^2.5.3",
@@ -70,7 +71,7 @@
     "prettier": "^2.0.4",
     "redux-devtools-extension": "^2.13.8",
     "storybook-dark-mode": "^0.4.1",
-    "typescript": "~3.7.2",
-    "ts-node": "^8.10.1"
+    "ts-node": "^8.10.1",
+    "typescript": "~3.7.2"
   }
 }

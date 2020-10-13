@@ -3,16 +3,24 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
+import * as F from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { firebaseConfig } from './config';
 import { normalizeQuery } from './helpers';
 import { LocalSession, LocalSessionWithId } from '../model/Session';
-import { SessionPlayer } from '../model/Player';
 import { SessionNotFoundError } from '../model/Error';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+if (window.location.hostname === 'localhost') {
+  db.settings({
+    host: 'localhost:8080',
+    ssl: false,
+  });
 }
 
 export const database = firebase.firestore();
@@ -25,7 +33,6 @@ export const getFullSessionByCode: (code: string) => Promise<LocalSessionWithId>
   code: string,
 ) => {
   const sessionByCode = await getSessionRefByCode(code).get();
-
   return pipe(
     normalizeQuery<LocalSession>(sessionByCode),
     R.reduceWithIndex<string, LocalSession, O.Option<LocalSessionWithId>>(
@@ -36,18 +43,10 @@ export const getFullSessionByCode: (code: string) => Promise<LocalSessionWithId>
           id,
         }),
     ),
-    O.fold(
-      () => {
-        const SessionNotFound = SessionNotFoundError(code);
-        throw new SessionNotFound();
-      },
-      async localSession => {
-        const players = normalizeQuery<SessionPlayer>(
-          await getSessionRef(localSession.id).collection('players').get(),
-        );
-        return { ...localSession, players };
-      },
-    ),
+    O.fold(() => {
+      const SessionNotFound = SessionNotFoundError(code);
+      throw new SessionNotFound();
+    }, F.identity),
   );
 };
 
