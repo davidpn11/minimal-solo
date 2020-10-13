@@ -29,3 +29,7 @@ yarn-error.log*
 
 # Webstorm
 .idea
+
+# Log
+firebase-debug.log
+firestore-debug.log
