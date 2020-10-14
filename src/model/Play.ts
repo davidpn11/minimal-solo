@@ -119,7 +119,7 @@ export function createCommonNumberPlay(
   player: SessionPlayerWithId,
   card: CommonCard,
   position: number,
-): Play {
+): NumberCardPlay {
   return {
     type: 'NUMBER_CARD_PLAY',
     player,
@@ -133,7 +133,7 @@ export function createBlockPlay(
   nextPlayer: SessionPlayerWithId,
   card: CommonCard,
   position: number,
-): Play {
+): BlockPlay {
   return {
     type: 'BLOCK_PLAY',
     player,
@@ -147,7 +147,7 @@ export function createReversePlay(
   card: CommonCard,
   direction: GameDirection,
   position: number,
-): Play {
+): ReversePlay {
   return {
     type: 'REVERSE_PLAY',
     card,
@@ -161,7 +161,7 @@ export function createDrawPlay(
   player: SessionPlayerWithId,
   card: CommonCard,
   position: number,
-): Play {
+): DrawPlay {
   return {
     player,
     type: 'DRAW_PLAY',
@@ -175,7 +175,7 @@ export function createPlusTwoPlay(
   card: CommonCard,
   target: SessionPlayerWithId,
   position: number,
-): Play {
+): PlusTwoPlay {
   return {
     player,
     type: 'PLUS_TWO_PLAY',
@@ -190,7 +190,7 @@ export function createSwapPlay(
   card: CommonCard,
   target: SessionPlayerWithId,
   position: number,
-): Play {
+): SwapPlay {
   return {
     player,
     type: 'SWAP_PLAY',
@@ -203,7 +203,7 @@ export function createSwapAllPlay(
   player: SessionPlayerWithId,
   card: ActionCard,
   position: number,
-): Play {
+): SwapAllPlay {
   return {
     player,
     type: 'SWAP_ALL_PLAY',
@@ -217,7 +217,7 @@ export function createColorPlay(
   card: CommonCard,
   color: Color,
   position: number,
-): Play {
+): ColorPlay {
   return {
     player,
     type: 'COLOR_PLAY',
@@ -232,7 +232,7 @@ export function createPlusFourPlay(
   card: ActionCard,
   target: SessionPlayerWithId,
   position: number,
-): Play {
+): PlusFourPlay {
   return {
     player,
     type: 'PLUS_FOUR_PLAY',
@@ -242,7 +242,7 @@ export function createPlusFourPlay(
   };
 }
 
-export function createUnoPlay(player: SessionPlayerWithId, position: number): Play {
+export function createUnoPlay(player: SessionPlayerWithId, position: number): UnoPlay {
   return {
     player,
     type: 'UNO_PLAY',
