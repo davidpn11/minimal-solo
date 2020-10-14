@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+web/node_modules
+functions/node_modules
 /.pnp
 .pnp.js
 
@@ -9,12 +11,13 @@
 /coverage
 
 # production
-/build
+build
 functions/lib
+web/build
 
 # key
-/src/api/config.ts
-.sentryclirc
+web/src/api/config.ts
+web/.sentryclirc
 
 # misc
 .DS_Store

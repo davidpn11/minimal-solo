@@ -1,7 +1,7 @@
 import React from 'react';
 import { select, withKnobs } from '@storybook/addon-knobs';
 
-import { Pass, PassButtonStates } from './';
+import { Pass, PassButtonStates } from './index';
 
 const STATES: Record<string, PassButtonStates> = {
   CanPass: 'CAN_PASS',

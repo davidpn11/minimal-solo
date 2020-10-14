@@ -1,5 +1,5 @@
 import "styled-components";
-import { MinimalSoloTheme } from "../src/theme";
+import { MinimalSoloTheme } from "./theme";
 
 declare module "styled-components" {
   export interface DefaultTheme extends MinimalSoloTheme {}

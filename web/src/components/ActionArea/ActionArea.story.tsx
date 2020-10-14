@@ -2,7 +2,7 @@ import React from 'react';
 import { number, select, withKnobs } from '@storybook/addon-knobs';
 import * as O from 'fp-ts/lib/Option';
 
-import { ActionArea } from './';
+import { ActionArea } from './index';
 import { buildCommon, Color } from '../../model/Card';
 
 const COLORS: Record<string, Color> = {

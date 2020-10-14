@@ -1,7 +1,7 @@
 import React from 'react';
 import { select, withKnobs } from '@storybook/addon-knobs';
 
-import { Solo } from './';
+import { Solo } from './index';
 import { SoloButtonStates } from './styles';
 
 const STATES: Record<string, SoloButtonStates> = {

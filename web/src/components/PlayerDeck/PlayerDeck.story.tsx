@@ -3,7 +3,7 @@ import { number, text, withKnobs } from '@storybook/addon-knobs';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
 
-import { PlayerDeck } from './';
+import { PlayerDeck } from './index';
 import { createAvatar, SessionPlayer } from '../../model/Player';
 
 export function PlayerDeckStory() {

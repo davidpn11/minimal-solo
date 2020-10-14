@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as O from 'fp-ts/lib/Option';
 import { random } from 'faker';
 
-import { HistoryItem } from './';
+import { HistoryItem } from './index';
 import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';

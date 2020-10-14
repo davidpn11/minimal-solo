@@ -68,6 +68,8 @@ export const newLobby = functions.https.onRequest(async (req, res) => {
   }
 });
 
+export const code = functions.https.onRequest(async () => {});
+
 export const buyCards = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   const { sessionId, playerId, amount } = req.query;

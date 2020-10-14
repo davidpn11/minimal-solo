@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
 
-import { PlayerHand } from './';
+import { PlayerHand } from './index';
 import { buildOne, Card, sortDeck } from '../../model/Card';
 import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
