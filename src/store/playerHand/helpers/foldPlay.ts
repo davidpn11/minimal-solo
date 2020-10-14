@@ -68,9 +68,11 @@ type FoldPlayParams<B = void> = {
 export const foldPlayWithId = (
   whenPassPlay: (p: PassPlay & ID) => void,
   whenNumberCardPlay: (p: NumberCardPlay & ID) => void,
+  whenBlockCardPlay: (p: BlockPlay & ID) => void,
 ) => (play: PlayWithId) => {
   if (play.type === 'PASS_PLAY') return whenPassPlay(play);
   if (play.type === 'NUMBER_CARD_PLAY') return whenNumberCardPlay(play);
+  if (play.type === 'BLOCK_PLAY') return whenBlockCardPlay(play);
 };
 
 export const foldPlay = <B>({
@@ -85,7 +87,7 @@ export const foldPlay = <B>({
   whenSwapAllPlay,
   whenColorPlay,
   whenPlusFourPlay,
-}: FoldPlayParams<B> = foldPlayDefault) => (play: Play): B | void => {
+}: FoldPlayParams<B> = foldPlayDefault) => (play: Play | PlayWithId): B | void => {
   switch (play.type) {
     case 'PASS_PLAY':
       if (whenPassPlay) return whenPassPlay(play);

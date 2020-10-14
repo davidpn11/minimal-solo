@@ -1,6 +1,5 @@
-import { SessionPlayer, SessionPlayerWithId } from './Player';
-import * as O from 'fp-ts/lib/Option';
-import { Card, CommonCard, Color } from './Card';
+import { SessionPlayerWithId } from './Player';
+import { Card, CommonCard, Color, CardWithId } from './Card';
 import { ID, GameDirection } from './Session';
 
 export type PassPlay = {
@@ -122,10 +121,25 @@ export function createCommonNumberPlay(
   position: number,
 ): Play {
   return {
-    player,
     type: 'NUMBER_CARD_PLAY',
-    card: card,
+    player,
+    card,
     position,
+  };
+}
+
+export function createBlockPlay(
+  player: SessionPlayerWithId,
+  nextPlayer: SessionPlayerWithId,
+  card: CardWithId,
+  position: number,
+): BlockPlay {
+  return {
+    type: 'BLOCK_PLAY',
+    player,
+    card,
+    position,
+    target: nextPlayer,
   };
 }
 

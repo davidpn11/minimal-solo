@@ -5,8 +5,8 @@ import * as O from 'fp-ts/lib/Option';
 import { random } from 'faker';
 
 import { HistoryItem } from './';
-import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
-import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
+import { createAvatar, SessionPlayerWithId } from '../../model/Player';
+import { Card, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
 import {
   createCommonNumberPlay,
@@ -94,6 +94,7 @@ export function HistoryItemStory() {
     status: 'HAND',
   };
 
+  // @ts-ignore
   const play: Play = useMemo<Play>(() => {
     console.log({ playType });
     switch (playType) {

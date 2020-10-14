@@ -6,15 +6,16 @@ import {
   getCurrentPlayer,
   getCurrentSessionPlayerValue,
   getLastPlayPosition,
+  getNextPlayer,
   getPlayerActions,
   getSessionValue,
 } from '../../../store/session/selectors';
 import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
 import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
-import { createCommonNumberPlay, createPassPlay } from '../../../model/Play';
+import { createBlockPlay, createCommonNumberPlay, createPassPlay } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import { CardWithId, CommonCardWithId, isCommonNumberCard } from '../../../model/Card';
+import { CardWithId, CommonCardWithId, isBlockCard, isCommonNumberCard } from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
 export function useHandListener() {
@@ -24,6 +25,7 @@ export function useHandListener() {
   const lastPlayPosition = useSelector(getLastPlayPosition);
   const currentCard = useSelector(getCurrentCardValue);
   const currentPlayer = useSelector(getCurrentPlayer);
+  const nextPlayer = useSelector(getNextPlayer);
   const currentSession = useSelector(getSessionValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayerValue);
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
@@ -64,8 +66,52 @@ export function useHandListener() {
     }
   }
 
+  function handleBlockCard(card: CardWithId) {
+    const isSameCardColor = currentCard.color === card.color;
+    const isSameCardValue = currentCard.value === card.value;
+    const isSameCard = isSameCardValue && isSameCardColor;
+
+    if (isSameCard) {
+      // play the card
+      const play = createBlockPlay(
+        currentSessionPlayerWithId,
+        nextPlayer,
+        card,
+        lastPlayPosition + 1,
+      );
+      // delete it from hand
+      return requestRemoveCardFromHand(
+        currentSession.id,
+        currentSessionPlayerWithId,
+        card.id,
+      ).then(() => dispatch(addPlay(play))); // add the play
+    } else if (isYourTurn) {
+      if (isSameCardColor || isSameCardValue) {
+        // play the card
+        const play = createBlockPlay(
+          currentSessionPlayerWithId,
+          nextPlayer,
+          card,
+          lastPlayPosition + 1,
+        );
+        // delete it from hand
+        return requestRemoveCardFromHand(
+          currentSession.id,
+          currentSessionPlayerWithId,
+          card.id,
+        ).then(() => dispatch(addPlay(play))); // add the play
+      }
+      // Show message cannot play this card
+      return;
+    } else {
+      // show message is not your turn
+      return;
+    }
+  }
+
   function handleCardClick(card: CardWithId) {
     if (isCommonNumberCard(card)) return handleCommonNumberCard(card as CommonCardWithId);
+    if (isBlockCard(card)) return handleBlockCard(card);
   }
 
   function handlePass() {
@@ -87,7 +133,6 @@ export function useHandListener() {
 
   return { playerHand, playerActions, handlePass, handleCardClick };
 }
-
 
 // Pre        ---   Game   --   Post
 // canPlayType |            |   play types
