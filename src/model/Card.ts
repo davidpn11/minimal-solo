@@ -1,6 +1,8 @@
+import axios from 'axios';
 import * as A from 'fp-ts/lib/Array';
 import { UnionExclude } from './types';
 import { ID } from './Session';
+import { SessionPlayerWithId } from './Player';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -123,4 +125,23 @@ export function buildOne(): Card[] {
 
 export function sortDeck(deck: Card[]): Card[] {
   return deck.sort(() => Math.random() - 0.5);
+}
+
+export async function buyCard(sessionId: string, playerId: string, amount = 1) {
+  try {
+    const response = await axios.get<SessionPlayerWithId>(
+      'http://127.0.0.1:5001/minimal-solo-f820d/us-central1/buyCards',
+      {
+        params: {
+          sessionId,
+          playerId,
+          amount,
+        },
+      },
+    );
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }

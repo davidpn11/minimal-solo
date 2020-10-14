@@ -14,7 +14,7 @@ import {
   createAvatar,
   getSessionPlayerByPosition,
 } from '../../model/Player';
-import { Card } from '../../model/Card';
+import { buyCard, Card } from '../../model/Card';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 import { SessionNotFoundError } from '../../model/Error';
 
@@ -148,43 +148,6 @@ export async function requestAddPlayer(
   return { ...initialPlayerData, id: playerId };
 }
 
-export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) => async (
-  player: SessionPlayerWithId,
-  nCards = 1,
-): Promise<SessionPlayerWithId> => {
-  const deckRef = sessionRef.collection('deck');
-  const deck = normalizeQuery<Card>(await deckRef.get());
-
-  //get number of deck cards
-  const userCards = popDeckCards(deck, 'HAND', nCards);
-
-  //delete from deck structure
-  await Promise.all(
-    userCards.keys.map(key => {
-      return deckRef.doc(key).delete();
-    }),
-  );
-
-  //write on activeCards structrure
-  const batch = database.batch();
-  userCards.keys.forEach(key => {
-    const cardRef = sessionRef.collection('activeCards').doc(key);
-    batch.set(cardRef, userCards.cards[key]);
-  });
-  await batch.commit();
-
-  //set userHand
-  const newHand = [...player.hand, ...userCards.keys];
-  await sessionRef.collection('players').doc(player.id).set(
-    {
-      hand: newHand,
-    },
-    { merge: true },
-  );
-
-  return { ...player, hand: newHand };
-};
-
 function checkCurrentCardValid(cards: Normalized<Card>): boolean {
   return pipe(
     cards,
@@ -290,19 +253,10 @@ export async function initGameSession(
 }
 
 export async function requestDealStartHands(session: LocalSessionWithId) {
-  const sessionRef = getSessionRef(session.id);
-  const buyCards = requestBuyCards(sessionRef);
-
-  const dealPlayerCard = async (
-    key: string,
-    acc: Promise<SessionPlayerWithId[]>,
-    player: SessionPlayer,
-  ) => [...(await acc), await buyCards({ id: key, ...player }, 7)];
-
-  const players = await pipe(
-    session.players,
-    R.reduceWithIndex(Promise.resolve([] as SessionPlayerWithId[]), await dealPlayerCard),
+  const queries = pipe(
+    Object.keys(session.players),
+    A.map((playerId: string) => buyCard(session.id, playerId, 7)),
   );
 
-  return players;
+  return await Promise.all(queries);
 }

@@ -12,6 +12,7 @@ const codeGenerator = () => {
 };
 
 export const newLobby = functions.https.onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   const { playerId, playerName } = req.query;
 
   if (typeof playerId !== "string") {
@@ -53,18 +54,14 @@ export const newLobby = functions.https.onRequest(async (req, res) => {
   batch.commit();
 
   try {
-    const sessionDoc = await admin
-      .firestore()
-      .collection("session")
-      .doc(session.id)
-      .get();
-    const sessionData = sessionDoc.data();
+    const sessionDoc = await session.get();
+    const players = await session.collection("players").listDocuments();
     const sessionWithId = {
-      ...sessionData,
+      ...sessionDoc.data(),
+      players: players.values(),
       id: sessionDoc.id,
     };
 
-    res.set("Access-Control-Allow-Origin", "*");
     res.send(sessionWithId);
   } catch (e) {
     res.status(500).send(e);
@@ -72,6 +69,7 @@ export const newLobby = functions.https.onRequest(async (req, res) => {
 });
 
 export const buyCards = functions.https.onRequest(async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   const { sessionId, playerId, amount } = req.query;
 
   if (typeof playerId !== "string") {
@@ -107,7 +105,18 @@ export const buyCards = functions.https.onRequest(async (req, res) => {
 
   // add to player hand
   const cardIds = cardsToTake.map((card) => card.id);
-  await sessionDoc.collection("players").doc(playerId).update("hand", cardIds);
+  const player = await sessionDoc.collection("players").doc(playerId).get();
+  const playerData = player.data();
 
-  res.send(200);
+  if (playerData) {
+    const updatedPlayer = {
+      ...playerData,
+      hand: [...playerData.hand, ...cardIds],
+    };
+    await sessionDoc.collection("players").doc(playerId).set(updatedPlayer);
+    res.send({ ...updatedPlayer, id: player.id });
+    return;
+  }
+
+  res.status(500).send({});
 });
