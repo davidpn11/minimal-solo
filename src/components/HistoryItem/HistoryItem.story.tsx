@@ -8,7 +8,13 @@ import { HistoryItem } from './';
 import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
 import { UnionExclude } from '../../model/types';
-import { Play } from '../../model/Play';
+import {
+  createCommonNumberPlay,
+  createDrawPlay,
+  createPassPlay,
+  createUnoPlay,
+  Play,
+} from '../../model/Play';
 
 const avatar = createAvatar();
 
@@ -17,9 +23,16 @@ const Wrapper = styled.div`
 `;
 
 const PLAY_TYPES: Record<string, Play['type']> = {
-  DrawCard: 'DRAW_CARD',
-  PlayCard: 'PLAY_CARD',
-  Action: 'ACTION',
+  PassPlay: 'PASS_PLAY',
+  UnoPlay: 'UNO_PLAY',
+  DrawPlay: 'DRAW_PLAY',
+  NumberCardPlay: 'NUMBER_CARD_PLAY',
+  PlusTwoPlay: 'PLUS_TWO_PLAY',
+  BlockPlay: 'BLOCK_PLAY',
+  ReversePlay: 'REVERSE_PLAY',
+  SwapPlay: 'SWAP_PLAY',
+  SwapAllPlay: 'SWAP_ALL_PLAY',
+  PlusFourPlay: 'PLUS_FOUR_PLAY',
 };
 
 const COLORS: Record<string, UnionExclude<Color, 'BLACK'>> = {
@@ -75,69 +88,64 @@ export function HistoryItemStory() {
     avatar,
     hand: [],
   };
+  const commonCard: CommonCard = {
+    color: 'RED',
+    value: 'FIVE',
+    status: 'HAND',
+  };
 
   const play: Play = useMemo<Play>(() => {
+    console.log({ playType });
     switch (playType) {
-      case 'DRAW_CARD':
-        return {
-          type: playType,
-          player,
-          target: O.none,
-          position: 0,
-          card: O.some({
-            color: colorKnob,
-            value: commonValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as CommonCard),
-        };
-      case 'PLAY_CARD':
-        return {
-          type: playType,
-          player,
-          target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
-          position: 0,
-          card: O.some({
-            color: colorKnob,
-            value: commonValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as CommonCard),
-        };
-      case 'ACTION':
+      case 'PASS_PLAY':
+        return createPassPlay(player, 0);
+      case 'DRAW_PLAY':
+        return createDrawPlay(player, commonCard, 0);
+      case 'UNO_PLAY':
+        return createUnoPlay(player, 0);
+      case 'PLUS_TWO_PLAY':
+      // return createPlusTwoPlay()
+      // case 'PLUS_FOUR_PLAY':
+      //     return plusFourPlay()
+      // case 'BLOCK_PLAY':
+      //   return createBlockPlay()
+      // case 'REVERSE_PLAY':
+      //   return reversePlay()
+      // case 'SWAP_PLAY':
+      //   return swapPlay()
+      // case 'SWAP_ALL_PLAY':
+      //   return swapAllPlay(0)
+      //   case 'NUMBER_CARD_PLAY':
       default:
-        if (targetKnob) {
-          return {
-            type: playType,
-            player,
-            position: 0,
-            card: O.some({
-              color: actionTargetColorKnob,
-              value: actionTargetKnob,
-              status: 'PLAY',
-              createdAt: 0,
-            } as ActionCard),
-            target: O.some({
-              name: targetNameKnob,
-              position: 1,
-              hand: [],
-              avatar,
-              status: 'READY',
-            }),
-          };
-        }
-        return {
-          type: playType,
-          player,
-          position: 0,
-          card: O.some({
-            color: 'BLACK',
-            value: actionValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as ActionCard),
-          target: O.none,
-        };
+        return createCommonNumberPlay(player, commonCard, 0);
+      // case ''
+      // case 'DRAW_CARD' || '':
+      //   return {
+      //     type: playType,
+      //     player,
+      //     target: O.none,
+      //     position: 0,
+      //     card: O.some({
+      //       color: colorKnob,
+      //       value: commonValueKnob,
+      //       status: 'PLAY',
+      //       createdAt: 0,
+      //     } as CommonCard),
+      //   };
+      // case 'PLAY_CARD':
+      //   return {
+      //     type: playType,
+      //     player,
+      //     target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
+      //     position: 0,
+      //     card: O.some({
+      //       color: colorKnob,
+      //       value: commonValueKnob,
+      //       status: 'PLAY',
+      //       createdAt: 0,
+      //     } as CommonCard),
+      //   };
+      // case 'ACTION':
     }
   }, [
     playType,

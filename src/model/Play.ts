@@ -128,3 +128,37 @@ export function createCommonNumberPlay(
     position,
   };
 }
+
+export function createDrawPlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'DRAW_PLAY',
+    card: card,
+    position,
+  };
+}
+
+// export function createPlusTwoPlay(
+//   player: SessionPlayerWithId,
+//   target: SessionPlayerWithId,
+//   position: number,
+// ): Play {
+//   return {
+//     player,
+//     type: 'PLUS_TWO_PLAY',
+//     position,
+//     target,
+//   };
+// }
+
+export function createUnoPlay(player: SessionPlayerWithId, position: number): Play {
+  return {
+    player,
+    type: 'UNO_PLAY',
+    position,
+  };
+}
