@@ -9,10 +9,14 @@ import { Game } from './Game';
 import { getFullSessionByCode } from '../api/firebase';
 import { getSession } from '../store/session/selectors';
 import { setGameSession } from '../store/session/actions';
-import { unitJSX } from '../utils/unit';
+import { getPlayerValue } from '../store/playerHand/selector';
+import { isPlayerInTheGame } from '../store/playerHand/helpers/player';
+import { noop, unitJSX } from '../utils/unit';
+import { captureLog } from '../utils/sentry';
 
 export default function App() {
   const currentSessionO = useSelector(getSession);
+  const player = useSelector(getPlayerValue);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -22,10 +26,21 @@ export default function App() {
     pipe(match.params.code, getFullSessionByCode)
       .then(session => dispatch(setGameSession(session)))
       .catch(err => {
-        console.error(err);
+        captureLog(err);
         return history.push('/');
       });
   }, [match.params, dispatch, history]);
+
+  useEffect(() => {
+    pipe(
+      currentSessionO,
+      O.fold(noop, session => {
+        if (session.status === 'STARTED' && !isPlayerInTheGame(player, session)) {
+          history.push('/');
+        }
+      }),
+    );
+  }, [currentSessionO, player, history]);
 
   return pipe(
     currentSessionO,
@@ -37,7 +52,10 @@ export default function App() {
           case 'STARTING':
             return <Lobby status={session.status} />;
           case 'STARTED':
-            return <Game />;
+            if (isPlayerInTheGame(player, session)) {
+              return <Game />;
+            }
+            return unitJSX;
           default:
             throw new Error('Not a valid session status');
         }

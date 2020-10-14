@@ -20,6 +20,7 @@ import { ReduxStore } from '../rootReducer';
 import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { Card } from '../../model/Card';
+import { captureLog } from '../../utils/sentry';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
@@ -132,7 +133,7 @@ export function joinGameSession(
       });
       return E.right(session);
     } catch (error) {
-      console.error(error);
+      captureLog(error);
       return E.left(error);
     }
   };

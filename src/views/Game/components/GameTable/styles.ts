@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { CardWrapper } from '../../../../components/PlayingCard/styles';
 import { HAND_HEIGHT } from '../../../../components/PlayerHand/styles';
 
 export const TableWrapper = styled.div`

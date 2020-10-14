@@ -6,6 +6,7 @@ import { getSession } from '../store/session/selectors';
 import { requestSessionStatusListener } from '../api/db/preGameSession';
 import { LocalSessionWithId } from '../model/Session';
 import { setGameSession } from '../store/session/actions';
+import { setSentrySessionTags } from '../utils/sentry';
 
 export function useSessionListener() {
   const currentSession = useSelector(getSession);
@@ -18,6 +19,7 @@ export function useSessionListener() {
       requestSessionStatusListener(currentSession.value.id, (newSession: LocalSessionWithId) => {
         if (newSession.status !== currentSession.value.status) {
           dispatch(setGameSession(newSession));
+          setSentrySessionTags(newSession);
         }
       });
     }

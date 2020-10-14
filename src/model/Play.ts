@@ -98,7 +98,7 @@ export type Play =
 
 export type PlayWithId = Play & ID;
 
-export const isCardPlay = (play: Play) => play.type === 'NUMBER_CARD_PLAY';
+export const isCardPlay = (play: Play): play is NumberCardPlay => play.type === 'NUMBER_CARD_PLAY';
 export const isCardDraw = (play: Play) => play.type === 'DRAW_PLAY';
 export const isAction = (play: Play) =>
   play.type === 'BLOCK_PLAY' ||

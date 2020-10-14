@@ -1,9 +1,10 @@
 {
-  "name": "skip-cards",
-  "version": "0.1.0",
+  "name": "minimal-solo",
+  "version": "0.6.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.11",
+    "@sentry/browser": "^5.15.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -29,6 +30,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:withTag": "(yarn build && ts-node scripts/sentry.ts)",
+    "deploy": "yarn build && firebase deploy",
+    "release": "yarn build:withTag && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
@@ -51,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@sentry/cli": "^1.53.0",
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",
     "@storybook/addon-links": "^5.3.18",
@@ -65,6 +70,7 @@
     "polished": "^3.5.2",
     "prettier": "^2.0.4",
     "redux-devtools-extension": "^2.13.8",
-    "storybook-dark-mode": "^0.4.1"
+    "storybook-dark-mode": "^0.4.1",
+    "ts-node": "^8.10.1"
   }
 }

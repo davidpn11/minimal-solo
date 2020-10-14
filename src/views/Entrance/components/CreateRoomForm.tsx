@@ -32,6 +32,7 @@ export function CreateRoomForm(props: Props) {
       <Form>
         <Title>Create a new Room</Title>
         <Field
+          aria-label="Entrance Create Room Player Name Field"
           component={TextField}
           name="adminName"
           label="Your name"
@@ -39,7 +40,7 @@ export function CreateRoomForm(props: Props) {
           autoComplete="off"
           required
         />
-        <Button type="submit" variant="secondary">
+        <Button aria-label="Entrance Create Room Button" type="submit" variant="secondary">
           CREATE
         </Button>
       </Form>

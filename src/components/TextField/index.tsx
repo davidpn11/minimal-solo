@@ -21,6 +21,10 @@ export function fieldToTextField({
     helperText: showError ? fieldError : props.helperText,
     disabled: disabled ?? isSubmitting,
     variant: 'outlined',
+    inputProps: {
+      ...props.inputProps,
+      'aria-label': props['aria-label'],
+    },
   };
 }
 

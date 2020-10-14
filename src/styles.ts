@@ -2,8 +2,6 @@ import { createGlobalStyle } from 'styled-components';
 import { rgba } from 'polished';
 
 export const GlobalStyles = createGlobalStyle`
-@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap");
-
 * {
   box-sizing: border-box;
 }

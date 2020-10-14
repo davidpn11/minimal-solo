@@ -1,7 +1,7 @@
 import React from 'react';
-import { ReactComponent as WebLogo_Black } from '../../assets/svg/WebLogo_Black.svg';
-import { ReactComponent as WebLogo_White } from '../../assets/svg/WebLogo_White.svg';
-import { ReactComponent as WebLogo_Color } from '../../assets/svg/WebLogo_Color.svg';
+import { ReactComponent as WebLogoBlack } from '../../assets/svg/WebLogo_Black.svg';
+import { ReactComponent as WebLogoWhite } from '../../assets/svg/WebLogo_White.svg';
+import { ReactComponent as WebLogoColor } from '../../assets/svg/WebLogo_Color.svg';
 
 export type LogoVariant = 'BLACK' | 'WHITE' | 'COLOR';
 type Props = { variant: LogoVariant };
@@ -9,11 +9,11 @@ type Props = { variant: LogoVariant };
 export function Logo(props: Props) {
   switch (props.variant) {
     case 'COLOR':
-      return <WebLogo_Color />;
+      return <WebLogoColor />;
     case 'BLACK':
-      return <WebLogo_Black />;
+      return <WebLogoBlack />;
     case 'WHITE':
-      return <WebLogo_White />;
+      return <WebLogoWhite />;
     default:
       throw new Error('Invalid logo variant.');
   }

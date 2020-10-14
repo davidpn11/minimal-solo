@@ -20,6 +20,7 @@ import * as R from 'fp-ts/lib/Record';
 import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
+import { SessionNotFoundError } from '../../model/Error';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
@@ -92,7 +93,8 @@ export async function requestJoinSession(
     session,
     O.fold(
       () => {
-        throw new Error('SESSION NOT FOUND');
+        const SessionNotFound = SessionNotFoundError(sessionCode);
+        throw new SessionNotFound();
       },
       async (s: LocalSessionWithId) => {
         const size = (await getSessionRef(s.id).collection('players').get()).size;
@@ -195,7 +197,7 @@ export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) =>
 
   //write on activeCards structrure
   const batch = database.batch();
-  userCards.keys.map(key => {
+  userCards.keys.forEach(key => {
     const cardRef = sessionRef.collection('activeCards').doc(key);
     batch.set(cardRef, userCards.cards[key]);
   });
@@ -213,37 +215,46 @@ export const requestBuyCards = (sessionRef: ReturnType<typeof getSessionRef>) =>
   return { ...player, hand: newHand };
 };
 
-async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
-  const deckRef = sessionRef.collection('deck');
-  const deck = normalizeQuery<Card>(await deckRef.get());
+function checkCurrentCardValid(cards: Normalized<Card>): boolean {
+  return pipe(
+    cards,
+    R.some(
+      c =>
+        c.color === 'BLACK' ||
+        c.value === 'REVERSE' ||
+        c.value === 'PLUS_TWO' ||
+        c.value === 'SWAP' ||
+        c.value === 'BLOCK',
+    ),
+  );
+}
 
+function getCurrentCard(deck: Normalized<Card>) {
   let currentCard = popDeckCards(deck, 'GAME');
+  let isInvalid = checkCurrentCardValid(currentCard.cards);
 
-  while (
-    pipe(
-      currentCard.cards,
-      R.some(
-        c =>
-          c.color === 'BLACK' ||
-          c.value === 'REVERSE' ||
-          c.value === 'PLUS_TWO' ||
-          c.value === 'SWAP' ||
-          c.value === 'BLOCK',
-      ),
-    )
-  ) {
+  while (isInvalid) {
     const newDeck = pipe(
       deck,
       R.filterWithIndex(key =>
         pipe(
-          currentCard.keys,
+          popDeckCards(deck, 'GAME').keys,
           A.findFirst(cardKey => key === cardKey),
           O.isNone,
         ),
       ),
     );
+
     currentCard = popDeckCards(newDeck, 'GAME');
   }
+
+  return currentCard;
+}
+
+async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
+  const deckRef = sessionRef.collection('deck');
+  const deck = normalizeQuery<Card>(await deckRef.get());
+  const currentCard = getCurrentCard(deck);
 
   const key = pipe(currentCard.keys, A.head);
 

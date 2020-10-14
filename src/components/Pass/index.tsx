@@ -27,6 +27,7 @@ export function Pass(props: Props) {
 
   return (
     <PassButton
+      aria-label={`Pass Button: ${props.state}`}
       isPassable={isPassable}
       isActive={isActive}
       onClick={props.onClick}

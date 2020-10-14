@@ -17,7 +17,7 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, NumberCardPlay } from '../../../model/Play';
+import { PlayWithId, isCardPlay, isPass } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
@@ -34,23 +34,38 @@ export function useProgressionListener() {
   const [hasListener, setHasListener] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  function runNextEffect(play: PlayWithId) {
-    const nextPlayer = getNextPlayer(play, currentSession);
+  const runNextEffect = useCallback(
+    (play: PlayWithId) => {
+      const nextPlayer = getNextPlayer(play, currentSession);
 
-    batch(() => {
-      dispatch(setCurrentPlay(play.id));
-      dispatch(setCurrentPlayer(nextPlayer.id));
-    });
-  }
+      batch(() => {
+        dispatch(setCurrentPlay(play.id));
+        dispatch(setCurrentPlayer(nextPlayer.id));
+      });
+    },
+    [dispatch, currentSession],
+  );
 
-  function runNumberCardPlayEffect(play: NumberCardPlay & ID) {
-    dispatch(setCurrentCard(play.card));
-    runNextEffect(play);
-  }
+  //TODO CHECK THIS LOGIC
+  const runCardPlayEffect = useCallback(
+    (play: PlayWithId) => {
+      if (isCardPlay(play)) {
+        dispatch(setCurrentCard(play.card));
+        runNextEffect(play);
+      }
+    },
+    [dispatch, runNextEffect],
+  );
 
-  function runPostPlayHook(play: PlayWithId) {
-    pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect));
-  }
+  const runPostPlayHook = useCallback(
+    (play: PlayWithId) => {
+      if (isPass(play)) {
+        return runNextEffect(play);
+      }
+      // if (isCardPlay(play)) return runCardPlayEffect(play as CommonNumberCardPlay);
+    },
+    [runNextEffect, runCardPlayEffect],
+  );
 
   const handleLastPlay = useCallback(
     (play: PlayWithId, playerId: string) => {
