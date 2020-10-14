@@ -1,6 +1,6 @@
 {
-  "name": "minimal-solo",
-  "version": "0.6.0",
+  "name": "minimal-solo-app",
+  "version": "0.7.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.11",

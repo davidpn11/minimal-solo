@@ -5,6 +5,7 @@ import * as admin from "firebase-admin";
 
 import lobby from "./api/lobby";
 import cards from "./api/cards";
+import session from "./api/session";
 
 const app = express();
 
@@ -14,5 +15,6 @@ app.use(cors({ origin: true }));
 
 app.use('/lobby', lobby);
 app.use('/cards', cards);
+app.use('/session', session);
 
 export const solo = functions.https.onRequest(app);

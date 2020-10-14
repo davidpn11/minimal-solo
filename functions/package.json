@@ -1,5 +1,5 @@
 {
-  "name": "functions",
+  "name": "minimal-solo-functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",

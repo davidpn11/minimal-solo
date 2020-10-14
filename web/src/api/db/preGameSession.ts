@@ -41,7 +41,7 @@ export async function requestCreateSession(
 ): Promise<LocalSessionWithId> {
   try {
     const response = await axios.get<LocalSessionWithId>(
-      'http://127.0.0.1:5001/minimal-solo-f820d/us-central1/newLobby',
+      'http://localhost:5001/minimal-solo-f820d/us-central1/newLobby',
       {
         params: { playerName, playerId },
       },

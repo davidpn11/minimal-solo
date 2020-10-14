@@ -1,0 +1,9 @@
+{
+  "name": "minimal-solo",
+  "version": "0.7.0",
+  "private": true,
+  "scripts": {
+    "start:web": "yarn --cwd web start",
+    "start:emulators": "firebase emulators:start"
+  }
+}

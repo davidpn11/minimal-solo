@@ -3,13 +3,13 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
-import * as F from 'fp-ts/lib/function';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { firebaseConfig } from './config';
 import { normalizeQuery } from './helpers';
 import { LocalSession, LocalSessionWithId } from '../model/Session';
 import { SessionNotFoundError } from '../model/Error';
+import { SessionPlayer } from '../model/Player';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -43,10 +43,18 @@ export const getFullSessionByCode: (code: string) => Promise<LocalSessionWithId>
           id,
         }),
     ),
-    O.fold(() => {
-      const SessionNotFound = SessionNotFoundError(code);
-      throw new SessionNotFound();
-    }, F.identity),
+    O.fold(
+      () => {
+        const SessionNotFound = SessionNotFoundError(code);
+        throw new SessionNotFound();
+      },
+      async localSession => {
+        const players = normalizeQuery<SessionPlayer>(
+          await getSessionRef(localSession.id).collection('players').get(),
+        );
+        return { ...localSession, players };
+      },
+    ),
   );
 };
 
