@@ -77,7 +77,7 @@ export function isBlockCard(card: Card) {
 export type ActionCard = {
   color: 'BLACK';
   value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
-  createdAt: number;
+  createdAt?: number;
   status: CardStatus;
 };
 

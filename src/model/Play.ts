@@ -1,5 +1,5 @@
 import { SessionPlayerWithId } from './Player';
-import { Card, CommonCard, Color, CardWithId } from './Card';
+import { Card, CommonCard, Color, CardWithId, ActionCard } from './Card';
 import { ID, GameDirection } from './Session';
 
 export type PassPlay = {
@@ -131,15 +131,29 @@ export function createCommonNumberPlay(
 export function createBlockPlay(
   player: SessionPlayerWithId,
   nextPlayer: SessionPlayerWithId,
-  card: CardWithId,
+  card: CommonCard,
   position: number,
-): BlockPlay {
+): Play {
   return {
     type: 'BLOCK_PLAY',
     player,
     card,
     position,
     target: nextPlayer,
+  };
+}
+export function createReversePlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  direction: GameDirection,
+  position: number,
+): Play {
+  return {
+    type: 'REVERSE_PLAY',
+    card,
+    direction,
+    player,
+    position,
   };
 }
 
@@ -156,18 +170,77 @@ export function createDrawPlay(
   };
 }
 
-// export function createPlusTwoPlay(
-//   player: SessionPlayerWithId,
-//   target: SessionPlayerWithId,
-//   position: number,
-// ): Play {
-//   return {
-//     player,
-//     type: 'PLUS_TWO_PLAY',
-//     position,
-//     target,
-//   };
-// }
+export function createPlusTwoPlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  target: SessionPlayerWithId,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'PLUS_TWO_PLAY',
+    card,
+    position,
+    target,
+  };
+}
+
+export function createSwapPlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  target: SessionPlayerWithId,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'SWAP_PLAY',
+    card,
+    position,
+    target,
+  };
+}
+export function createSwapAllPlay(
+  player: SessionPlayerWithId,
+  card: ActionCard,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'SWAP_ALL_PLAY',
+    card,
+    position,
+  };
+}
+
+export function createColorPlay(
+  player: SessionPlayerWithId,
+  card: CommonCard,
+  color: Color,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'COLOR_PLAY',
+    color,
+    card,
+    position,
+  };
+}
+
+export function createPlusFourPlay(
+  player: SessionPlayerWithId,
+  card: ActionCard,
+  target: SessionPlayerWithId,
+  position: number,
+): Play {
+  return {
+    player,
+    type: 'PLUS_FOUR_PLAY',
+    card,
+    position,
+    target,
+  };
+}
 
 export function createUnoPlay(player: SessionPlayerWithId, position: number): Play {
   return {
