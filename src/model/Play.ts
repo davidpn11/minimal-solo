@@ -117,7 +117,7 @@ export function createPassPlay(player: SessionPlayerWithId, position: number): P
 
 export function createCommonNumberPlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   position: number,
 ): NumberCardPlay {
   return {
@@ -131,7 +131,7 @@ export function createCommonNumberPlay(
 export function createBlockPlay(
   player: SessionPlayerWithId,
   nextPlayer: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   position: number,
 ): BlockPlay {
   return {
@@ -144,7 +144,7 @@ export function createBlockPlay(
 }
 export function createReversePlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   direction: GameDirection,
   position: number,
 ): ReversePlay {
@@ -159,7 +159,7 @@ export function createReversePlay(
 
 export function createDrawPlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   position: number,
 ): DrawPlay {
   return {
@@ -172,7 +172,7 @@ export function createDrawPlay(
 
 export function createPlusTwoPlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   target: SessionPlayerWithId,
   position: number,
 ): PlusTwoPlay {
@@ -187,7 +187,7 @@ export function createPlusTwoPlay(
 
 export function createSwapPlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   target: SessionPlayerWithId,
   position: number,
 ): SwapPlay {
@@ -214,7 +214,7 @@ export function createSwapAllPlay(
 
 export function createColorPlay(
   player: SessionPlayerWithId,
-  card: CommonCard,
+  card: CardWithId,
   color: Color,
   position: number,
 ): ColorPlay {

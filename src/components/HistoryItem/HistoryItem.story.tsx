@@ -2,7 +2,7 @@ import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
 import { random } from 'faker';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
+import { ActionCard, Color, CommonCardWithId, Value } from '../../model/Card';
 import {
   createBlockPlay,
   createColorPlay,
@@ -101,7 +101,8 @@ export function HistoryItemStory() {
     avatar,
     hand: [],
   };
-  const commonCard: CommonCard = {
+  const commonCard: CommonCardWithId = {
+    id: random.uuid(),
     color: colorKnob,
     value: commonValueKnob,
     status: 'PLAY',
