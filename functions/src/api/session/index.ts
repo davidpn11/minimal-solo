@@ -1,9 +1,9 @@
 import { Router } from "express";
 import * as admin from "firebase-admin";
 
-const session = Router();
+const sessionRouter = Router();
 
-session.get("/code/:code", async (req, res) => {
+sessionRouter.get("/code/:code", async (req, res) => {
   const { code } = req.params;
 
   const sessionByCode = await admin
@@ -21,4 +21,4 @@ session.get("/code/:code", async (req, res) => {
   return res.send({ ...session, players });
 });
 
-export default session;
+export default sessionRouter;

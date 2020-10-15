@@ -17,6 +17,7 @@ import {
 import { buyCard, Card } from '../../model/Card';
 import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
 import { SessionNotFoundError } from '../../model/Error';
+import { firebaseConfig } from '../config';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
@@ -40,12 +41,12 @@ export async function requestCreateSession(
   playerId: string,
 ): Promise<LocalSessionWithId> {
   try {
-    const response = await axios.get<LocalSessionWithId>(
-      'http://localhost:5001/minimal-solo-f820d/us-central1/newLobby',
-      {
-        params: { playerName, playerId },
-      },
-    );
+    const response = await axios.request<LocalSessionWithId>({
+      method: 'POST',
+      baseURL: firebaseConfig.baseApi,
+      url: '/lobby',
+      data: { playerName, playerId },
+    });
     return response.data;
   } catch (e) {
     console.error(e);

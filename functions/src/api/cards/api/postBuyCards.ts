@@ -1,15 +1,18 @@
 import * as admin from "firebase-admin";
-import {pipe} from "fp-ts/function";
+import { pipe } from "fp-ts/function";
 import * as A from "fp-ts/Array";
-import {RequestHandler} from "express";
+import { RequestHandler } from "express";
 
 type PostBody = {
   playerId: string;
   sessionId: string;
   amount: number;
-}
+};
 
-export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (req, res) => {
+export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (
+  req,
+  res
+) => {
   const { sessionId, playerId, amount } = req.body;
 
   const sessionDoc = admin.firestore().collection("session").doc(sessionId);
@@ -27,7 +30,7 @@ export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (req, res) =
       // delete from deck
       batch.delete(sessionDoc.collection("deck").doc(card.id));
     });
-    batch.commit();
+    await batch.commit();
 
     // add to player hand
     const cardIds = cardsToTake.map((card) => card.id);
@@ -46,4 +49,4 @@ export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (req, res) =
   } catch (e) {
     res.status(500).send(e);
   }
-}
+};
