@@ -1,14 +1,25 @@
 import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
+import { random } from 'faker';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import * as O from 'fp-ts/lib/Option';
-import { random } from 'faker';
-
-import { HistoryItem } from './';
-import { createAvatar, SessionPlayer, SessionPlayerWithId } from '../../model/Player';
-import { ActionCard, Color, CommonCard, Value } from '../../model/Card';
+import { ActionCard, Color, CommonCardWithId, Value } from '../../model/Card';
+import {
+  createBlockPlay,
+  createColorPlay,
+  createCommonNumberPlay,
+  createDrawPlay,
+  createPassPlay,
+  createPlusFourPlay,
+  createPlusTwoPlay,
+  createReversePlay,
+  createSwapAllPlay,
+  createSwapPlay,
+  createUnoPlay,
+  Play,
+} from '../../model/Play';
+import { createAvatar, SessionPlayerWithId } from '../../model/Player';
 import { UnionExclude } from '../../model/types';
-import { Play } from '../../model/Play';
+import { HistoryItem } from './';
 
 const avatar = createAvatar();
 
@@ -17,9 +28,16 @@ const Wrapper = styled.div`
 `;
 
 const PLAY_TYPES: Record<string, Play['type']> = {
-  DrawCard: 'DRAW_CARD',
-  PlayCard: 'PLAY_CARD',
-  Action: 'ACTION',
+  PassPlay: 'PASS_PLAY',
+  UnoPlay: 'UNO_PLAY',
+  DrawPlay: 'DRAW_PLAY',
+  NumberCardPlay: 'NUMBER_CARD_PLAY',
+  PlusTwoPlay: 'PLUS_TWO_PLAY',
+  BlockPlay: 'BLOCK_PLAY',
+  ReversePlay: 'REVERSE_PLAY',
+  SwapPlay: 'SWAP_PLAY',
+  SwapAllPlay: 'SWAP_ALL_PLAY',
+  PlusFourPlay: 'PLUS_FOUR_PLAY',
 };
 
 const COLORS: Record<string, UnionExclude<Color, 'BLACK'>> = {
@@ -44,7 +62,7 @@ const ACTION_TARGET_VALUES: Record<string, Value> = {
   Swap: 'SWAP',
 };
 
-const COMMON_VALUES: Record<string, Value> = {
+const COMMON_VALUES: Record<string, UnionExclude<Value, 'PLUS_FOUR' | 'SWAP_ALL'>> = {
   One: 'ONE',
   Two: 'TWO',
   Three: 'THREE',
@@ -58,8 +76,8 @@ const COMMON_VALUES: Record<string, Value> = {
 
 export function HistoryItemStory() {
   const nameKnob = text('Player Name', 'Michel Costa');
-  const targetNameKnob = text('Player Name', 'John Jameson');
-  const playType = select('Play Type', PLAY_TYPES, 'DRAW_CARD');
+  const targetNameKnob = text('Target Name', 'John Jameson');
+  const playType = select('Play Type', PLAY_TYPES, 'DRAW_PLAY');
   const colorKnob = select('Color', COLORS, 'BLUE');
   const actionTargetColorKnob = select('Target Color', ALL_COLORS, 'BLACK');
   const commonValueKnob = select('Common Cards', COMMON_VALUES, 'ONE');
@@ -75,69 +93,58 @@ export function HistoryItemStory() {
     avatar,
     hand: [],
   };
+  const target: SessionPlayerWithId = {
+    id: random.uuid(),
+    name: targetNameKnob,
+    position: 1,
+    status: 'READY',
+    avatar,
+    hand: [],
+  };
+  const commonCard: CommonCardWithId = {
+    id: random.uuid(),
+    color: colorKnob,
+    value: commonValueKnob,
+    status: 'PLAY',
+  };
 
   const play: Play = useMemo<Play>(() => {
+    console.log({ playType });
     switch (playType) {
-      case 'DRAW_CARD':
-        return {
-          type: playType,
-          player,
-          target: O.none,
-          position: 0,
-          card: O.some({
-            color: colorKnob,
-            value: commonValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as CommonCard),
+      case 'PASS_PLAY':
+        return createPassPlay(player, 0);
+      case 'UNO_PLAY':
+        return createUnoPlay(player, 0);
+      case 'COLOR_PLAY':
+        return createColorPlay(player, commonCard, 'RED', 0);
+      case 'DRAW_PLAY':
+        return createDrawPlay(player, commonCard, 0);
+      case 'NUMBER_CARD_PLAY':
+        return createCommonNumberPlay(player, commonCard, 0);
+      case 'PLUS_TWO_PLAY':
+        return createPlusTwoPlay(player, commonCard, target, 0);
+      case 'BLOCK_PLAY':
+        return createBlockPlay(player, target, commonCard, 0);
+      case 'REVERSE_PLAY':
+        return createReversePlay(player, commonCard, 'RIGHT', 0);
+      case 'SWAP_PLAY':
+        return createSwapPlay(player, commonCard, target, 0);
+      case 'SWAP_ALL_PLAY':
+        const swapAllCard: ActionCard = {
+          color: 'BLACK',
+          value: 'SWAP_ALL',
+          status: 'PLAY',
         };
-      case 'PLAY_CARD':
-        return {
-          type: playType,
-          player,
-          target: O.some({ name: targetNameKnob, position: 1, hand: [], avatar, status: 'READY' }),
-          position: 0,
-          card: O.some({
-            color: colorKnob,
-            value: commonValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as CommonCard),
+        return createSwapAllPlay(player, swapAllCard, 0);
+      case 'PLUS_FOUR_PLAY':
+        const plusFourCard: ActionCard = {
+          color: 'BLACK',
+          value: 'PLUS_FOUR',
+          status: 'PLAY',
         };
-      case 'ACTION':
+        return createPlusFourPlay(player, plusFourCard, target, 0);
       default:
-        if (targetKnob) {
-          return {
-            type: playType,
-            player,
-            position: 0,
-            card: O.some({
-              color: actionTargetColorKnob,
-              value: actionTargetKnob,
-              status: 'PLAY',
-              createdAt: 0,
-            } as ActionCard),
-            target: O.some({
-              name: targetNameKnob,
-              position: 1,
-              hand: [],
-              avatar,
-              status: 'READY',
-            }),
-          };
-        }
-        return {
-          type: playType,
-          player,
-          position: 0,
-          card: O.some({
-            color: 'BLACK',
-            value: actionValueKnob,
-            status: 'PLAY',
-            createdAt: 0,
-          } as ActionCard),
-          target: O.none,
-        };
+        throw new Error('No play');
     }
   }, [
     playType,

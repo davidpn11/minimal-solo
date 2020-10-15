@@ -70,10 +70,14 @@ export function isCommonNumberCard(card: Card): boolean {
   return commonColors.includes(card.color) && numberValues.includes(card.value);
 }
 
+export function isBlockCard(card: Card) {
+  return card.value === 'BLOCK';
+}
+
 export type ActionCard = {
   color: 'BLACK';
   value: 'PLUS_FOUR' | 'SWAP_ALL' | 'COLOR';
-  createdAt: number;
+  createdAt?: number;
   status: CardStatus;
 };
 
