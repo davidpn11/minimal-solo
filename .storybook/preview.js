@@ -1,8 +1,8 @@
 import React from "react";
 import { addDecorator } from "@storybook/react";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
-import { THEME } from "../src/theme";
-import { GlobalStyles } from "../src/styles";
+import { THEME } from "../web/src/theme";
+import { GlobalStyles } from "../web/src/styles";
 
 const Global = createGlobalStyle`
   #root {
