@@ -33,6 +33,9 @@ yarn-error.log*
 # Webstorm
 .idea
 
+#VSCode
+.vscode
+
 # Log
 firebase-debug.log
 firestore-debug.log

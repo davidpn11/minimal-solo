@@ -17,11 +17,12 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { CommonNumberCardPlay, isCardPlay, isPass, PlayWithId } from '../../../model/Play';
+import { PlayWithId, BlockPlay, NumberCardPlay } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
-import { isOwnerOfPlay, getNextPlayer } from '../helpers/plays';
+import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
-import { isCommonNumberCard } from '../../../model/Card';
+import { ID } from '../../../model/Session';
+import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -35,7 +36,7 @@ export function useProgressionListener() {
   const handleLastPlay = useCallback(
     (play: PlayWithId, playerId: string) => {
       function runNextEffect(play: PlayWithId) {
-        const nextPlayer = getNextPlayer(play, currentSession);
+        const nextPlayer = getNextPlayerByPlay(play, currentSession);
 
         batch(() => {
           dispatch(setCurrentPlay(play.id));
@@ -43,20 +44,25 @@ export function useProgressionListener() {
         });
       }
 
-      function runCardPlayEffect(play: CommonNumberCardPlay) {
-        if (isCommonNumberCard(play.card.value)) {
-          dispatch(setCurrentCard(play.card.value));
-          runNextEffect(play);
-        }
+      function runBlockCardEffect(play: BlockPlay & ID) {
+        dispatch(setCurrentCard(play.card));
+        runNextEffect(play);
+      },
+
+      function runNumberCardPlayEffect(play: NumberCardPlay & ID) {
+        dispatch(setCurrentCard(play.card));
+        runNextEffect(play);
       }
 
       function runPostPlayHook(play: PlayWithId) {
-        if (isPass(play)) return runNextEffect(play);
-        if (isCardPlay(play)) return runCardPlayEffect(play);
+        pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect, runBlockCardEffect));
       }
+
       runPostPlayHook(play);
+      //TODO Run game state reader
 
       if (isOwnerOfPlay(play, playerId)) {
+        // TODO: Update Firebase Session
         console.log('owner');
       }
     },

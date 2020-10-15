@@ -54,6 +54,6 @@ export const foldGameSession = <B>({
 
 //required to handle void return cases if necessary
 export const getOrThrow = <T>(p: T | void) => {
-  if (!p) throw new Error('Session Not started');
+  if (typeof p === 'undefined') throw new Error('Get or throw used');
   return p;
 };
