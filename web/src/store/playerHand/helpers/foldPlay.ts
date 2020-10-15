@@ -13,7 +13,6 @@ import {
   PlayWithId,
   Play,
 } from '../../../model/Play';
-import { ID } from '../../../model/Session';
 
 const foldPlayDefault = {
   whenPassPlay: () => {

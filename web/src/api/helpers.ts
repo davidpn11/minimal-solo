@@ -1,5 +1,4 @@
 import { DocumentSnapshot, QuerySnapshot } from '../model/Firebase';
-import { Normalized } from '../model/Session';
 import { Card, CardStatus } from '../model/Card';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';

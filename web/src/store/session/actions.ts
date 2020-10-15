@@ -14,7 +14,7 @@ import {
   requestDealStartHands,
   initGameSession,
 } from '../../api/db/preGameSession';
-import { LocalSessionWithId, Normalized } from '../../model/Session';
+import { LocalSessionWithId } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
 import { Play } from '../../model/Play';

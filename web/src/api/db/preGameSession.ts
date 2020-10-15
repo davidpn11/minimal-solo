@@ -5,7 +5,7 @@ import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { database, getSessionRef, getSessionRefByCode } from '../firebase';
-import { Normalized, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
+import { LocalSessionWithId, LocalGameSession } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
 import {
   SessionPlayer,
