@@ -47,7 +47,7 @@ export function useProgressionListener() {
       function runBlockCardEffect(play: BlockPlay & ID) {
         dispatch(setCurrentCard(play.card));
         runNextEffect(play);
-      },
+      }
 
       function runNumberCardPlayEffect(play: NumberCardPlay & ID) {
         dispatch(setCurrentCard(play.card));
