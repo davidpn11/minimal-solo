@@ -1,24 +1,11 @@
 import { Router } from "express";
-import * as admin from "firebase-admin";
+import { getSessionByCode } from "./api/getSessionByCode";
+import { postStartSessions } from "./api/postStartSession";
 
 const sessionRouter = Router();
 
-sessionRouter.get("/code/:code", async (req, res) => {
-  const { code } = req.params;
+sessionRouter.get("/code/:code", getSessionByCode);
 
-  const sessionByCode = await admin
-    .firestore()
-    .collection("session")
-    .where("code", "==", code)
-    .get();
-
-  const [sessionDoc] = sessionByCode.docs.values();
-
-  const session = sessionDoc.data();
-  const playersDoc = sessionDoc.get("players");
-  const players = playersDoc.data();
-
-  return res.send({ ...session, players });
-});
+sessionRouter.post("/:id/start", postStartSessions);
 
 export default sessionRouter;
