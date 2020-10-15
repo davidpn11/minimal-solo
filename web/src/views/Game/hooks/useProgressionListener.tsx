@@ -21,7 +21,6 @@ import { PlayWithId, BlockPlay, NumberCardPlay } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
-import { ID } from '../../../model/Session';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 
 export function useProgressionListener() {
