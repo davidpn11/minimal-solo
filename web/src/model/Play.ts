@@ -1,5 +1,5 @@
 import { SessionPlayerWithId } from './Player';
-import { Card, CommonCard, Color, CardWithId, ActionCard } from './Card';
+import { Card, Color, CardWithId, ActionCard } from './Card';
 import { ID, GameDirection } from './Session';
 
 export type PassPlay = {

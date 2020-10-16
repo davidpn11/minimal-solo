@@ -29,7 +29,7 @@ export default function App() {
         captureLog(err);
         return history.push('/');
       });
-  }, []);
+  });
 
   useEffect(
     function rejectNonPlayers() {
@@ -53,7 +53,7 @@ export default function App() {
         switch (session.status) {
           case 'INITIAL':
           case 'STARTING':
-            return <Lobby status={session.status} />;
+            return <Lobby />;
           case 'STARTED':
             if (isPlayerInTheGame(player, session)) {
               return <Game />;

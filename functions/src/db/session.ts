@@ -28,7 +28,6 @@ const SessionSchema = io.type({
   currentPlay: io.string,
   direction: DirectionEnum,
   winner: option(SessionPlayerSchema),
-  loadingStatus: io.number,
 });
 export type ServerSession = io.TypeOf<typeof SessionSchema>;
 

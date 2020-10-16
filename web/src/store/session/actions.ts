@@ -2,8 +2,6 @@ import { batch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as A from 'fp-ts/lib/Array';
 import axios from 'axios';
 
 import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
@@ -149,15 +147,6 @@ export async function togglePlayerStatus(
   } catch (error) {
     console.error(error);
   }
-}
-
-function normalizePlayers(players: SessionPlayerWithId[]): Normalized<SessionPlayer> {
-  const playerWithIdToNormalized = (acc: Normalized<SessionPlayer>, p: SessionPlayerWithId) => {
-    const { id, ...playerRest } = p;
-
-    return { ...acc, [id]: playerRest };
-  };
-  return pipe(players, A.reduce({}, playerWithIdToNormalized));
 }
 
 export function startGameSession() {

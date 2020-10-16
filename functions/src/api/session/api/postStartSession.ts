@@ -18,6 +18,9 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
       id: sessionId,
     } = await getSessionById(id);
 
+    // notify users the process started
+    await sessionRef.update({ status: "STARTING" });
+
     const playersRef = sessionRef.collection("players");
     const playersDoc = await playersRef.get();
 

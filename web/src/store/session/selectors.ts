@@ -11,7 +11,6 @@ import {
   LocalGameSession,
   LocalGameSessionWithId,
   LocalNoGameSessionWithId,
-  GameDirection,
 } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';

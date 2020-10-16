@@ -25,7 +25,6 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
       code: codeGenerator(),
       status: "INITIAL",
       admin: playerId,
-      loadingStatus: 0,
       currentPlayer: playerId,
       currentPlay: "",
       direction: "RIGHT",

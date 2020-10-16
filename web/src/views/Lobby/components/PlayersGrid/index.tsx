@@ -3,14 +3,13 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { getSessionValue } from '../../../../store/session/selectors';
+import { getPlayerIdValue, isCurrentPlayerAdmin } from '../../../../store/playerHand/selector';
+import { SessionPlayer } from '../../../../model/Player';
+import { LobbyPlayerCard } from '../../../../components/LobbyPlayerCard';
+import { AdminPlayer, CurrentPlayer, PlayersWrapper } from './styles';
 
-import { LobbyPlayerCard } from '../components/LobbyPlayerCard';
-import { SessionPlayer } from '../model/Player';
-import { getPlayerIdValue, isCurrentPlayerAdmin } from '../store/playerHand/selector';
-import { getSessionValue } from '../store/session/selectors';
-import { AdminPlayer, CurrentPlayer, PlayersWrapper } from '../views/Lobby/styles';
-
-export function usePlayersGrid() {
+export function PlayersGrid() {
   const currentSession = useSelector(getSessionValue);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
@@ -54,7 +53,6 @@ export function usePlayersGrid() {
 
   return (
     <PlayersWrapper>
-      {/* Checks if current player is admin */}
       {!isAdmin && <CurrentPlayer>{currentPlayer}</CurrentPlayer>}
       <AdminPlayer>{adminPlayer}</AdminPlayer>
       {commonPlayers}
