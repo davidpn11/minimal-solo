@@ -171,12 +171,9 @@ export function startGameSession() {
       dispatch(setupGame());
 
       //Populates player hands
-      const players = await requestDealStartHands(state.session.value);
+      await requestDealStartHands(state.session.value);
       //Set initial session
-      const startedGameSession = await initGameSession(
-        state.session.value,
-        normalizePlayers(players),
-      );
+      const startedGameSession = await initGameSession(state.session.value);
       dispatch(setGameSession(startedGameSession));
     } catch (error) {
       console.error(error);

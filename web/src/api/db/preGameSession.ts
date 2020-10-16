@@ -230,10 +230,7 @@ export async function requestRemoveCardFromHand(
     .set({ ...player, hand: player.hand.filter(id => id !== cardId) });
 }
 
-export async function initGameSession(
-  session: LocalSessionWithId,
-  newPlayers: Normalized<SessionPlayer>,
-): Promise<LocalSessionWithId> {
+export async function initGameSession(session: LocalSessionWithId): Promise<LocalSessionWithId> {
   const sessionRef = getSessionRef(session.id);
   const { players, ...sessionRest } = session;
 

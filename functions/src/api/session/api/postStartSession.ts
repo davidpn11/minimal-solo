@@ -1,6 +1,9 @@
 import { RequestHandler } from "express";
-import * as admin from "firebase-admin";
 import * as O from "fp-ts/lib/Option";
+import * as A from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/pipeable";
+import { buyCards } from "../../cards/api/postBuyCards";
+import { getSessionById } from "../../../db/session";
 
 export const postStartSessions: RequestHandler<{ id: string }> = async (
   req,
@@ -9,9 +12,12 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
   const { id } = req.params;
 
   try {
-    const sessionRef = admin.firestore().collection("session").doc(id);
+    const {
+      ref: sessionRef,
+      doc: sessionDoc,
+      data: sessionData,
+    } = await getSessionById(id);
 
-    const sessionDoc = await sessionRef.get();
     const playersDoc = await sessionRef.collection("players").get();
 
     const [startingPlayer] = playersDoc.docs;
@@ -43,9 +49,17 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
         .send({ message: "There are no available cards on the deck." });
     }
 
+    // Buy cards for everyone
+    const queries = pipe(
+      Object.keys(playersDoc.docs.values()),
+      A.map((playerId: string) => buyCards(sessionDoc.id, playerId, 7))
+    );
+    await Promise.all(queries);
+
     // Set the new session data
     const newSession = {
-      ...sessionDoc.data(),
+      ...sessionData,
+      players: playersDoc.docs.values(),
       status: "STARTED",
       currentPlayer: startingPlayer.id,
       currentPlay: "",
@@ -60,7 +74,11 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
     // Update it
     await sessionRef.update(newSession);
 
-    res.json(newSession);
+    // return relevant info
+    const { deck, activeCards, ...relevantSession } = newSession;
+
+    res.json(relevantSession);
+    return;
   } catch (e) {
     console.error(e);
     res.status(500).send(e);

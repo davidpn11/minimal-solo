@@ -3,6 +3,7 @@ import * as A from 'fp-ts/lib/Array';
 import { UnionExclude } from './types';
 import { ID } from './Session';
 import { SessionPlayerWithId } from './Player';
+import { firebaseConfig } from '../api/config';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -133,16 +134,16 @@ export function sortDeck(deck: Card[]): Card[] {
 
 export async function buyCard(sessionId: string, playerId: string, amount = 1) {
   try {
-    const response = await axios.get<SessionPlayerWithId>(
-      'http://127.0.0.1:5001/minimal-solo-f820d/us-central1/buyCards',
-      {
-        params: {
-          sessionId,
-          playerId,
-          amount,
-        },
+    const response = await axios.request<SessionPlayerWithId>({
+      method: 'POST',
+      baseURL: firebaseConfig.baseApi,
+      url: '/cards/buy',
+      data: {
+        sessionId,
+        playerId,
+        amount,
       },
-    );
+    });
     return response.data;
   } catch (e) {
     console.error(e);
