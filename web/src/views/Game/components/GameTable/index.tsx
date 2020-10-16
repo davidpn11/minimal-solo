@@ -11,12 +11,13 @@ type Props = {
   players: SessionPlayerWithId[];
   currentCard: O.Option<Card>;
   isActive: boolean;
+  onDeckClick: () => void;
 };
 
 export default function GameTable(props: Props) {
   return (
     <TableWrapper>
-      <ActionArea currentCard={props.currentCard} onDeckClick={() => console.log('deck')} />
+      <ActionArea currentCard={props.currentCard} onDeckClick={props.onDeckClick} />
       {props.players.map((player, index) => (
         <PlayerDeck key={`${player.id}-player-${index}`} player={player} playerPosition={index} />
       ))}

@@ -12,12 +12,13 @@ import {
 } from '../../../store/session/selectors';
 import { requestProgressionListener } from '../../../api/db/gameSession';
 import {
+  addCardToPlayer,
   setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, BlockPlay, NumberCardPlay } from '../../../model/Play';
+import { PlayWithId, BlockPlay, NumberCardPlay, DrawPlay, Play } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
@@ -53,8 +54,20 @@ export function useProgressionListener() {
         runNextEffect(play);
       }
 
+      function runDrawCardPlayEffect(play: DrawPlay & ID) {
+        dispatch(addCardToPlayer(play));
+      }
+
       function runPostPlayHook(play: PlayWithId) {
-        pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect, runBlockCardEffect));
+        pipe(
+          play,
+          foldPlayWithId(
+            runNextEffect,
+            runNumberCardPlayEffect,
+            runBlockCardEffect,
+            runDrawCardPlayEffect,
+          ),
+        );
       }
 
       runPostPlayHook(play);
