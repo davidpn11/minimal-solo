@@ -29,7 +29,7 @@ export default function App() {
         captureLog(err);
         return history.push('/');
       });
-  });
+  }, []);
 
   useEffect(
     function rejectNonPlayers() {

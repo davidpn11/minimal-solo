@@ -1,23 +1,30 @@
 import * as admin from "firebase-admin";
 import { RequestHandler } from "express";
 
+import QuerySnapshot = admin.firestore.QuerySnapshot;
+
 type PostBody = {
   playerId: string;
   sessionId: string;
   amount: number;
 };
 
+export function getNextCardsFromDeck(sessionId: string, amount: number) {
+  return admin
+    .firestore()
+    .collection("session")
+    .doc(sessionId)
+    .collection("deck")
+    .limit(amount);
+}
+
 export async function buyCards(
   sessionId: string,
   playerId: string,
-  amount: number
+  cardsToTake: QuerySnapshot
 ) {
-  const sessionDoc = admin.firestore().collection("session").doc(sessionId);
-
-  // Get list of cards from deck
-  const cardsToTake = await sessionDoc.collection("deck").limit(amount).get();
-
   const batch = admin.firestore().batch();
+  const sessionDoc = admin.firestore().collection("session").doc(sessionId);
 
   cardsToTake.forEach((card) => {
     // add to active cards
@@ -50,7 +57,8 @@ export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (
   const { sessionId, playerId, amount } = req.body;
 
   try {
-    const updatedPlayer = await buyCards(sessionId, playerId, amount);
+    const cardsToTake = await getNextCardsFromDeck(sessionId, amount).get();
+    const updatedPlayer = await buyCards(sessionId, playerId, cardsToTake);
     res.send(updatedPlayer);
     return;
   } catch (e) {
