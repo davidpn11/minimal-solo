@@ -9,8 +9,5 @@
     "target": "es2017"
   },
   "compileOnSave": true,
-  "include": [
-    "src",
-    "../models/card.d.ts"
-  ]
+  "include": ["src"]
 }
