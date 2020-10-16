@@ -32,8 +32,6 @@ export async function buyCards(
   const playerDoc = await sessionDoc.collection("players").doc(playerId).get();
   const player = playerDoc.data();
 
-  console.log(playerId, player);
-
   if (playerDoc.exists && player) {
     const updatedPlayer = {
       ...player,
