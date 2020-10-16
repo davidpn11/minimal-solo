@@ -1,10 +1,8 @@
 import * as admin from "firebase-admin";
 import * as io from "io-ts";
-import { option, withFallback } from "io-ts-types";
-import { CardSchema } from "./card";
-import { SessionPlayerSchema } from "./player";
-import { PlaySchema } from "./play";
+import { option } from "io-ts-types";
 import { pipe } from "fp-ts/function";
+import { SessionPlayerSchema } from "./player";
 import { dto } from "../utils/dto";
 
 import DocumentReference = admin.firestore.DocumentReference;
@@ -26,15 +24,9 @@ const SessionSchema = io.type({
   code: io.string,
   status: StatusEnum,
   admin: io.string,
-  deck: withFallback(io.record(io.string, CardSchema), {}),
-  activeCards: withFallback(io.record(io.string, CardSchema), {}),
-  cemetery: withFallback(io.record(io.string, CardSchema), {}),
-  currentCard: withFallback(io.record(io.string, CardSchema), {}),
-  players: withFallback(io.record(io.string, SessionPlayerSchema), {}),
   currentPlayer: io.string,
   currentPlay: io.string,
   direction: DirectionEnum,
-  progression: withFallback(io.record(io.string, PlaySchema), {}),
   winner: option(SessionPlayerSchema),
   loadingStatus: io.number,
 });

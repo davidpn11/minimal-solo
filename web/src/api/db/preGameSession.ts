@@ -149,76 +149,6 @@ export async function requestAddPlayer(
   return { ...initialPlayerData, id: playerId };
 }
 
-function checkCurrentCardValid(cards: Normalized<Card>): boolean {
-  return pipe(
-    cards,
-    R.some(
-      c =>
-        c.color === 'BLACK' ||
-        c.value === 'REVERSE' ||
-        c.value === 'PLUS_TWO' ||
-        c.value === 'SWAP' ||
-        c.value === 'BLOCK',
-    ),
-  );
-}
-
-function getCurrentCard(deck: Normalized<Card>) {
-  let currentCard = popDeckCards(deck, 'GAME');
-  let isInvalid = checkCurrentCardValid(currentCard.cards);
-
-  while (isInvalid) {
-    const newDeck = pipe(
-      deck,
-      R.filterWithIndex(key =>
-        pipe(
-          popDeckCards(deck, 'GAME').keys,
-          A.findFirst(cardKey => key === cardKey),
-          O.isNone,
-        ),
-      ),
-    );
-
-    currentCard = popDeckCards(newDeck, 'GAME');
-  }
-
-  return currentCard;
-}
-
-async function requestSetCurrentCard(sessionRef: ReturnType<typeof getSessionRef>): Promise<Card> {
-  const deckRef = sessionRef.collection('deck');
-  const deck = normalizeQuery<Card>(await deckRef.get());
-  const currentCard = getCurrentCard(deck);
-
-  const key = pipe(currentCard.keys, A.head);
-
-  //delete from deck structure
-  await Promise.all(
-    currentCard.keys.map(key => {
-      return deckRef.doc(key).delete();
-    }),
-  );
-
-  const card = pipe(
-    key,
-    O.fold(
-      () => O.none,
-      key => R.lookup(key, currentCard.cards),
-    ),
-  );
-
-  if (O.isNone(card)) throw new Error('fail to fetch card');
-
-  sessionRef.set(
-    {
-      currentCard: card.value,
-    },
-    { merge: true },
-  );
-
-  return card.value;
-}
-
 export async function requestRemoveCardFromHand(
   sessionId: string,
   { id: playerId, ...player }: SessionPlayerWithId,
@@ -228,33 +158,4 @@ export async function requestRemoveCardFromHand(
     .collection('players')
     .doc(playerId)
     .set({ ...player, hand: player.hand.filter(id => id !== cardId) });
-}
-
-export async function initGameSession(session: LocalSessionWithId): Promise<LocalSessionWithId> {
-  const sessionRef = getSessionRef(session.id);
-  const { players, ...sessionRest } = session;
-
-  const currentCard = await requestSetCurrentCard(sessionRef);
-  const newSession: Partial<LocalSessionWithId> = {
-    ...sessionRest,
-    status: 'STARTED',
-    currentPlayer: getSessionPlayerByPosition(players, 0).id,
-    currentPlay: '',
-    direction: 'RIGHT',
-    winner: O.none,
-    currentCard: currentCard,
-  };
-  const { id, ...newSessionRest } = newSession;
-  await sessionRef.set(newSessionRest);
-
-  return { ...newSession, progression: {} } as LocalSessionWithId;
-}
-
-export async function requestDealStartHands(session: LocalSessionWithId) {
-  const queries = pipe(
-    Object.keys(session.players),
-    A.map((playerId: string) => buyCard(session.id, playerId, 7)),
-  );
-
-  return await Promise.all(queries);
 }

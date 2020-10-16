@@ -14,11 +14,12 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
   try {
     const {
       ref: sessionRef,
-      doc: sessionDoc,
       data: sessionData,
+      id: sessionId,
     } = await getSessionById(id);
 
-    const playersDoc = await sessionRef.collection("players").get();
+    const playersRef = sessionRef.collection("players");
+    const playersDoc = await playersRef.get();
 
     const [startingPlayer] = playersDoc.docs;
 
@@ -49,17 +50,17 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
         .send({ message: "There are no available cards on the deck." });
     }
 
-    // Buy cards for everyone
+    // Deal cards
+    const playersIds = playersDoc.docs.map((doc) => doc.id);
     const queries = pipe(
-      Object.keys(playersDoc.docs.values()),
-      A.map((playerId: string) => buyCards(sessionDoc.id, playerId, 7))
+      playersIds,
+      A.map((playerId: string) => buyCards(sessionId, playerId, 7))
     );
     await Promise.all(queries);
 
     // Set the new session data
     const newSession = {
       ...sessionData,
-      players: playersDoc.docs.values(),
       status: "STARTED",
       currentPlayer: startingPlayer.id,
       currentPlay: "",
@@ -74,10 +75,8 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
     // Update it
     await sessionRef.update(newSession);
 
-    // return relevant info
-    const { deck, activeCards, ...relevantSession } = newSession;
-
-    res.json(relevantSession);
+    // return session
+    res.json(newSession);
     return;
   } catch (e) {
     console.error(e);
