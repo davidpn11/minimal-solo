@@ -40,6 +40,22 @@ export const isCurrentPlayerAdmin = (state: ReduxStore): boolean =>
     ),
   );
 
+export const isCurrentPlayerSelector = (state: ReduxStore): boolean =>
+  pipe(
+    state.player,
+    O.fold(
+      () => false,
+      player =>
+        pipe(
+          state.session,
+          O.fold(
+            () => false,
+            session => (session.status === 'STARTED' ? session.currentPlayer === player.id : false),
+          ),
+        ),
+    ),
+  );
+
 export const getPlayerHandIds = (state: ReduxStore) => {
   const lookHand = (player: Player) =>
     pipe(
