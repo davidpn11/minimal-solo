@@ -4,6 +4,7 @@ import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
+import axios from 'axios';
 
 import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
@@ -11,8 +12,6 @@ import {
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
-  requestDealStartHands,
-  initGameSession,
 } from '../../api/db/preGameSession';
 import { LocalSessionWithId, Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
@@ -21,6 +20,7 @@ import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { Card } from '../../model/Card';
 import { captureLog } from '../../utils/sentry';
+import { firebaseConfig } from '../../api/config';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const ADD_PLAYER = 'ADD_PLAYER' as const;
@@ -170,14 +170,13 @@ export function startGameSession() {
       // Set game starting
       dispatch(setupGame());
 
-      //Populates player hands
-      const players = await requestDealStartHands(state.session.value);
-      //Set initial session
-      const startedGameSession = await initGameSession(
-        state.session.value,
-        normalizePlayers(players),
-      );
-      dispatch(setGameSession(startedGameSession));
+      const response = await axios.request({
+        method: 'POST',
+        baseURL: firebaseConfig.baseApi,
+        url: `/session/${state.session.value.id}/start`,
+      });
+
+      dispatch(setGameSession({ ...response.data, progression: {} }));
     } catch (error) {
       console.error(error);
     }

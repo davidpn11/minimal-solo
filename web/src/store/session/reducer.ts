@@ -1,4 +1,5 @@
 import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 import {
   ADD_PLAYER,
@@ -12,7 +13,6 @@ import {
   SET_CURRENT_CARD,
 } from './actions';
 import { LocalSessionWithId } from '../../model/Session';
-import { pipe } from 'fp-ts/lib/pipeable';
 
 const initialState: O.Option<LocalSessionWithId> = O.none;
 
