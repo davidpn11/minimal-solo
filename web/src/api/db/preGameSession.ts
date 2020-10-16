@@ -40,12 +40,11 @@ export async function requestCreateSession(
   playerId: string,
 ): Promise<LocalSessionWithId> {
   try {
-    const response = await axios.get<LocalSessionWithId>(
-      'http://localhost:5001/minimal-solo-f820d/us-central1/newLobby',
-      {
-        params: { playerName, playerId },
-      },
-    );
+    const response = await axios.request<LocalSessionWithId>({
+      url: 'http://localhost:5001/minimal-solo-f820d/us-central1/solo/lobby',
+      method: 'POST',
+      data: { playerName, playerId },
+    });
     return response.data;
   } catch (e) {
     console.error(e);

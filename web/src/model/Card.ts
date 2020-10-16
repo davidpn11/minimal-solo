@@ -131,16 +131,15 @@ export function sortDeck(deck: Card[]): Card[] {
 
 export async function buyCard(sessionId: string, playerId: string, amount = 1) {
   try {
-    const response = await axios.get<SessionPlayerWithId>(
-      'http://127.0.0.1:5001/minimal-solo-f820d/us-central1/buyCards',
-      {
-        params: {
-          sessionId,
-          playerId,
-          amount,
-        },
+    const response = await axios.request<SessionPlayerWithId>({
+      url: 'http://localhost:5001/minimal-solo-f820d/us-central1/solo/cards/buy',
+      method: 'POST',
+      data: {
+        sessionId,
+        playerId,
+        amount,
       },
-    );
+    });
     return response.data;
   } catch (e) {
     console.error(e);
