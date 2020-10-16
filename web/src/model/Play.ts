@@ -82,6 +82,13 @@ export type PlusFourPlay = {
   position: number;
 };
 
+export type CompoundPlay = {
+  type: 'COMPOUND_PLAY';
+  player: SessionPlayerWithId;
+  playStack: UnionExclude<Play, CompoundPlay>;
+  position: number;
+};
+
 export type Play =
   | PassPlay
   | UnoPlay
@@ -93,7 +100,8 @@ export type Play =
   | SwapPlay
   | SwapAllPlay
   | ColorPlay
-  | PlusFourPlay;
+  | PlusFourPlay
+  | CompoundPlay;
 
 export type PlayWithId = Play & ID;
 
