@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { buildOne, createAvatar, sortDeck } from "../../../helpers/game";
 import * as admin from "firebase-admin";
 import * as O from "fp-ts/Option";
+import { ServerSession } from "../../../db/session";
 
 const codeGenerator = () => {
   return String(Math.round(Math.random() * 100000));
@@ -21,12 +22,21 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
 
   try {
     const deck = sortDeck(buildOne());
-    const session = await admin.firestore().collection("session").add({
+    const newSession: Partial<ServerSession> = {
       code: codeGenerator(),
       status: "INITIAL",
       admin: playerId,
-      loadingStatus: O.none,
-    });
+      loadingStatus: 0,
+      currentPlayer: playerId,
+      currentPlay: "",
+      direction: "RIGHT",
+      winner: O.none,
+    };
+
+    const session = await admin
+      .firestore()
+      .collection("session")
+      .add(newSession);
 
     await admin
       .firestore()
@@ -46,7 +56,8 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
     deck.forEach((card) => {
       batch.create(session.collection("deck").doc(), card);
     });
-    batch.commit();
+    await batch.commit();
+
     const sessionDoc = await session.get();
     const players = await session.collection("players").listDocuments();
     const sessionWithId = {

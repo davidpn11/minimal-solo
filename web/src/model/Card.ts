@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as A from 'fp-ts/lib/Array';
 import { SessionPlayerWithId } from './Player';
+import { firebaseConfig } from '../api/config';
 
 export type Color = 'GREEN' | 'GOLD' | 'RED' | 'BLUE' | 'BLACK';
 export type Value =
@@ -132,8 +133,9 @@ export function sortDeck(deck: Card[]): Card[] {
 export async function buyCard(sessionId: string, playerId: string, amount = 1) {
   try {
     const response = await axios.request<SessionPlayerWithId>({
-      url: 'http://localhost:5001/minimal-solo-f820d/us-central1/solo/cards/buy',
       method: 'POST',
+      baseURL: firebaseConfig.baseApi,
+      url: '/cards/buy',
       data: {
         sessionId,
         playerId,

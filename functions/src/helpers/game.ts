@@ -69,6 +69,6 @@ export function buildOne() {
   return A.flatten(cs);
 }
 
-export function sortDeck<A>(deck: A[]): A[] {
+export function sortDeck<L>(deck: L[]): L[] {
   return deck.sort(() => Math.random() - 0.5);
 }
