@@ -8,9 +8,7 @@ export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type GameDirection = 'LEFT' | 'RIGHT';
 export type ID = { id: string };
 
-export type Normalized<T> = {
-  [id: string]: T;
-};
+export type Normalized<T> = Record<string, T>;
 
 export type NoGameSession = {
   code: string;
