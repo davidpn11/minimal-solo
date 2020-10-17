@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { batch, useDispatch } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
@@ -7,24 +8,40 @@ import { LoadSession, loadSessionFromCache } from './helpers';
 import { setGameSession } from '../session/actions';
 import { setPlayerId } from '../playerHand/actions';
 import { unitJSX } from '../../utils/unit';
-import { getUniqueId } from '../../api/firebase';
+import { getFullSessionByCode, getUniqueId } from '../../api/firebase';
 import { safeSetItem } from '../../utils/storage';
-import { setSentryUserContext } from '../../utils/sentry';
+import { captureLog, setSentryUserContext } from '../../utils/sentry';
+import { getSession } from '../session/selectors';
+import { getPlayer } from '../playerHand/selector';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export function PersistGate(props: Props) {
-  const [isReady, setReadyStatus] = useState<boolean>(false);
+  const sessionO = useSelector(getSession);
+  const playerO = useSelector(getPlayer);
+  const isReady = O.isSome(playerO);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const match = useRouteMatch<{ code: string }>('/room/:code');
+
+  useEffect(function rehydrateSession() {
+    if (match) {
+      getFullSessionByCode(match.params.code)
+        .then(session => dispatch(setGameSession(session)))
+        .catch(err => {
+          captureLog(err);
+          return history.push('/');
+        });
+    }
+  }, []);
 
   const setNewStorage = useCallback(() => {
     const newPlayerId = getUniqueId();
     dispatch(setPlayerId(newPlayerId));
     safeSetItem('playerId', newPlayerId);
     setSentryUserContext(newPlayerId);
-    setReadyStatus(true);
   }, [dispatch]);
 
   const rehydrateSessionFromStorage = useCallback(
@@ -34,7 +51,6 @@ export function PersistGate(props: Props) {
         dispatch(setPlayerId(playerId));
       });
       setSentryUserContext(playerId);
-      setReadyStatus(true);
     },
     [dispatch],
   );
@@ -46,6 +62,10 @@ export function PersistGate(props: Props) {
   }, [setNewStorage, rehydrateSessionFromStorage, dispatch]);
 
   if (!isReady) {
+    return unitJSX;
+  }
+
+  if (match && O.isNone(sessionO)) {
     return unitJSX;
   }
 
