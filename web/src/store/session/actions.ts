@@ -21,7 +21,7 @@ import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
 
 export const SET_SESSION = 'SET_SESSION' as const;
-export const ADD_PLAYER = 'ADD_PLAYER' as const;
+export const SET_PLAYERS = 'SET_PLAYERS' as const;
 export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
@@ -58,9 +58,9 @@ export function clearSession() {
   };
 }
 
-function addPlayers(player: Normalized<SessionPlayer>) {
+export function setPlayers(player: Normalized<SessionPlayer>) {
   return {
-    type: ADD_PLAYER,
+    type: SET_PLAYERS,
     payload: player,
   };
 }
@@ -102,12 +102,6 @@ export function createGameSession(
   };
 }
 
-export function addNewPlayer(player: Normalized<SessionPlayer>) {
-  return async (dispatch: SessionThunkDispatch) => {
-    dispatch(addPlayers(player));
-  };
-}
-
 export function joinGameSession(
   sessionCode: string,
   name: string,
@@ -119,7 +113,7 @@ export function joinGameSession(
       const player = await requestAddPlayer(session.id, name, playerId, playersCount);
       batch(() => {
         dispatch(setGameSession(session));
-        dispatch(addPlayers({ [playerId]: player }));
+        dispatch(setPlayers({ [playerId]: player }));
       });
       return E.right(session);
     } catch (error) {
@@ -174,7 +168,7 @@ export function addPlay(play: Play) {
 
 export type SessionActionTypes = ReturnType<
   | typeof setGameSession
-  | typeof addPlayers
+  | typeof setPlayers
   | typeof clearSession
   | typeof setPlayer
   | typeof setGameProgression

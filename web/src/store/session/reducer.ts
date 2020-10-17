@@ -2,7 +2,7 @@ import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import {
-  ADD_PLAYER,
+  SET_PLAYERS,
   CLEAR_SESSION,
   SessionActionTypes,
   SET_SESSION,
@@ -42,7 +42,7 @@ export function sessionReducer(
         ...stateO.value,
         progression: action.payload,
       });
-    case ADD_PLAYER:
+    case SET_PLAYERS:
       if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
 
       return O.some({

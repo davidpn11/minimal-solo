@@ -38,10 +38,20 @@ export default function Entrance() {
     history.push(`/room/${session.code}`);
   }
 
-  async function createRoom({ adminName }: CreateFields) {
+  async function createRoom(
+    { adminName }: CreateFields,
+    formikHelpers: FormikHelpers<CreateFields>,
+  ) {
     return pipe(
       await dispatch(createGameSession(adminName, playerId)),
-      E.fold<any, LocalSessionWithId, void>(() => {}, joinSession),
+      E.fold<any, LocalSessionWithId, void>(
+        () =>
+          formikHelpers.setFieldError(
+            'adminName',
+            'There was an error trying to create a room. Please try again.',
+          ),
+        joinSession,
+      ),
     );
   }
 
