@@ -1,6 +1,10 @@
 import { RequestHandler } from "express";
 import * as O from "fp-ts/lib/Option";
-import { buyCards, getNextCardsFromDeck } from "../../cards/api/postBuyCards";
+import * as T from "fp-ts/lib/Task";
+import * as A from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/function";
+
+import { buyCards } from "../../cards/api/postBuyCards";
 import { getSessionById } from "../../../db/session";
 
 export const postStartSessions: RequestHandler<{ id: string }> = async (
@@ -52,13 +56,16 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
     }
 
     // Deal cards
-    async function dealCards(playersIds: string[]) {
-      for (const id of playersIds) {
-        const cards = await getNextCardsFromDeck(sessionId, 7).get();
-        await buyCards(sessionId, id, cards);
-      }
-    }
-    dealCards(playersDoc.docs.map((doc) => doc.id));
+    const tasks = pipe(
+      playersDoc.docs,
+      A.map((doc) => doc.id),
+      A.map<string, T.Task<{ id: string; hand: string[] }>>((id) => () =>
+        buyCards(sessionId, id, 7)
+      )
+    );
+    const dealCardsSeq = A.array.sequence(T.taskSeq)(tasks);
+
+    await dealCardsSeq();
 
     // Set the new session data
     const newSession = {
