@@ -22,14 +22,17 @@ export default function App() {
 
   const match = useRouteMatch<{ code: string }>();
 
-  useEffect(function rehydrateSession() {
-    pipe(match.params.code, getFullSessionByCode)
-      .then(session => dispatch(setGameSession(session)))
-      .catch(err => {
-        captureLog(err);
-        return history.push('/');
-      });
-  }, []);
+  useEffect(
+    function rehydrateSession() {
+      pipe(match.params.code, getFullSessionByCode)
+        .then(session => dispatch(setGameSession(session)))
+        .catch(err => {
+          captureLog(err);
+          return history.push('/');
+        });
+    },
+    [match.params.code],
+  );
 
   useEffect(
     function rejectNonPlayers() {
