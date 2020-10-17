@@ -10,8 +10,8 @@ export function createAvatar() {
   };
 }
 
-const colors = ["GREEN", "GOLD", "RED", "BLUE", "BLACK"] as const;
-const commonValues = [
+const colors: CardColor[] = ["GREEN", "GOLD", "RED", "BLUE", "BLACK"];
+const commonValues: CommonCardValue[] = [
   "ONE",
   "TWO",
   "THREE",
@@ -21,54 +21,70 @@ const commonValues = [
   "SEVEN",
   "EIGHT",
   "NINE",
+];
+
+const actionValues: ActionCardValue[] = [
   "BLOCK",
   "REVERSE",
   "PLUS_TWO",
   "SWAP",
-] as const;
+];
 
-function buildCommonCards(color: string) {
+function buildCommonCards(color: CommonActionCardColor): CommonCard[] {
   return commonValues.map((value) => ({
     color,
     value,
     createdAt: Date.now(),
     status: "DECK",
+    type: "COMMON",
   }));
 }
 
-function buildSpecialCards() {
+function buildActionCards(color: CommonActionCardColor): ActionCard[] {
+  return actionValues.map((value) => ({
+    color,
+    value,
+    createdAt: Date.now(),
+    status: "DECK",
+    type: "ACTION",
+  }));
+}
+
+function buildSpecialCards(): SpecialCard[] {
   return [
     {
       color: "BLACK",
       value: "SWAP_ALL",
       createdAt: Date.now(),
       status: "DECK",
+      type: "SPECIAL",
     },
     {
       color: "BLACK",
       value: "PLUS_FOUR",
       createdAt: Date.now(),
       status: "DECK",
+      type: "SPECIAL",
     },
   ];
 }
 
 export function buildDeck() {
-  const cs = colors.map((c) => {
-    if (c === "BLACK") {
-      return pipe(
-        A.range(1, 4),
-        A.map(() => buildSpecialCards()),
-        A.flatten
-      );
-    } else {
-      return buildCommonCards(c);
-    }
-  });
-
-  return A.flatten(cs);
+  return pipe(
+    [...colors],
+    A.map((color) => {
+      if (color === "BLACK") {
+        return pipe(A.range(1, 4), A.map(buildSpecialCards), A.flatten);
+      }
+      return A.flatten<Card>([
+        buildCommonCards(color),
+        buildActionCards(color),
+      ]);
+    }),
+    A.flatten
+  );
 }
 
-export function sortDeck<L>(deck: L[]): L[] {
+export function sortDeck(deck: Card[]): Card[] {
   return deck.sort(() => Math.random() - 0.5);
 }

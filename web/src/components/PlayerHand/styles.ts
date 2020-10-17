@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardLower, CardUpper, CardValue, CardWrapper } from '../PlayingCard/styles';
+import { CardLower, CardUpper, CardValueElement, CardWrapper } from '../PlayingCard/styles';
 import { rgba } from 'polished';
 
 export const HAND_HEIGHT = 248;
@@ -76,7 +76,7 @@ export const HandCardsWrapper = styled.div`
     }
   }
 
-  ${CardValue} {
+  ${CardValueElement} {
     svg {
       width: 50px;
       height: 50px;

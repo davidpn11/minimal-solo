@@ -15,7 +15,7 @@ import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
 import { createBlockPlay, createCommonNumberPlay, createPassPlay } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import { CardWithId, CommonCardWithId, isBlockCard, isCommonNumberCard } from '../../../model/Card';
+import { isBlockCard, isCommonCard } from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
 export function useHandListener() {
@@ -66,7 +66,7 @@ export function useHandListener() {
     }
   }
 
-  function handleBlockCard(card: CardWithId) {
+  function handleBlockCard(card: ActionCardWithId) {
     const isSameCardColor = currentCard.color === card.color;
     const isSameCardValue = currentCard.value === card.value;
     const isSameCard = isSameCardValue && isSameCardColor;
@@ -110,7 +110,7 @@ export function useHandListener() {
   }
 
   function handleCardClick(card: CardWithId) {
-    if (isCommonNumberCard(card)) return handleCommonNumberCard(card as CommonCardWithId);
+    if (isCommonCard(card)) return handleCommonNumberCard(card as CommonCardWithId);
     if (isBlockCard(card)) return handleBlockCard(card);
   }
 

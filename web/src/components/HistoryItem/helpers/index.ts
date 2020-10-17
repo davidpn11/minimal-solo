@@ -1,6 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { Value, Color } from '../../../model/Card';
 import {
   Play,
   BlockPlay,
@@ -18,7 +17,7 @@ import { foldPlay } from '../../../store/playerHand/helpers/foldPlay';
 
 type Story = string;
 
-function mapCardValue(value: Value): string {
+function mapCardValue(value: CardValue): string {
   switch (value) {
     case 'NINE':
       return '9';
@@ -57,7 +56,7 @@ function mapCardValue(value: Value): string {
   }
 }
 
-function mapColorValue(color: Color): string {
+function mapColorValue(color: CardColor): string {
   switch (color) {
     case 'GOLD':
       return 'gold';

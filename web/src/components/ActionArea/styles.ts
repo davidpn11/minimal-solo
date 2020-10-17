@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardLower, CardUpper, CardValue, CardWrapper } from '../PlayingCard/styles';
+import { CardLower, CardUpper, CardValueElement, CardWrapper } from '../PlayingCard/styles';
 
 export const AreaWrapper = styled.section`
   align-items: center;
@@ -50,7 +50,7 @@ export const SectionWrapper = styled.div`
       }
     }
 
-    ${CardValue} {
+    ${CardValueElement} {
       svg {
         width: 48px;
         height: 48px;

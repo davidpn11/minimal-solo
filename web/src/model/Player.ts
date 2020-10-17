@@ -4,7 +4,6 @@ import * as R from 'fp-ts/lib/Record';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 
-import { Card } from './Card';
 import { ID, Normalized } from './Session';
 
 export function createAvatar(): PlayerAvatar {
