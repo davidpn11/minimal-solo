@@ -12,7 +12,6 @@ import {
 } from '../../../store/session/selectors';
 import { requestProgressionListener } from '../../../api/db/gameSession';
 import {
-  addCardToPlayer,
   setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
@@ -55,7 +54,13 @@ export function useProgressionListener() {
       }
 
       function runDrawCardPlayEffect(play: DrawPlay & ID) {
-        dispatch(addCardToPlayer(play));
+        //TODO Will be useful for animations
+        // dispatch(setCurrentPlay(play.id));
+        /**
+         * StorePlay
+         */
+        // dispatch(addPlay(play));
+        // runNextEffect(play);
       }
 
       function runPostPlayHook(play: PlayWithId) {

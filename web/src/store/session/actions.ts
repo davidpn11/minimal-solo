@@ -16,9 +16,9 @@ import {
 import { LocalSessionWithId } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
-import { DrawPlay, Play } from '../../model/Play';
+import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
-import { buyCard, Card } from '../../model/Card';
+import { Card } from '../../model/Card';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
 
@@ -194,22 +194,6 @@ export function addPlay(play: Play) {
       console.log({ result });
     } catch (error) {
       console.error(error);
-    }
-  };
-}
-
-/**
- * Post game action
- */
-
-export function addCardToPlayer(play: DrawPlay) {}
-
-export function playerDrawCard(playerId: string) {
-  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
-    const { session } = getState();
-    if (O.isSome(session)) {
-      const card = await buyCard(session.value.id, playerId);
-      console.log({ card });
     }
   };
 }

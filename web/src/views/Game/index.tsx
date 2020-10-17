@@ -9,18 +9,22 @@ import { useHandListener } from './hooks/useHandListener';
 import { useProgressionListener } from './hooks/useProgressionListener';
 import { getPlayerValue } from '../../store/playerHand/selector';
 import { getCurrentCard, getOrderedPlayers } from '../../store/session/selectors';
-import { playerDrawCard } from '../../store/session/actions';
 
 export function Game() {
   const players = useSelector(getOrderedPlayers);
   const currentCard = useSelector(getCurrentCard);
   const player = useSelector(getPlayerValue);
-  const { playerActions, handlePass, handleCardClick } = useHandListener();
+  const {
+    hasDrawed,
+    playerActions,
+    handlePass,
+    handleDrawCard,
+    handleCardClick,
+  } = useHandListener();
   const { isCurrentPlayer } = useProgressionListener();
-  const dispatch = useDispatch();
 
   const onDeckClick = () => {
-    dispatch(playerDrawCard(player.id));
+    if (!hasDrawed) handleDrawCard();
   };
 
   return (

@@ -38,7 +38,7 @@ export async function buyCards(
       hand: [...player.hand, ...cardIds],
     };
     await sessionDoc.collection("players").doc(playerId).set(updatedPlayer);
-    return { ...updatedPlayer, id: playerDoc.id };
+    return { updatedPlayer: { ...updatedPlayer, id: playerDoc.id } };
   }
   throw new Error("Cannot buy cards for unexistent player");
 }
@@ -51,7 +51,7 @@ export const postBuyCards: RequestHandler<{}, {}, PostBody> = async (
 
   try {
     const updatedPlayer = await buyCards(sessionId, playerId, amount);
-    res.send(updatedPlayer);
+    res.send({ player: updatedPlayer });
     return;
   } catch (e) {
     res.status(500).send(e);

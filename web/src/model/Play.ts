@@ -15,7 +15,6 @@ export type UnoPlay = {
 };
 export type DrawPlay = {
   type: 'DRAW_PLAY';
-  card: Card;
   player: SessionPlayerWithId;
   position: number;
 };
@@ -165,15 +164,10 @@ export function createReversePlay(
   };
 }
 
-export function createDrawPlay(
-  player: SessionPlayerWithId,
-  card: CardWithId,
-  position: number,
-): DrawPlay {
+export function createDrawPlay(player: SessionPlayerWithId, position: number): DrawPlay {
   return {
     player,
     type: 'DRAW_PLAY',
-    card: card,
     position,
   };
 }
