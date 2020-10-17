@@ -35,19 +35,11 @@ export const postStartGame: RequestHandler<{ id: string }> = async (
     // Filter only cards that can start the game, and get just the top one.
     const availableCardDoc = await sessionRef
       .collection("deck")
-      .where("VALUE", "not-in", [
-        "REVERSE",
-        "PLUS_TWO",
-        "SWAP",
-        "BLOCK",
-        "PLUS_FOUR",
-        "SWAP_ALL",
-        "COLOR",
-      ])
-      .limit(1)
+      .where("type", "==", "COMMON")
       .get();
 
     const [currentCardDoc] = availableCardDoc.docs;
+    console.log(availableCardDoc.size);
 
     if (!currentCardDoc.exists) {
       res

@@ -16,7 +16,6 @@ import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
 import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
-import { Card } from '../../model/Card';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
 

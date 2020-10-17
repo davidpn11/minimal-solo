@@ -1,9 +1,8 @@
 import { MouseEvent } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
-import { Color, CardStatus } from '../../model/Card';
 import { WithMinimalSoloTheme } from '../../theme';
 
-export const CardValue = styled.span`
+export const CardValueElement = styled.span`
   align-items: center;
   display: flex;
   height: 128px;
@@ -54,7 +53,7 @@ export const CardLower = styled.span`
   }
 `;
 
-type CardWrapperProps = { color: Color; status: CardStatus; onClick?: (e: MouseEvent) => void };
+type CardWrapperProps = { color: CardColor; status: CardStatus; onClick?: (e: MouseEvent) => void };
 
 function mapCards(props: WithMinimalSoloTheme & CardWrapperProps): FlattenSimpleInterpolation {
   if (props.status === 'DECK') {
@@ -63,7 +62,7 @@ function mapCards(props: WithMinimalSoloTheme & CardWrapperProps): FlattenSimple
       border-color: ${props.theme.colors.blackBase};
       padding: ${props.theme.spacing.base}px;
 
-      ${CardValue} {
+      ${CardValueElement} {
         left: 0;
         width: 100%;
       }

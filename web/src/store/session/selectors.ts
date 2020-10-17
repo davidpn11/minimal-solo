@@ -14,7 +14,6 @@ import {
 } from '../../model/Session';
 import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
-import { Card } from '../../model/Card';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
 import { Play, PlayWithId } from '../../model/Play';
 import { getPlayerValue } from '../playerHand/selector';

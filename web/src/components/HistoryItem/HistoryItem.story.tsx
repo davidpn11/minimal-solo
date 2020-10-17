@@ -4,7 +4,6 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { HistoryItem } from './';
-import { ActionCard, Color, CommonCardWithId, Value } from '../../model/Card';
 import {
   createBlockPlay,
   createColorPlay,
@@ -41,7 +40,7 @@ const PLAY_TYPES: Record<string, Play['type']> = {
   PlusFourPlay: 'PLUS_FOUR_PLAY',
 };
 
-const COLORS: Record<string, UnionExclude<Color, 'BLACK'>> = {
+const COLORS: Record<string, CommonActionCardColor> = {
   Blue: 'BLUE',
   Green: 'GREEN',
   Gold: 'GOLD',
@@ -50,20 +49,20 @@ const COLORS: Record<string, UnionExclude<Color, 'BLACK'>> = {
 
 const ALL_COLORS = { ...COLORS, Black: 'BLACK' };
 
-const ACTION_VALUES: Record<string, Value> = {
+const ACTION_VALUES: Record<string, CardValue> = {
   SwapAll: 'SWAP_ALL',
   Color: 'COLOR',
   Reverse: 'REVERSE',
 };
 
-const ACTION_TARGET_VALUES: Record<string, Value> = {
+const ACTION_TARGET_VALUES: Record<string, CardValue> = {
   PlusFour: 'PLUS_FOUR',
   Block: 'BLOCK',
   PlusTwo: 'PLUS_TWO',
   Swap: 'SWAP',
 };
 
-const COMMON_VALUES: Record<string, UnionExclude<Value, 'PLUS_FOUR' | 'SWAP_ALL'>> = {
+const COMMON_VALUES: Record<string, CommonCardValue> = {
   One: 'ONE',
   Two: 'TWO',
   Three: 'THREE',
@@ -107,10 +106,11 @@ export function HistoryItemStory() {
     color: colorKnob,
     value: commonValueKnob,
     status: 'PLAY',
+    createdAt: Date.now(),
+    type: 'COMMON',
   };
 
   const play: Play = useMemo<Play>(() => {
-    console.log({ playType });
     switch (playType) {
       case 'PASS_PLAY':
         return createPassPlay(player, 0);
@@ -131,17 +131,21 @@ export function HistoryItemStory() {
       case 'SWAP_PLAY':
         return createSwapPlay(player, commonCard, target, 0);
       case 'SWAP_ALL_PLAY':
-        const swapAllCard: ActionCard = {
+        const swapAllCard: SpecialCard = {
           color: 'BLACK',
           value: 'SWAP_ALL',
           status: 'PLAY',
+          createdAt: Date.now(),
+          type: 'SPECIAL',
         };
         return createSwapAllPlay(player, swapAllCard, 0);
       case 'PLUS_FOUR_PLAY':
-        const plusFourCard: ActionCard = {
+        const plusFourCard: SpecialCard = {
           color: 'BLACK',
           value: 'PLUS_FOUR',
           status: 'PLAY',
+          createdAt: Date.now(),
+          type: 'SPECIAL',
         };
         return createPlusFourPlay(player, plusFourCard, target, 0);
       default:
