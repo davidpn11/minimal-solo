@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { isBlockCard, isCommonCard } from 'solo-lib/lib/card';
 
 import {
   getCurrentCardValue,
@@ -15,7 +16,6 @@ import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
 import { createBlockPlay, createCommonNumberPlay, createPassPlay } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import { isBlockCard, isCommonCard } from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
 
 export function useHandListener() {

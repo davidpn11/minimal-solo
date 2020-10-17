@@ -1,9 +1,9 @@
 import React from 'react';
 import { number, select, withKnobs } from '@storybook/addon-knobs';
 import * as O from 'fp-ts/lib/Option';
+import { buildDeck } from 'solo-lib/lib/card';
 
 import { ActionArea } from './index';
-import { buildDeck } from '../../model/Card';
 
 const COLORS: Record<string, CardColor> = {
   Blue: 'BLUE',

@@ -3,9 +3,9 @@ import { number, select, withKnobs } from '@storybook/addon-knobs';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
+import { buildDeck, sortDeck } from 'solo-lib/lib/card';
 
 import { PlayerHand } from './index';
-import { buildDeck, sortDeck } from '../../model/Card';
 import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
 import { PassButtonStates } from '../Pass';

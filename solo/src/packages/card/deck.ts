@@ -1,14 +1,5 @@
-import * as A from "fp-ts/lib/Array";
-import { pipe } from "fp-ts/lib/pipeable";
-import { random } from "faker";
-
-export function createAvatar() {
-  return {
-    positionX: random.number({ min: -1400, max: -10 }),
-    positionY: random.number({ min: -1000, max: -10 }),
-    scale: random.number({ min: 5000, max: 5500 }),
-  };
-}
+import { pipe } from "fp-ts/pipeable";
+import * as A from "fp-ts/Array";
 
 const colors: CardColor[] = ["GREEN", "GOLD", "RED", "BLUE", "BLACK"];
 const commonValues: CommonCardValue[] = [
@@ -69,9 +60,9 @@ function buildSpecialCards(): SpecialCard[] {
   ];
 }
 
-export function buildDeck() {
+export function buildDeck(source = colors) {
   return pipe(
-    [...colors],
+    [...source],
     A.map((color) => {
       if (color === "BLACK") {
         return pipe(A.range(1, 4), A.map(buildSpecialCards), A.flatten);
