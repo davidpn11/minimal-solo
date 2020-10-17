@@ -3,12 +3,12 @@ import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { getSessionRef, getSessionRefByCode } from '../firebase';
+import { firebaseConfig } from '../config';
+import { normalizeQuery } from '../helpers';
 import { Normalized, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
 import { SessionPlayer, PlayerStatus, SessionPlayerWithId, createAvatar } from '../../model/Player';
-import { normalizeQuery, extractDocumentData } from '../helpers';
 import { SessionNotFoundError } from '../../model/Error';
-import { firebaseConfig } from '../config';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
@@ -100,25 +100,6 @@ export async function requestSessionPlayersListener(
       });
   } catch (error) {
     console.error(error);
-  }
-}
-
-export async function requestSessionStatusListener(
-  sessionId: string,
-  callback: (newSession: LocalSessionWithId) => void,
-) {
-  try {
-    await getSessionRef(sessionId).onSnapshot(documentSnapshot => {
-      const newSession = extractDocumentData<Omit<LocalSessionWithId, 'progression'>>(
-        documentSnapshot,
-      );
-      if (O.isSome(newSession)) {
-        callback({ ...newSession.value, progression: {} } as LocalSessionWithId);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    throw error;
   }
 }
 

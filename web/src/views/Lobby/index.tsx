@@ -6,20 +6,23 @@ import * as O from 'fp-ts/lib/Option';
 import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 import { JoinModal } from './components/JoinModal';
 import { PlayersGrid } from './components/PlayersGrid';
-import { useSessionListener } from './hooks/useSessionListener';
 import { useMatchStarter } from './hooks/useMatchStarter';
 import { Button } from '../../components/Button';
 import { ProgressBar } from '../../components/ProgressBar';
-import { allPlayersReady, getCurrentSessionPlayer } from '../../store/session/selectors';
+import {
+  allPlayersReady,
+  getCurrentSessionPlayer,
+  getSessionValue,
+} from '../../store/session/selectors';
 import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/selector';
 
 export function Lobby() {
+  const currentSession = useSelector(getSessionValue);
   const isAllPlayersReady = useSelector(allPlayersReady);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
   const { toggleStatus, startGame, isStarting } = useMatchStarter();
-  const { currentSession } = useSessionListener();
 
   return (
     <Page>

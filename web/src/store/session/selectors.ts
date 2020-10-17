@@ -223,6 +223,8 @@ const ordPlaysByPosition: Ord<PlayWithId> = pipe(
 export const getOrderedProgression = (state: ReduxStore): PlayWithId[] => {
   const session = getStartedSession(state);
 
+  console.log(session);
+
   return pipe(
     session.progression,
     R.toArray,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -26,14 +26,18 @@ export function PersistGate(props: Props) {
   const history = useHistory();
   const match = useRouteMatch<{ code: string }>('/room/:code');
 
-  useEffect(function rehydrateSession() {
+  function rehydrateSession(code: string) {
+    getFullSessionByCode(code)
+      .then(session => dispatch(setGameSession(session)))
+      .catch(err => {
+        captureLog(err);
+        return history.push('/');
+      });
+  }
+
+  useEffect(() => {
     if (match) {
-      getFullSessionByCode(match.params.code)
-        .then(session => dispatch(setGameSession(session)))
-        .catch(err => {
-          captureLog(err);
-          return history.push('/');
-        });
+      rehydrateSession(match.params.code);
     }
   }, []);
 
@@ -46,10 +50,12 @@ export function PersistGate(props: Props) {
 
   const rehydrateSessionFromStorage = useCallback(
     ({ session, playerId }: LoadSession) => {
-      batch(() => {
+      dispatch(setPlayerId(playerId));
+      if (match && match.params.code !== session.code) {
+        rehydrateSession(match.params.code);
+      } else {
         dispatch(setGameSession(session));
-        dispatch(setPlayerId(playerId));
-      });
+      }
       setSentryUserContext(playerId);
     },
     [dispatch],

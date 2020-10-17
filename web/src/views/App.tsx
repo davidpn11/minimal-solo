@@ -4,13 +4,13 @@ import { useHistory } from 'react-router-dom';
 
 import { Lobby } from './Lobby';
 import { Game } from './Game';
-import { getSessionValue } from '../store/session/selectors';
 import { getPlayerValue } from '../store/playerHand/selector';
 import { isPlayerInTheGame } from '../store/playerHand/helpers/player';
 import { unitJSX } from '../utils/unit';
+import { useSessionListener } from '../hooks/useSessionListener';
 
 export default function App() {
-  const currentSession = useSelector(getSessionValue);
+  const { currentSession } = useSessionListener();
   const player = useSelector(getPlayerValue);
   const history = useHistory();
 
