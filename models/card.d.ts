@@ -1,7 +1,9 @@
+type ID = { id: string };
+
 declare type CommonActionCardColor = "GREEN" | "GOLD" | "RED" | "BLUE";
 declare type SpecialCardColor = "BLACK";
-
 declare type CardColor = CommonActionCardColor | SpecialCardColor;
+
 declare type CommonCardValue =
   | "ONE"
   | "TWO"
@@ -12,15 +14,11 @@ declare type CommonCardValue =
   | "SEVEN"
   | "EIGHT"
   | "NINE";
-
 declare type ActionCardValue = "BLOCK" | "REVERSE" | "PLUS_TWO" | "SWAP";
-
 declare type SpecialCardValue = "PLUS_FOUR" | "SWAP_ALL" | "COLOR";
-
 declare type CardValue = CommonCardValue | ActionCardValue | SpecialCardValue;
-declare type CardType = "COMMON" | "ACTION" | "SPECIAL";
 
-type ID = { id: string };
+declare type CardType = "COMMON" | "ACTION" | "SPECIAL";
 
 declare type CardStatus = "HAND" | "DECK" | "GAME" | "PLAY";
 
@@ -49,6 +47,7 @@ declare type SpecialCard = {
   status: CardStatus;
   type: "SPECIAL";
 };
+declare type SpecialCardWithId = SpecialCard & ID;
 
 declare type Card = CommonCard | ActionCard | SpecialCard;
 declare type CardWithId = Card & ID;
