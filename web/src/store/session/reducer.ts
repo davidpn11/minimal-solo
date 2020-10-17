@@ -6,7 +6,6 @@ import {
   CLEAR_SESSION,
   SessionActionTypes,
   SET_SESSION,
-  SETUP_GAME,
   SET_GAME_PROGRESSION,
   SET_CURRENT_PLAY,
   SET_CURRENT_PLAYER,
@@ -52,13 +51,6 @@ export function sessionReducer(
           ...stateO.value.players,
           ...action.payload,
         },
-      });
-    case SETUP_GAME:
-      if (O.isNone(stateO)) throw new Error('Cannot setup game on unexistent session.');
-      return O.some({
-        ...stateO.value,
-        loadingStatus: O.some(action.payload),
-        status: 'STARTING',
       });
     case SET_CURRENT_PLAY:
       if (O.isNone(stateO)) throw new Error('Cannot set current play on unexistent session.');

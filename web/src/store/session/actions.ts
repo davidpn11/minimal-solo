@@ -25,7 +25,6 @@ export const ADD_PLAYER = 'ADD_PLAYER' as const;
 export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
-export const SETUP_GAME = 'SETUP_GAME' as const;
 export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER' as const;
 export const SET_CURRENT_PLAY = 'SET_CURRENT_PLAY' as const;
 export const SET_CURRENT_CARD = 'SET_CURRENT_CARD' as const;
@@ -63,13 +62,6 @@ function addPlayers(player: Normalized<SessionPlayer>) {
   return {
     type: ADD_PLAYER,
     payload: player,
-  };
-}
-
-function setupGame(loadingValue = 0) {
-  return {
-    type: SETUP_GAME,
-    payload: loadingValue,
   };
 }
 
@@ -149,20 +141,13 @@ export async function togglePlayerStatus(
   }
 }
 
-export function startGameSession() {
-  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+export function startGameSession(sessionId: string) {
+  return async (dispatch: SessionThunkDispatch) => {
     try {
-      const state = getState();
-
-      if (O.isNone(state.session)) throw new Error('Cannot start game on no session.');
-
-      // Set game starting
-      dispatch(setupGame());
-
       const response = await axios.request({
         method: 'POST',
         baseURL: firebaseConfig.baseApi,
-        url: `/session/${state.session.value.id}/start`,
+        url: `/lobby/${sessionId}/start`,
       });
 
       dispatch(setGameSession({ ...response.data, progression: {} }));
@@ -193,7 +178,6 @@ export type SessionActionTypes = ReturnType<
   | typeof clearSession
   | typeof setPlayer
   | typeof setGameProgression
-  | typeof setupGame
   | typeof setCurrentPlayer
   | typeof setCurrentPlay
   | typeof setCurrentCard

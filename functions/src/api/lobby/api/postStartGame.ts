@@ -7,7 +7,7 @@ import { pipe } from "fp-ts/lib/function";
 import { buyCards } from "../../cards/api/postBuyCards";
 import { getSessionById } from "../../../db/session";
 
-export const postStartSessions: RequestHandler<{ id: string }> = async (
+export const postStartGame: RequestHandler<{ id: string }> = async (
   req,
   res
 ) => {

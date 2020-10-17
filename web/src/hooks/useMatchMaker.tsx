@@ -28,7 +28,7 @@ export function useMatchMaker() {
   };
 
   const startGame = () => {
-    dispatch(startGameSession());
+    dispatch(startGameSession(currentSession.id));
   };
 
   return { toggleStatus, startGame };
