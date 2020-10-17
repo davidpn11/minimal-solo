@@ -1,4 +1,5 @@
 import * as A from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/pipeable";
 import { random } from "faker";
 
 export function createAvatar() {
@@ -26,43 +27,42 @@ const commonValues = [
   "SWAP",
 ] as const;
 
-function buildCommon(color: string) {
+function buildCommonCards(color: string) {
   return commonValues.map((value) => ({
     color,
     value,
-    createdAt: 0,
+    createdAt: Date.now(),
     status: "DECK",
   }));
 }
 
-function buildSpecial() {
+function buildSpecialCards() {
   return [
     {
       color: "BLACK",
       value: "SWAP_ALL",
-      createdAt: 0,
+      createdAt: Date.now(),
       status: "DECK",
     },
     {
       color: "BLACK",
       value: "PLUS_FOUR",
-      createdAt: 0,
+      createdAt: Date.now(),
       status: "DECK",
     },
   ];
 }
 
-export function buildOne() {
+export function buildDeck() {
   const cs = colors.map((c) => {
     if (c === "BLACK") {
-      return [
-        ...buildSpecial(),
-        ...buildSpecial(),
-        ...buildSpecial(),
-        ...buildSpecial(),
-      ];
+      return pipe(
+        A.range(1, 4),
+        A.map(() => buildSpecialCards()),
+        A.flatten
+      );
     } else {
-      return buildCommon(c);
+      return buildCommonCards(c);
     }
   });
 

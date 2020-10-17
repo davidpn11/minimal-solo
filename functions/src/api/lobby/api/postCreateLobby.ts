@@ -1,11 +1,14 @@
 import { RequestHandler } from "express";
-import { buildOne, createAvatar, sortDeck } from "../../../helpers/game";
 import * as admin from "firebase-admin";
 import * as O from "fp-ts/Option";
+import { buildDeck, createAvatar, sortDeck } from "../../../helpers/game";
 import { ServerSession } from "../../../db/session";
 
 const codeGenerator = () => {
-  return String(Math.round(Math.random() * 100000));
+  const epoch = new Date().valueOf().toString();
+  const endOfDate = epoch.substring(epoch.length - 5, epoch.length - 1);
+  const randomNumber = Math.round(Math.random() * 100);
+  return `${endOfDate}${randomNumber}`;
 };
 
 type PostBody = {
@@ -20,7 +23,7 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
   const { playerId, playerName } = req.body;
 
   try {
-    const deck = sortDeck(buildOne());
+    const deck = sortDeck(buildDeck());
     const newSession: Partial<ServerSession> = {
       code: codeGenerator(),
       status: "INITIAL",
