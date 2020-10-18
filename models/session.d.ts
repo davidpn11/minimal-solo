@@ -45,10 +45,11 @@ declare type SessionQueryResult = {
 };
 
 declare type Progression = Record<string, Play>;
+declare type Cemetery = Record<string, Card>;
 
 declare type LocalGameSession = {
   admin: string;
-  cemetery: Record<string, Card>;
+  cemetery: Cemetery;
   code: string;
   currentCard: Card;
   currentPlay: string;
