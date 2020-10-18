@@ -219,7 +219,7 @@ export const getOrderedProgression = (state: ReduxStore): PlayWithId[] => {
   const session = getStartedSession(state);
 
   return pipe(
-    session.progression,
+    session.progression || {},
     R.toArray,
     A.map(([id, play]) => ({ id, ...play })),
     A.sort(ordPlaysByPosition),

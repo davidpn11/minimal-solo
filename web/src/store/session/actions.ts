@@ -136,7 +136,7 @@ export function startGameSession(sessionId: string) {
         url: `/lobby/${sessionId}/start`,
       });
 
-      dispatch(setGameSession({ ...response.data, progression: {} }));
+      dispatch(setGameSession(response.data));
     } catch (error) {
       console.error(error);
     }
