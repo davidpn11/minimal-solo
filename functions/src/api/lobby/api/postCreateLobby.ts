@@ -28,7 +28,7 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
     const deck = sortDeck(buildDeck());
     const newSession: Partial<ServerSession> = {
       code: codeGenerator(),
-      status: "INITIAL",
+      status: "LOBBY",
       admin: playerId,
       currentPlayer: playerId,
       currentPlay: "",

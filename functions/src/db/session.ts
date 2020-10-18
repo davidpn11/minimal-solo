@@ -10,6 +10,7 @@ import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 const StatusEnum = io.keyof({
   INITIAL: "",
+  LOBBY: "",
   STARTING: "",
   STARTED: "",
   FINISHED: "",

@@ -42,14 +42,11 @@ export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlay
     O.chain(player =>
       pipe(
         state.session,
-        O.fold(
-          () => O.none,
-          foldGameSession({
-            whenLobbySession: session => R.lookup(player.id, session.players),
-            whenLoadingSession: session => R.lookup(player.id, session.players),
-            whenGameStarted: session => R.lookup(player.id, session.players),
-          }),
-        ),
+        foldGameSession({
+          whenLobbySession: session => R.lookup(player.id, session.players),
+          whenLoadingSession: session => R.lookup(player.id, session.players),
+          whenGameStarted: session => R.lookup(player.id, session.players),
+        }),
       ),
     ),
   );

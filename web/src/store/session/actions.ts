@@ -108,11 +108,7 @@ export function joinGameSession(
   return async (dispatch: SessionThunkDispatch) => {
     try {
       const { session, playersCount } = await requestJoinSession(sessionCode);
-      const player = await requestAddPlayer(session.id, name, playerId, playersCount);
-      batch(() => {
-        dispatch(setGameSession(session));
-        dispatch(setPlayers({ [playerId]: player }));
-      });
+      await requestAddPlayer(session.id, name, playerId, playersCount);
       return E.right(session);
     } catch (error) {
       captureLog(error);

@@ -36,7 +36,11 @@ export function sessionReducer(state = initialState, action: SessionActionTypes)
         }),
       );
     case SET_PLAYERS:
-      const mergePlayers = () => ({ ...state, players: action.payload });
+      const mergePlayers = (session: LocalSessionWithId) => ({
+        ...session,
+        players: { ...session.players, ...action.payload },
+      });
+
       return pipe(
         state,
         foldGameSession({

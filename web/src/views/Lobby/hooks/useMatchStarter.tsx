@@ -1,29 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { getSession } from '../../../store/session/selectors';
-import {
-  requestSessionPlayersListener,
-  requestTogglePlayerStatus,
-} from '../../../api/db/preGameSession';
-import { setPlayers, clearSession, startGameSession } from '../../../store/session/actions';
+import { requestTogglePlayerStatus } from '../../../api/db/preGameSession';
+import { setPlayers, startGameSession } from '../../../store/session/actions';
+import { getSessionRef } from '../../../api/firebase';
+import { normalizeQuery } from '../../../api/helpers';
 
 export function useMatchStarter() {
   const currentSession = useSelector(getSession);
   const dispatch = useDispatch();
-  const [hasListener, setHasListener] = useState<boolean>(false);
   const isStarting = currentSession.status === 'STARTING';
 
   //Player listener
   useEffect(() => {
-    if (!hasListener) {
-      setHasListener(true);
-      requestSessionPlayersListener(currentSession.id, p => dispatch(setPlayers(p)));
-    }
+    const unsubscribe = getSessionRef(currentSession.id)
+      .collection('players')
+      .onSnapshot(querySnapshot => {
+        const players = normalizeQuery<SessionPlayer>(querySnapshot);
+        dispatch(setPlayers(players));
+      });
+
     return () => {
-      dispatch(clearSession);
+      unsubscribe();
     };
-  }, [currentSession, hasListener, dispatch]);
+  }, []);
 
   function toggleStatus(playerId: string, playerStatus: PlayerStatus) {
     return async () => {

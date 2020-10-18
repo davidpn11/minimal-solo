@@ -87,22 +87,6 @@ export async function requestTogglePlayerStatus(
     );
 }
 
-export async function requestSessionPlayersListener(
-  sessionId: string,
-  callback: (p: Normalized<SessionPlayer>) => void,
-) {
-  try {
-    await getSessionRef(sessionId)
-      .collection('players')
-      .onSnapshot(querySnapshot => {
-        const players = normalizeQuery<SessionPlayer>(querySnapshot);
-        callback(players);
-      });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export async function requestAddPlayer(
   sessionId: string,
   name: string,
@@ -112,7 +96,7 @@ export async function requestAddPlayer(
   const initialPlayerData: SessionPlayer = {
     name,
     position,
-    status: 'NOT_READY' as const,
+    status: 'NOT_READY',
     avatar: createAvatar(),
     hand: [],
   };
