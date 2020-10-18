@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BoardWrapper, GameWrapper, Main } from './styles';
 import GameTable from './components/GameTable';
@@ -14,14 +14,29 @@ export function Game() {
   const players = useSelector(getOrderedPlayers);
   const currentCard = useSelector(getCurrentCard);
   const player = useSelector(getPlayerValue);
-  const { playerActions, handlePass, handleCardClick } = useHandListener();
+  const {
+    hasDrawed,
+    playerActions,
+    handlePass,
+    handleDrawCard,
+    handleCardClick,
+  } = useHandListener();
   const { isCurrentPlayer } = useProgressionListener();
+
+  const onDeckClick = () => {
+    if (!hasDrawed) handleDrawCard();
+  };
 
   return (
     <GameWrapper>
       <Main>
         <BoardWrapper>
-          <GameTable players={players} currentCard={currentCard} isActive={isCurrentPlayer} />
+          <GameTable
+            onDeckClick={onDeckClick}
+            players={players}
+            currentCard={currentCard}
+            isActive={isCurrentPlayer}
+          />
         </BoardWrapper>
         <PlayerHand
           onPass={handlePass}

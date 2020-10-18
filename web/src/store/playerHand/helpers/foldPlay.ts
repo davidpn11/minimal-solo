@@ -52,10 +52,12 @@ export const foldPlayWithId = (
   whenPassPlay: (p: PassPlay & ID) => void,
   whenNumberCardPlay: (p: NumberCardPlay & ID) => void,
   whenBlockCardPlay: (p: BlockPlay & ID) => void,
+  whenDrawCardPlay: (p: DrawPlay & ID) => void,
 ) => (play: PlayWithId) => {
   if (play.type === 'PASS_PLAY') return whenPassPlay(play);
   if (play.type === 'NUMBER_CARD_PLAY') return whenNumberCardPlay(play);
   if (play.type === 'BLOCK_PLAY') return whenBlockCardPlay(play);
+  if (play.type === 'DRAW_PLAY') return whenDrawCardPlay(play);
 };
 
 export const foldPlay = <B>({

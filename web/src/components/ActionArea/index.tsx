@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { AreaWrapper, LogoWrapper, SectionWrapper } from './styles';
 import { Logo } from '../Logo';
 import { CardDeck } from '../CardDeck';
 import { PlayingCard } from '../PlayingCard';
+import { isCurrentPlayerSelector } from '../../store/playerHand/selector';
 
 type Props = {
   currentCard: Card;
@@ -11,6 +13,10 @@ type Props = {
 };
 
 export function ActionArea(props: Props) {
+  const isCurrentPlayer = useSelector(isCurrentPlayerSelector);
+
+  const onClick = () => isCurrentPlayer && props.onDeckClick();
+
   return (
     <AreaWrapper>
       <LogoWrapper>
@@ -24,7 +30,7 @@ export function ActionArea(props: Props) {
           status="PLAY"
         />
       </SectionWrapper>
-      <SectionWrapper aria-label="Card Deck" onClick={props.onDeckClick}>
+      <SectionWrapper aria-label="Card Deck" onClick={onClick}>
         <CardDeck />
       </SectionWrapper>
     </AreaWrapper>

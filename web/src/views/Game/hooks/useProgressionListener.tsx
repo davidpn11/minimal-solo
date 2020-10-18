@@ -3,6 +3,7 @@ import { useSelector, useDispatch, batch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
+import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
 
 import {
   getCurrentPlay,
@@ -21,7 +22,6 @@ import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 import { getSessionRef } from '../../../api/firebase';
-import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -52,8 +52,26 @@ export function useProgressionListener() {
         runNextEffect(play);
       }
 
+      function runDrawCardPlayEffect(play: DrawPlay & ID) {
+        //TODO Will be useful for animations
+        // dispatch(setCurrentPlay(play.id));
+        /**
+         * StorePlay
+         */
+        // dispatch(addPlay(play));
+        // runNextEffect(play);
+      }
+
       function runPostPlayHook(play: PlayWithId) {
-        pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect, runBlockCardEffect));
+        pipe(
+          play,
+          foldPlayWithId(
+            runNextEffect,
+            runNumberCardPlayEffect,
+            runBlockCardEffect,
+            runDrawCardPlayEffect,
+          ),
+        );
       }
 
       runPostPlayHook(play);

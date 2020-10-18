@@ -12,7 +12,6 @@ declare type UnoPlay = {
 
 declare type DrawPlay = {
   type: "DRAW_PLAY";
-  card: Card;
   player: SessionPlayerWithId;
   position: number;
 };

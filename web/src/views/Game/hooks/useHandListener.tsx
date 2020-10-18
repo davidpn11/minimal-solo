@@ -14,9 +14,15 @@ import {
 import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
 import { getPlayerHand } from '../../../store/playerHand/actions';
 import { requestPlayerHandListener } from '../../../api/db/gameSession';
-import { createBlockPlay, createCommonNumberPlay, createPassPlay } from '../../../model/Play';
+import {
+  createBlockPlay,
+  createCommonNumberPlay,
+  createDrawPlay,
+  createPassPlay,
+} from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
+import { buyCard } from '../../../api/functions/card';
 
 export function useHandListener() {
   const player = useSelector(getPlayerValue);
@@ -31,6 +37,13 @@ export function useHandListener() {
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
   const isYourTurn = useMemo<boolean>(() => player.id === currentPlayer, [player, currentPlayer]);
   const [hasListener, setHasListener] = useState<boolean>(false);
+  const [hasDrawed, setHasDrawed] = useState<boolean>(false);
+
+  //reset hasDrawed when is your turn
+  useEffect(() => {
+    isYourTurn && setHasDrawed(false);
+  }, [isYourTurn]);
+
   const dispatch = useDispatch();
 
   function handleCommonNumberCard(card: CommonCardWithId) {
@@ -114,6 +127,13 @@ export function useHandListener() {
     if (isBlockCard(card)) return handleBlockCard(card);
   }
 
+  async function handleDrawCard() {
+    const card = await buyCard(currentSession.id, currentSessionPlayerWithId.id);
+    const play = createDrawPlay(currentSessionPlayerWithId, lastPlayPosition + 1);
+    dispatch(addPlay(play));
+    setHasDrawed(true);
+  }
+
   function handlePass() {
     const play = createPassPlay(currentSessionPlayerWithId, lastPlayPosition + 1);
     dispatch(addPlay(play));
@@ -131,7 +151,7 @@ export function useHandListener() {
     }
   }, [currentSession.id, hasListener, player, dispatch]);
 
-  return { playerHand, playerActions, handlePass, handleCardClick };
+  return { playerHand, playerActions, hasDrawed, handlePass, handleDrawCard, handleCardClick };
 }
 
 // Pre        ---   Game   --   Post
