@@ -18,7 +18,6 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
   res
 ) => {
   const { playerId, playerName } = req.body;
-  console.log({ playerId, playerName });
 
   try {
     const deck = sortDeck(buildOne());

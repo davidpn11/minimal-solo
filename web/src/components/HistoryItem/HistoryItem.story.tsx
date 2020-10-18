@@ -20,7 +20,6 @@ import {
   Play,
 } from '../../model/Play';
 import { createAvatar, SessionPlayerWithId } from '../../model/Player';
-// import { UnionExclude } from '../../model/types';
 
 const avatar = createAvatar();
 
