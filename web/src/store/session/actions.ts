@@ -103,7 +103,7 @@ export function joinGameSession(
   name: string,
   playerId: string,
 ): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
-  return async (dispatch: SessionThunkDispatch) => {
+  return async () => {
     try {
       const { session, playersCount } = await requestJoinSession(sessionCode);
       await requestAddPlayer(session.id, name, playerId, playersCount);
@@ -152,7 +152,6 @@ export function addPlay(play: Play) {
         foldGameSession({
           whenGameStarted: async s => {
             const result = await requestAddPlay(s.id, play);
-            console.log(result);
           },
         }),
       );

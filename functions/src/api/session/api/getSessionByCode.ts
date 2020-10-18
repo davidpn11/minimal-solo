@@ -33,7 +33,7 @@ export const getSessionByCode: RequestHandler<ReqParams> = async (req, res) => {
     const players = normalizeQuery<SessionPlayer>(playersDoc);
 
     function returnSimpleSession() {
-      res.send({ ...session, players });
+      res.send({ ...session, id: sessionId, players });
     }
 
     async function returnGameSession() {
@@ -47,13 +47,12 @@ export const getSessionByCode: RequestHandler<ReqParams> = async (req, res) => {
 
       return res.send({
         ...session,
+        id: sessionId,
         players,
         progression,
         cemetery,
       });
     }
-
-    console.log(session);
 
     pipe(
       session as SessionStore,

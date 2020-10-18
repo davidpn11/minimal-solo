@@ -1,11 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import * as R from 'fp-ts/lib/Record';
-import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
-import { SessionNotFoundError } from 'solo-lib/lib/session';
+import axios from 'axios';
 
 import { firebaseConfig } from './config';
 
@@ -23,37 +19,21 @@ if (window.location.hostname === 'localhost') {
 
 export const database = firebase.firestore();
 export const getSessionRef = (id: string) => database.collection('session').doc(id);
-
 export const getSessionRefByCode = (code: string) =>
   database.collection('session').where('code', '==', code);
 
-export const getFullSessionByCode: (code: string) => Promise<SessionQueryResult> = async (
-  code: string,
-) => {
-  const sessionByCode = await getSessionRefByCode(code).get();
-  return pipe(
-    normalizeQuery<SessionQueryResult>(sessionByCode),
-    R.reduceWithIndex<string, SessionQueryResult, O.Option<SessionQueryResult & ID>>(
-      O.none,
-      (id, acc, localSession) =>
-        O.some({
-          ...localSession,
-          id,
-        }),
-    ),
-    O.fold(
-      () => {
-        const SessionNotFound = SessionNotFoundError(code);
-        throw new SessionNotFound();
-      },
-      async localSession => {
-        const players = normalizeQuery<SessionPlayer>(
-          await getSessionRef(localSession.id).collection('players').get(),
-        );
-        return { ...localSession, players };
-      },
-    ),
-  );
-};
+export async function getFullSessionByCode(code: string): Promise<LocalSessionWithId> {
+  try {
+    const response = await axios.request<LocalSessionWithId>({
+      method: 'GET',
+      baseURL: firebaseConfig.baseApi,
+      url: `/session/code/${code}`,
+    });
+
+    return response.data;
+  } catch (e) {
+    throw e;
+  }
+}
 
 export const getUniqueId = () => database.collection('session').doc().id;

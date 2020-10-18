@@ -28,7 +28,7 @@ export function PersistGate(props: Props) {
 
   function rehydrateSession(code: string) {
     getFullSessionByCode(code)
-      .then(session => dispatch(setGameSession(session as LocalSessionWithId)))
+      .then(session => dispatch(setGameSession(session)))
       .catch(err => {
         captureLog(err);
         return history.push('/');
