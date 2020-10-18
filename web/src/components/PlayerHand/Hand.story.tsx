@@ -6,7 +6,6 @@ import { random } from 'faker';
 
 import { PlayerHand } from './index';
 import { buildOne, Card, sortDeck } from '../../model/Card';
-import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
 import { PassButtonStates } from '../Pass';
 

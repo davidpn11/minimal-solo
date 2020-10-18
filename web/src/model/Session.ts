@@ -1,16 +1,10 @@
 import { SessionPlayer } from './Player';
 import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
-import { UnionExclude } from './types';
 import { Play } from './Play';
 
 export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type GameDirection = 'LEFT' | 'RIGHT';
-export type ID = { id: string };
-
-export type Normalized<T> = {
-  [id: string]: T;
-};
 
 export type NoGameSession = {
   code: string;

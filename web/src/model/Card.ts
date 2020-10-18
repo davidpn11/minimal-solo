@@ -1,7 +1,5 @@
 import axios from 'axios';
 import * as A from 'fp-ts/lib/Array';
-import { UnionExclude } from './types';
-import { ID } from './Session';
 import { SessionPlayerWithId } from './Player';
 import { firebaseConfig } from '../api/config';
 

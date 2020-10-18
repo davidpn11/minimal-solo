@@ -7,7 +7,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { ReduxStore } from '../rootReducer';
 import {
   LocalSessionWithId,
-  Normalized,
   LocalGameSession,
   LocalGameSessionWithId,
   LocalNoGameSessionWithId,

@@ -1,8 +1,8 @@
 import React from "react";
 import { addDecorator } from "@storybook/react";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
-import { THEME } from "../web/src/theme";
-import { GlobalStyles } from "../web/src/styles";
+import { THEME } from "../src/theme";
+import { GlobalStyles } from "../src/styles";
 
 const Global = createGlobalStyle`
   #root {
@@ -11,7 +11,7 @@ const Global = createGlobalStyle`
     height: calc(100vh - 16px);
     padding: 0;
     display: flex;
-    flex-flow: column nowrap; 
+    flex-flow: column nowrap;
   }
 `;
 
