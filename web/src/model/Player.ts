@@ -3,8 +3,6 @@ import * as R from 'fp-ts/lib/Record';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 
-import { Normalized } from './Session';
-
 export function getSessionPlayerByPosition(
   players: Normalized<SessionPlayer>,
   position: number,

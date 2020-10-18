@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
 
 import { getSession } from '../../../store/session/selectors';
 import { requestTogglePlayerStatus } from '../../../api/db/preGameSession';
 import { setPlayers, startGameSession } from '../../../store/session/actions';
 import { getSessionRef } from '../../../api/firebase';
-import { normalizeQuery } from '../../../api/helpers';
 
 export function useMatchStarter() {
   const currentSession = useSelector(getSession);

@@ -2,13 +2,11 @@ import axios from 'axios';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { createAvatar } from 'solo-lib/lib/player';
+import { QuerySnapshot } from 'solo-lib/lib/utils/firebase';
 
 import { getSessionRef, getSessionRefByCode } from '../firebase';
 import { firebaseConfig } from '../config';
-import { normalizeQuery } from '../helpers';
-import { Normalized } from '../../model/Session';
-import { QuerySnapshot } from '../../model/Firebase';
-import { SessionNotFoundError } from '../../model/Error';
+import { SessionNotFoundError } from 'solo-lib/lib/session';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;

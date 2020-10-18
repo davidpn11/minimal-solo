@@ -21,7 +21,7 @@ import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 import { getSessionRef } from '../../../api/firebase';
-import { normalizeQuery } from '../../../api/helpers';
+import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);

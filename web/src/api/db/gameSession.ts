@@ -1,10 +1,9 @@
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
+import { extractDocumentData, normalizeDocument } from 'solo-lib/lib/utils/firebase';
 
 import { getSessionRef } from '../firebase';
-import { Normalized } from '../../model/Session';
-import { normalizeDocument, extractDocumentData } from '../helpers';
 
 export async function requestGetPlayerHand(
   sessionId: string,

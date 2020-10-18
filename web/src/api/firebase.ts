@@ -4,10 +4,10 @@ import 'firebase/firestore';
 import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
+import { SessionNotFoundError } from 'solo-lib/lib/session';
 
 import { firebaseConfig } from './config';
-import { normalizeQuery } from './helpers';
-import { SessionNotFoundError } from '../model/Error';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);

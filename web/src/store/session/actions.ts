@@ -1,8 +1,8 @@
-import { batch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
 import axios from 'axios';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { foldGameSession } from 'solo-lib/lib/session';
 
 import {
   requestCreateSession,
@@ -10,13 +10,11 @@ import {
   requestAddPlayer,
   requestTogglePlayerStatus,
 } from '../../api/db/preGameSession';
-import { Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
-import { foldGameSession } from './helpers/foldSession';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const SET_PLAYERS = 'SET_PLAYERS' as const;

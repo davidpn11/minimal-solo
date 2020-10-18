@@ -4,13 +4,13 @@ import * as A from 'fp-ts/lib/Array';
 import * as F from 'fp-ts/lib/function';
 import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { foldGameSession } from 'solo-lib/lib/session';
+import { getOrThrow } from 'solo-lib/lib/utils';
 
 import { ReduxStore } from '../rootReducer';
-import { Normalized } from '../../model/Session';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
 import { getPlayerValue } from '../playerHand/selector';
-import { foldGameSession, getOrThrow } from './helpers/foldSession';
 
 export const getSessionState = (state: ReduxStore): SessionStore => state.session;
 

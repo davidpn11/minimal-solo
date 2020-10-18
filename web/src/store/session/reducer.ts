@@ -1,4 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
+import { foldGameSession } from 'solo-lib/lib/session';
 
 import {
   SET_PLAYERS,
@@ -10,7 +11,6 @@ import {
   SET_CURRENT_PLAYER,
   SET_CURRENT_CARD,
 } from './actions';
-import { foldGameSession } from './helpers/foldSession';
 
 const initialState: NoSession = {
   status: 'INITIAL',

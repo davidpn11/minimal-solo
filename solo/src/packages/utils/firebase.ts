@@ -1,13 +1,25 @@
 import * as O from "fp-ts/Option";
 import * as admin from "firebase-admin";
+import * as firebase from "firebase/app";
 
-export type DocumentSnapshot = admin.firestore.DocumentSnapshot<
+export type WebDocumentSnapshop = firebase.firestore.DocumentSnapshot<
+  firebase.firestore.DocumentData
+>;
+
+export type NodeDocumentSnapshot = admin.firestore.DocumentSnapshot<
   admin.firestore.DocumentData
 >;
 
-export type QuerySnapshot = admin.firestore.QuerySnapshot<
+export type DocumentSnapshot = WebDocumentSnapshop | NodeDocumentSnapshot;
+
+export type WebQuerySnapshot = firebase.firestore.QuerySnapshot<
+  firebase.firestore.DocumentData
+>;
+export type NodeQuerySnapshot = admin.firestore.QuerySnapshot<
   admin.firestore.DocumentData
 >;
+export type QuerySnapshot = WebQuerySnapshot | NodeQuerySnapshot;
+
 export type DocumentReference = admin.firestore.DocumentReference<
   admin.firestore.DocumentData
 >;
@@ -38,6 +50,7 @@ export function normalizeDocument<T>(doc: DocumentSnapshot): Normalized<T> {
 export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   if (!doc.empty) {
     let data = {};
+    // @ts-ignore
     doc.forEach((el) => {
       data = {
         ...data,

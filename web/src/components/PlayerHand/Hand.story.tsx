@@ -6,7 +6,6 @@ import { random } from 'faker';
 import { buildDeck, sortDeck } from 'solo-lib/lib/card';
 
 import { PlayerHand } from './index';
-import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
 import { PassButtonStates } from '../Pass';
 

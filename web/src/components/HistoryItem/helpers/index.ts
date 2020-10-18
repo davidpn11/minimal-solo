@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/lib/pipeable';
+import { getOrThrow } from 'solo-lib/lib/utils';
 
-import { getOrThrow } from '../../../store/session/helpers/foldSession';
 import { foldPlay } from '../../../store/playerHand/helpers/foldPlay';
 
 type Story = string;
