@@ -1,9 +1,7 @@
 import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 
-import { Play } from '../../../model/Play';
-import { LocalGameSession } from '../../../model/Session';
-import { getSessionPlayerByPosition, SessionPlayerWithId } from '../../../model/Player';
+import { getSessionPlayerByPosition } from '../../../model/Player';
 import { getNextPosition } from '../../../store/session/selectors';
 
 export function isOwnerOfPlay(play: Play, currentPlayerId: string): boolean {

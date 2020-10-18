@@ -1,18 +1,6 @@
 import { pipe } from 'fp-ts/lib/pipeable';
+import { getOrThrow } from 'solo-lib/lib/utils';
 
-import {
-  Play,
-  BlockPlay,
-  PlusFourPlay,
-  PlusTwoPlay,
-  SwapPlay,
-  NumberCardPlay,
-  SwapAllPlay,
-  ReversePlay,
-  ColorPlay,
-} from '../../../model/Play';
-import { GameDirection } from '../../../model/Session';
-import { getOrThrow } from '../../../store/session/helpers/foldSession';
 import { foldPlay } from '../../../store/playerHand/helpers/foldPlay';
 
 type Story = string;

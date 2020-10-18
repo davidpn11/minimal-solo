@@ -1,26 +1,23 @@
-import { batch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
-import * as O from 'fp-ts/lib/Option';
 import axios from 'axios';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { foldGameSession } from 'solo-lib/lib/session';
 
-import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
   requestCreateSession,
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
 } from '../../api/db/preGameSession';
-import { LocalSessionWithId } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
-import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
 
 export const SET_SESSION = 'SET_SESSION' as const;
-export const ADD_PLAYER = 'ADD_PLAYER' as const;
+export const SET_PLAYERS = 'SET_PLAYERS' as const;
 export const CLEAR_SESSION = 'CLEAR_SESSION' as const;
 export const SET_PLAYER_STATUS = 'SET_PLAYER_STATUS' as const;
 export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
@@ -57,9 +54,9 @@ export function clearSession() {
   };
 }
 
-function addPlayers(player: Normalized<SessionPlayer>) {
+export function setPlayers(player: Normalized<SessionPlayer>) {
   return {
-    type: ADD_PLAYER,
+    type: SET_PLAYERS,
     payload: player,
   };
 }
@@ -101,25 +98,15 @@ export function createGameSession(
   };
 }
 
-export function addNewPlayer(player: Normalized<SessionPlayer>) {
-  return async (dispatch: SessionThunkDispatch) => {
-    dispatch(addPlayers(player));
-  };
-}
-
 export function joinGameSession(
   sessionCode: string,
   name: string,
   playerId: string,
 ): SessionThunkResult<E.Either<LocalSessionWithId, any>> {
-  return async (dispatch: SessionThunkDispatch) => {
+  return async () => {
     try {
       const { session, playersCount } = await requestJoinSession(sessionCode);
-      const player = await requestAddPlayer(session.id, name, playerId, playersCount);
-      batch(() => {
-        dispatch(setGameSession(session));
-        dispatch(addPlayers({ [playerId]: player }));
-      });
+      await requestAddPlayer(session.id, name, playerId, playersCount);
       return E.right(session);
     } catch (error) {
       captureLog(error);
@@ -149,7 +136,7 @@ export function startGameSession(sessionId: string) {
         url: `/lobby/${sessionId}/start`,
       });
 
-      dispatch(setGameSession({ ...response.data, progression: {} }));
+      dispatch(setGameSession(response.data));
     } catch (error) {
       console.error(error);
     }
@@ -159,12 +146,15 @@ export function startGameSession(sessionId: string) {
 export function addPlay(play: Play) {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     try {
-      const state = getState();
-
-      if (O.isNone(state.session)) throw new Error('Cannot add a play without a session.');
-
-      const result = await requestAddPlay(state.session.value.id, play);
-      console.log({ result });
+      const { session } = getState();
+      pipe(
+        session,
+        foldGameSession({
+          whenGameStarted: async s => {
+            const result = await requestAddPlay(s.id, play);
+          },
+        }),
+      );
     } catch (error) {
       console.error(error);
     }
@@ -173,7 +163,7 @@ export function addPlay(play: Play) {
 
 export type SessionActionTypes = ReturnType<
   | typeof setGameSession
-  | typeof addPlayers
+  | typeof setPlayers
   | typeof clearSession
   | typeof setPlayer
   | typeof setGameProgression

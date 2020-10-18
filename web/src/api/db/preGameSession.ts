@@ -1,14 +1,12 @@
 import axios from 'axios';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { createAvatar } from 'solo-lib/lib/player';
+import { QuerySnapshot } from 'solo-lib/lib/utils/firebase';
 
 import { getSessionRef, getSessionRefByCode } from '../firebase';
-import { Normalized, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
-import { QuerySnapshot } from '../../model/Firebase';
-import { SessionPlayer, PlayerStatus, SessionPlayerWithId, createAvatar } from '../../model/Player';
-import { normalizeQuery, extractDocumentData } from '../helpers';
-import { SessionNotFoundError } from '../../model/Error';
 import { firebaseConfig } from '../config';
+import { SessionNotFoundError } from 'solo-lib/lib/session';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
@@ -87,40 +85,6 @@ export async function requestTogglePlayerStatus(
     );
 }
 
-export async function requestSessionPlayersListener(
-  sessionId: string,
-  callback: (p: Normalized<SessionPlayer>) => void,
-) {
-  try {
-    await getSessionRef(sessionId)
-      .collection('players')
-      .onSnapshot(querySnapshot => {
-        const players = normalizeQuery<SessionPlayer>(querySnapshot);
-        callback(players);
-      });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function requestSessionStatusListener(
-  sessionId: string,
-  callback: (newSession: LocalSessionWithId) => void,
-) {
-  try {
-    await getSessionRef(sessionId).onSnapshot(documentSnapshot => {
-      const newSession = extractDocumentData<Omit<LocalSessionWithId, 'progression'>>(
-        documentSnapshot,
-      );
-      if (O.isSome(newSession)) {
-        callback({ ...newSession.value, progression: {} } as LocalSessionWithId);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export async function requestAddPlayer(
   sessionId: string,
   name: string,
@@ -130,7 +94,7 @@ export async function requestAddPlayer(
   const initialPlayerData: SessionPlayer = {
     name,
     position,
-    status: 'NOT_READY' as const,
+    status: 'NOT_READY',
     avatar: createAvatar(),
     hand: [],
   };

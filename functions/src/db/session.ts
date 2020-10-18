@@ -2,14 +2,15 @@ import * as admin from "firebase-admin";
 import * as io from "io-ts";
 import { option } from "io-ts-types";
 import { pipe } from "fp-ts/function";
+import { runTypeDecoder } from "solo-lib/lib/utils/dto";
 import { SessionPlayerSchema } from "./player";
-import { dto } from "../utils/dto";
 
 import DocumentReference = admin.firestore.DocumentReference;
 import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 const StatusEnum = io.keyof({
   INITIAL: "",
+  LOBBY: "",
   STARTING: "",
   STARTED: "",
   FINISHED: "",
@@ -48,7 +49,7 @@ export async function getSessionById(
     return {
       ref,
       doc,
-      data: pipe(doc.data(), dto.runTypeDecoder(SessionSchema)),
+      data: pipe(doc.data(), runTypeDecoder(SessionSchema)),
       id: doc.id,
     };
   }

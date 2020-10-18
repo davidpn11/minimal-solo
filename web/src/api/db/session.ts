@@ -1,8 +1,7 @@
 import * as O from 'fp-ts/lib/Option';
+import { extractDocumentData, normalizeQuery } from 'solo-lib/lib/utils/firebase';
 
 import { getSessionRef } from '../firebase';
-import { LocalSessionWithId } from '../../model/Session';
-import { extractDocumentData, normalizeQuery } from '../helpers';
 
 export async function requestFullSession(sessionId: string): Promise<LocalSessionWithId> {
   const session = await getSessionRef(sessionId).get();

@@ -4,6 +4,7 @@
 /node_modules
 web/node_modules
 functions/node_modules
+solo/node_modules
 /.pnp
 .pnp.js
 
@@ -11,8 +12,8 @@ functions/node_modules
 /coverage
 
 # production
-build
 functions/lib
+solo/lib
 web/build
 
 # key

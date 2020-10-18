@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
 
 import { ReduxStore } from '../rootReducer';
-import { Player, SessionPlayer } from '../../model/Player';
+import { foldGameSession } from 'solo-lib/lib/session';
 
 export const getPlayer = (state: ReduxStore): O.Option<Player> => state.player;
 
@@ -32,10 +32,12 @@ export const isCurrentPlayerAdmin = (state: ReduxStore): boolean =>
       player =>
         pipe(
           state.session,
-          O.fold(
-            () => false,
-            session => player.id === session.admin,
-          ),
+          foldGameSession({
+            whenNoGameSession: () => false,
+            whenLobbySession: session => player.id === session.admin,
+            whenLoadingSession: session => player.id === session.admin,
+            whenGameStarted: session => player.id === session.admin,
+          }),
         ),
     ),
   );
@@ -48,35 +50,36 @@ export const isCurrentPlayerSelector = (state: ReduxStore): boolean =>
       player =>
         pipe(
           state.session,
-          O.fold(
-            () => false,
-            session => (session.status === 'STARTED' ? session.currentPlayer === player.id : false),
-          ),
+          foldGameSession({
+            whenGameStarted: session => session.currentPlayer === player.id,
+          }),
         ),
     ),
   );
 
 export const getPlayerHandIds = (state: ReduxStore) => {
-  const lookHand = (player: Player) =>
+  const lookHand = (player: Player) => (session: LocalSessionWithId) =>
     pipe(
-      state.session,
+      R.lookup(player.id, session.players),
       O.fold(
-        () => {
-          throw new Error('Cannot get the player hand without a session');
-        },
-        session =>
-          pipe(
-            R.lookup(player.id, session.players),
-            O.fold(
-              () => [],
-              (p: SessionPlayer) => p.hand,
-            ),
-          ),
+        () => [],
+        (p: SessionPlayer) => p.hand,
       ),
     );
 
   return pipe(
     state.player,
-    O.fold(() => [], lookHand),
+    O.fold(
+      () => [],
+      player =>
+        pipe(
+          state.session,
+          foldGameSession({
+            whenLoadingSession: lookHand(player),
+            whenLobbySession: lookHand(player),
+            whenGameStarted: lookHand(player),
+          }),
+        ),
+    ),
   );
 };

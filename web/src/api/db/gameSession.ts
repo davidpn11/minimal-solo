@@ -1,10 +1,9 @@
-import { getSessionRef } from '../firebase';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
-import { SessionPlayer } from '../../model/Player';
-import { Play } from '../../model/Play';
+import { extractDocumentData, normalizeDocument } from 'solo-lib/lib/utils/firebase';
+
+import { getSessionRef } from '../firebase';
 
 export async function requestGetPlayerHand(
   sessionId: string,
@@ -45,22 +44,6 @@ export async function requestPlayerHandListener(
             },
           ),
         );
-      });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function requestProgressionListener(
-  sessionId: string,
-  callback: (plays: Normalized<Play>) => void,
-) {
-  try {
-    await getSessionRef(sessionId)
-      .collection('progression')
-      .onSnapshot(querySnapshot => {
-        const progression = normalizeQuery<Play>(querySnapshot);
-        callback(progression);
       });
   } catch (error) {
     console.error(error);

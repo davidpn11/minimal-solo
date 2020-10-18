@@ -9,7 +9,6 @@ import { CardWrapper, Page } from './styles';
 import { JoinFields, JoinRoomForm } from './components/JoinRoomForm';
 import { CreateFields, CreateRoomForm } from './components/CreateRoomForm';
 import { Logo } from '../../components/Logo';
-import { LocalSessionWithId } from '../../model/Session';
 import { safeClearItem, safeSetItem } from '../../utils/storage';
 import { ReduxThunkDispatch } from '../../store/rootReducer';
 import { getPlayerIdValue } from '../../store/playerHand/selector';
@@ -38,10 +37,20 @@ export default function Entrance() {
     history.push(`/room/${session.code}`);
   }
 
-  async function createRoom({ adminName }: CreateFields) {
+  async function createRoom(
+    { adminName }: CreateFields,
+    formikHelpers: FormikHelpers<CreateFields>,
+  ) {
     return pipe(
       await dispatch(createGameSession(adminName, playerId)),
-      E.fold<any, LocalSessionWithId, void>(() => {}, joinSession),
+      E.fold<any, LocalSessionWithId, void>(
+        () =>
+          formikHelpers.setFieldError(
+            'adminName',
+            'There was an error trying to create a room. Please try again.',
+          ),
+        joinSession,
+      ),
     );
   }
 

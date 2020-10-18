@@ -1,41 +1,39 @@
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Record';
 import * as A from 'fp-ts/lib/Array';
+import * as F from 'fp-ts/lib/function';
 import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { foldGameSession } from 'solo-lib/lib/session';
+import { getOrThrow } from 'solo-lib/lib/utils';
 
 import { ReduxStore } from '../rootReducer';
-import {
-  LocalSessionWithId,
-  LocalGameSession,
-  LocalGameSessionWithId,
-  LocalNoGameSessionWithId,
-} from '../../model/Session';
-import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
-import { Play, PlayWithId } from '../../model/Play';
 import { getPlayerValue } from '../playerHand/selector';
-import { foldGameSession, getOrThrow } from './helpers/foldSession';
 
-export const getSession = (state: ReduxStore): O.Option<LocalSessionWithId> => state.session;
+export const getSessionState = (state: ReduxStore): SessionStore => state.session;
+
+export const getSession = (state: ReduxStore): LocalSessionWithId => {
+  return pipe(
+    state.session,
+    foldGameSession<LocalSessionWithId>({
+      whenLoadingSession: F.identity,
+      whenGameStarted: F.identity,
+      whenLobbySession: F.identity,
+    }),
+  );
+};
 
 //Real usage
 export const getStartedSession = (state: ReduxStore): LocalGameSessionWithId => {
   return pipe(
-    state,
+    state.session,
     foldGameSession({
       whenGameStarted: session => session,
     }),
     getOrThrow,
   );
-};
-
-export const getSessionValue = (state: ReduxStore): LocalSessionWithId => {
-  if (O.isNone(state.session))
-    throw new Error("Get Session Value can only be used when there's a session");
-
-  return state.session.value;
 };
 
 export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlayer> =>
@@ -44,10 +42,11 @@ export const getCurrentSessionPlayer = (state: ReduxStore): O.Option<SessionPlay
     O.chain(player =>
       pipe(
         state.session,
-        O.fold(
-          () => O.none,
-          session => R.lookup(player.id, session.players),
-        ),
+        foldGameSession({
+          whenLobbySession: session => R.lookup(player.id, session.players),
+          whenLoadingSession: session => R.lookup(player.id, session.players),
+          whenGameStarted: session => R.lookup(player.id, session.players),
+        }),
       ),
     ),
   );
@@ -74,9 +73,9 @@ function handleSession(session: LocalNoGameSessionWithId) {
 
 export const allPlayersReady = (state: ReduxStore): boolean =>
   pipe(
-    state,
+    state.session,
     foldGameSession({
-      whenNoGameSession: handleSession,
+      whenLobbySession: handleSession,
       whenLoadingSession: handleSession,
     }),
     getOrThrow,
@@ -85,10 +84,11 @@ export const allPlayersReady = (state: ReduxStore): boolean =>
 export const getAllPlayers = (state: ReduxStore): Normalized<SessionPlayer> =>
   pipe(
     state.session,
-    O.fold(
-      () => ({}),
-      session => session.players,
-    ),
+    foldGameSession({
+      whenLobbySession: session => session.players,
+      whenLoadingSession: session => session.players,
+      whenGameStarted: session => session.players,
+    }),
   );
 
 export function getNextPosition(session: LocalGameSessionWithId, currentPlayerPosition: number) {
@@ -107,7 +107,7 @@ export function getNextPosition(session: LocalGameSessionWithId, currentPlayerPo
 
 export const getNextPlayerPosition = (state: ReduxStore): number => {
   return pipe(
-    state,
+    state.session,
     foldGameSession({
       whenGameStarted: session => {
         const currentPlayerPosition = pipe(
@@ -147,9 +147,8 @@ export const ordPlayersByPosition: Ord<SessionPlayerWithId> = pipe(
 export const getOrderedPlayers = (state: ReduxStore): SessionPlayerWithId[] =>
   pipe(
     state.session,
-    O.fold(
-      () => [],
-      session =>
+    foldGameSession({
+      whenGameStarted: session =>
         pipe(
           R.toArray(session.players),
           A.map<[string, SessionPlayer], SessionPlayerWithId>(([id, player]) => ({
@@ -158,45 +157,42 @@ export const getOrderedPlayers = (state: ReduxStore): SessionPlayerWithId[] =>
           })),
           A.sort(ordPlayersByPosition),
         ),
-    ),
+    }),
   );
 
 export const getPlays = (state: ReduxStore): Play[] => {
-  if (O.isNone(state.session)) throw new Error('Cannot get plays without session.');
-  const { status } = state.session.value;
-  if (status === 'INITIAL' || status === 'STARTING') return [];
-
-  return Object.values((state.session.value as LocalGameSession).progression);
+  return pipe(
+    state.session,
+    foldGameSession({
+      whenGameStarted: session => Object.values(session.progression),
+    }),
+  );
 };
 
 export const getOtherSessionPlayers = (state: ReduxStore): Normalized<SessionPlayer> => {
   const playerId = O.isSome(state.player) ? state.player.value.id : '';
-  if (O.isNone(state.session)) throw new Error('Cannot check players without session.');
+  const getPlayersFromSession = (session: LocalSessionWithId) =>
+    pipe(
+      session.players,
+      R.filterWithIndex(key => key !== playerId),
+    );
 
   return pipe(
-    state.session.value.players,
-    R.filterWithIndex(key => key !== playerId),
+    state.session,
+    foldGameSession({
+      whenLobbySession: getPlayersFromSession,
+      whenLoadingSession: getPlayersFromSession,
+      whenGameStarted: getPlayersFromSession,
+    }),
   );
 };
 
-export const getCurrentCard = (state: ReduxStore): O.Option<Card> =>
+export const getCurrentCard = (state: ReduxStore): Card =>
   pipe(
     state.session,
-    O.fold(
-      () => O.none,
-      session => (session.status === 'STARTED' ? O.fromNullable(session.currentCard) : O.none),
-    ),
-  );
-
-export const getCurrentCardValue = (state: ReduxStore): Card =>
-  pipe(
-    getCurrentCard(state),
-    O.fold(
-      () => {
-        throw new Error('Cannot get card value without a current card.');
-      },
-      card => card,
-    ),
+    foldGameSession({
+      whenGameStarted: session => session.currentCard,
+    }),
   );
 
 export const getPlayerActions = (state: ReduxStore): PlayerActions => {
@@ -223,7 +219,7 @@ export const getOrderedProgression = (state: ReduxStore): PlayWithId[] => {
   const session = getStartedSession(state);
 
   return pipe(
-    session.progression,
+    session.progression || {},
     R.toArray,
     A.map(([id, play]) => ({ id, ...play })),
     A.sort(ordPlaysByPosition),

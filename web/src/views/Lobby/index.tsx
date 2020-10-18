@@ -5,27 +5,24 @@ import * as O from 'fp-ts/lib/Option';
 
 import { ActionWrapper, Code, Page, Title, LobbyWrapper } from './styles';
 import { JoinModal } from './components/JoinModal';
+import { PlayersGrid } from './components/PlayersGrid';
+import { useMatchStarter } from './hooks/useMatchStarter';
 import { Button } from '../../components/Button';
 import { ProgressBar } from '../../components/ProgressBar';
 import {
   allPlayersReady,
   getCurrentSessionPlayer,
-  getSessionValue,
+  getSession,
 } from '../../store/session/selectors';
 import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/selector';
-import { useMatchMaker } from '../../hooks/useMatchMaker';
-import { useSessionListener } from '../../hooks/useSessionListener';
-import { PlayersGrid } from './components/PlayersGrid';
 
 export function Lobby() {
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const isAllPlayersReady = useSelector(allPlayersReady);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);
   const isAdmin = useSelector(isCurrentPlayerAdmin);
-  const isStarting = currentSession.status === 'STARTING';
-  const { toggleStatus, startGame } = useMatchMaker();
-  useSessionListener();
+  const { toggleStatus, startGame, isStarting } = useMatchStarter();
 
   return (
     <Page>

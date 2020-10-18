@@ -1,7 +1,8 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs';
 import React from 'react';
+import { createAvatar } from 'solo-lib/lib/player';
+
 import { LobbyPlayerCard } from './index';
-import { createAvatar, SessionPlayer } from '../../model/Player';
 
 const avatar = createAvatar();
 

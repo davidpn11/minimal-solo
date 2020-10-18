@@ -15,7 +15,6 @@ import { TextField } from '../../../../components/TextField';
 import { Button } from '../../../../components/Button';
 import { unitJSX } from '../../../../utils/unit';
 import { safeSetItem } from '../../../../utils/storage';
-import { LocalSessionWithId } from '../../../../model/Session';
 
 const INITIAL_VALUES = {
   userName: '',

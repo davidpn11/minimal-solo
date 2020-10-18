@@ -1,68 +1,38 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouteMatch, useHistory } from 'react-router-dom';
-import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { Lobby } from './Lobby';
 import { Game } from './Game';
-import { getFullSessionByCode } from '../api/firebase';
-import { getSession } from '../store/session/selectors';
-import { setGameSession } from '../store/session/actions';
 import { getPlayerValue } from '../store/playerHand/selector';
 import { isPlayerInTheGame } from '../store/playerHand/helpers/player';
-import { noop, unitJSX } from '../utils/unit';
-import { captureLog } from '../utils/sentry';
+import { unitJSX } from '../utils/unit';
+import { useSessionListener } from '../hooks/useSessionListener';
 
 export default function App() {
-  const currentSessionO = useSelector(getSession);
+  const { currentSession } = useSessionListener();
   const player = useSelector(getPlayerValue);
-  const dispatch = useDispatch();
   const history = useHistory();
-
-  const match = useRouteMatch<{ code: string }>();
-
-  useEffect(function rehydrateSession() {
-    pipe(match.params.code, getFullSessionByCode)
-      .then(session => dispatch(setGameSession(session)))
-      .catch(err => {
-        captureLog(err);
-        return history.push('/');
-      });
-  }, []);
 
   useEffect(
     function rejectNonPlayers() {
-      pipe(
-        currentSessionO,
-        O.fold(noop, session => {
-          if (session.status === 'STARTED' && !isPlayerInTheGame(player, session)) {
-            history.push('/');
-          }
-        }),
-      );
+      if (currentSession.status === 'STARTED' && !isPlayerInTheGame(player, currentSession)) {
+        history.push('/');
+      }
     },
-    [currentSessionO, player, history],
+    [currentSession, player, history],
   );
 
-  return pipe(
-    currentSessionO,
-    O.fold(
-      () => unitJSX,
-      session => {
-        switch (session.status) {
-          case 'INITIAL':
-          case 'STARTING':
-            return <Lobby />;
-          case 'STARTED':
-            if (isPlayerInTheGame(player, session)) {
-              return <Game />;
-            }
-            return unitJSX;
-          default:
-            throw new Error('Not a valid session status');
-        }
-      },
-    ),
-  );
+  switch (currentSession.status) {
+    case 'LOBBY':
+    case 'STARTING':
+      return <Lobby />;
+    case 'STARTED':
+      if (isPlayerInTheGame(player, currentSession)) {
+        return <Game />;
+      }
+      return unitJSX;
+    default:
+      throw new Error('Not a valid session status');
+  }
 }

@@ -4,7 +4,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
 import { sentryConfig } from '../api/config';
-import { LocalSessionWithId } from '../model/Session';
 
 function beforeBreadcrumb(
   breadcrumb: Sentry.Breadcrumb,

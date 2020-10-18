@@ -1,6 +1,5 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { Player } from '../../model/Player';
-import { Normalized } from '../../model/Session';
+
 import { ThunkResult } from '../types';
 import { requestGetPlayerHand } from '../../api/db/gameSession';
 

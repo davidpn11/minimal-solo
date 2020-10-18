@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { CardWrapper, PlayerInfo, PlayerName, PlayerStatus } from './styles';
-import { SessionPlayer } from '../../model/Player';
 import { PlayerImage } from '../LobbyPlayerCard/styles';
 import { AVATAR_BACKGROUND } from '../../theme';
 

@@ -39,7 +39,6 @@ export const postStartGame: RequestHandler<{ id: string }> = async (
       .get();
 
     const [currentCardDoc] = availableCardDoc.docs;
-    console.log(availableCardDoc.size);
 
     if (!currentCardDoc.exists) {
       res

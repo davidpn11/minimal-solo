@@ -3,9 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
+import { createAvatar } from 'solo-lib/lib/player';
 
 import { PlayerCard } from './index';
-import { createAvatar, SessionPlayer } from '../../model/Player';
 
 const avatar = createAvatar();
 

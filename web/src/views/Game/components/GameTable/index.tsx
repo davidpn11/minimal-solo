@@ -1,14 +1,12 @@
 import React from 'react';
-import * as O from 'fp-ts/lib/Option';
 
 import { TableWrapper } from './styles';
 import { PlayerDeck } from '../../../../components/PlayerDeck';
 import { ActionArea } from '../../../../components/ActionArea';
-import { SessionPlayerWithId } from '../../../../model/Player';
 
 type Props = {
   players: SessionPlayerWithId[];
-  currentCard: O.Option<Card>;
+  currentCard: Card;
   isActive: boolean;
   onDeckClick: () => void;
 };

@@ -1,7 +1,9 @@
 import { RequestHandler } from "express";
 import * as admin from "firebase-admin";
 import * as O from "fp-ts/Option";
-import { buildDeck, createAvatar, sortDeck } from "../../../helpers/game";
+import { buildDeck, sortDeck } from "solo-lib/lib/card";
+import { createAvatar } from "solo-lib/lib/player";
+
 import { ServerSession } from "../../../db/session";
 
 const codeGenerator = () => {
@@ -26,7 +28,7 @@ export const postCreateLobby: RequestHandler<{}, {}, PostBody> = async (
     const deck = sortDeck(buildDeck());
     const newSession: Partial<ServerSession> = {
       code: codeGenerator(),
-      status: "INITIAL",
+      status: "LOBBY",
       admin: playerId,
       currentPlayer: playerId,
       currentPlay: "",

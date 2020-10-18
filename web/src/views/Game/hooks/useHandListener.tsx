@@ -1,14 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { isBlockCard, isCommonCard } from 'solo-lib/lib/card';
 
 import {
-  getCurrentCardValue,
+  getCurrentCard,
   getCurrentPlayer,
   getCurrentSessionPlayerValue,
   getLastPlayPosition,
   getNextPlayer,
   getPlayerActions,
-  getSessionValue,
+  getSession,
 } from '../../../store/session/selectors';
 import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
 import { getPlayerHand } from '../../../store/playerHand/actions';
@@ -20,21 +21,18 @@ import {
   createPassPlay,
 } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
-import {
-  buyCard,
-  isBlockCard, isCommonCard,
-} from '../../../model/Card';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
+import { buyCard } from '../../../api/functions/card';
 
 export function useHandListener() {
   const player = useSelector(getPlayerValue);
   const playerHand = useSelector(getPlayerHandIds);
   const playerActions = useSelector(getPlayerActions);
   const lastPlayPosition = useSelector(getLastPlayPosition);
-  const currentCard = useSelector(getCurrentCardValue);
+  const currentCard = useSelector(getCurrentCard);
   const currentPlayer = useSelector(getCurrentPlayer);
   const nextPlayer = useSelector(getNextPlayer);
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayerValue);
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
   const isYourTurn = useMemo<boolean>(() => player.id === currentPlayer, [player, currentPlayer]);

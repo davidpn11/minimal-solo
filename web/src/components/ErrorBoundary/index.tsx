@@ -1,6 +1,7 @@
 import React, { ErrorInfo } from 'react';
+import { CustomError } from 'solo-lib/lib/utils/error';
+
 import { captureLog } from '../../utils/sentry';
-import { CustomError } from '../../model/Error';
 
 type Props = {};
 type State = { hasError: boolean };
