@@ -1,6 +1,5 @@
 import React from 'react';
 import { PlayerDeckWrapper, PlayerName, PlayerCardsCount, PlayerDeckPile } from './style';
-import { SessionPlayer } from '../../model/Player';
 import { PlayingCard } from '../PlayingCard';
 import { mapCountToColor, mapCountToGradient } from './helpers';
 

@@ -7,7 +7,6 @@ import {
   requestTogglePlayerStatus,
 } from '../../../api/db/preGameSession';
 import { setPlayers, clearSession, startGameSession } from '../../../store/session/actions';
-import { PlayerStatus } from '../../../model/Player';
 
 export function useMatchStarter() {
   const currentSession = useSelector(getSessionValue);

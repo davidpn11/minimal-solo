@@ -9,7 +9,6 @@ import { CardWrapper, Page } from './styles';
 import { JoinFields, JoinRoomForm } from './components/JoinRoomForm';
 import { CreateFields, CreateRoomForm } from './components/CreateRoomForm';
 import { Logo } from '../../components/Logo';
-import { LocalSessionWithId } from '../../model/Session';
 import { safeClearItem, safeSetItem } from '../../utils/storage';
 import { ReduxThunkDispatch } from '../../store/rootReducer';
 import { getPlayerIdValue } from '../../store/playerHand/selector';

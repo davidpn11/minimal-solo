@@ -1,7 +1,6 @@
 import * as O from 'fp-ts/lib/Option';
 
 import { getSessionRef } from '../firebase';
-import { LocalSessionWithId } from '../../model/Session';
 import { extractDocumentData, normalizeQuery } from '../helpers';
 
 export async function requestFullSession(sessionId: string): Promise<LocalSessionWithId> {

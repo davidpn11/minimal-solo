@@ -1,5 +1,3 @@
-type ID = { id: string };
-
 declare type CommonActionCardColor = "GREEN" | "GOLD" | "RED" | "BLUE";
 declare type SpecialCardColor = "BLACK";
 declare type CardColor = CommonActionCardColor | SpecialCardColor;

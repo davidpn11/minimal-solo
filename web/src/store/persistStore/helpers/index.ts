@@ -1,7 +1,6 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { LocalSessionWithId } from '../../../model/Session';
 import { getStorage } from '../../../utils/storage';
 import { requestFullSession } from '../../../api/db/session';
 

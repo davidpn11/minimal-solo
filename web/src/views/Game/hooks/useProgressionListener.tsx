@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
@@ -10,19 +10,18 @@ import {
   getOrderedProgression,
   getStartedSession,
 } from '../../../store/session/selectors';
-import { requestProgressionListener } from '../../../api/db/gameSession';
 import {
   setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, BlockPlay, NumberCardPlay } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
-import { ID } from '../../../model/Session';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
+import { getSessionRef } from '../../../api/firebase';
+import { normalizeQuery } from '../../../api/helpers';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -30,7 +29,6 @@ export function useProgressionListener() {
   const currentPlay = useSelector(getCurrentPlay);
   const currentPlayer = useSelector(getCurrentPlayer);
   const orderedProgression = useSelector(getOrderedProgression);
-  const [hasListener, setHasListener] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const handleLastPlay = useCallback(
@@ -69,16 +67,14 @@ export function useProgressionListener() {
     [dispatch, currentSession],
   );
 
-  useEffect(() => {
-    if (currentSession.id && !hasListener && currentSession.status === 'STARTED') {
-      setHasListener(true);
-      // const totalPlays = Object.keys(currentSession.progression).length;
-
-      requestProgressionListener(currentSession.id, progression => {
+  useEffect(function syncProgression() {
+    getSessionRef(currentSession.id)
+      .collection('progression')
+      .onSnapshot(querySnapshot => {
+        const progression = normalizeQuery<Play>(querySnapshot);
         dispatch(setGameProgression(progression));
       });
-    }
-  }, [currentSession.id, currentSession.status, hasListener, dispatch]);
+  }, []);
 
   useEffect(() => {
     return pipe(

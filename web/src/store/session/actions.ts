@@ -4,17 +4,15 @@ import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import axios from 'axios';
 
-import { SessionPlayer, SessionPlayerWithId, PlayerStatus } from '../../model/Player';
 import {
   requestCreateSession,
   requestJoinSession,
   requestAddPlayer,
   requestTogglePlayerStatus,
 } from '../../api/db/preGameSession';
-import { LocalSessionWithId, Normalized } from '../../model/Session';
+import { Normalized } from '../../model/Session';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';
-import { Play } from '../../model/Play';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';

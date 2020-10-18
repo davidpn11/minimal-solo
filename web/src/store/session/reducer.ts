@@ -11,7 +11,6 @@ import {
   SET_CURRENT_PLAYER,
   SET_CURRENT_CARD,
 } from './actions';
-import { LocalSessionWithId } from '../../model/Session';
 
 const initialState: O.Option<LocalSessionWithId> = O.none;
 

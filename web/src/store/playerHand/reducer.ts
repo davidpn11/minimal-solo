@@ -1,7 +1,7 @@
 import * as O from 'fp-ts/lib/Option';
-import { Player } from '../../model/Player';
-import { PlayerActionTypes, SET_PLAYER, SET_PLAYER_HAND, SET_PLAYER_ID } from './actions';
 import { pipe } from 'fp-ts/lib/pipeable';
+
+import { PlayerActionTypes, SET_PLAYER, SET_PLAYER_HAND, SET_PLAYER_ID } from './actions';
 
 const initialState: O.Option<Player> = O.none;
 

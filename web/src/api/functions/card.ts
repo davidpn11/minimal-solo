@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {SessionPlayerWithId} from "../../model/Player";
-import {firebaseConfig} from "../config";
+import { firebaseConfig } from '../config';
 
 export async function buyCard(sessionId: string, playerId: string, amount = 1) {
   try {

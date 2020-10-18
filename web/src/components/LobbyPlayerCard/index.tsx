@@ -7,7 +7,6 @@ import {
   Wrapper,
   LobbyPlayerStatus,
 } from './styles';
-import { SessionPlayer } from '../../model/Player';
 import { AVATAR_BACKGROUND } from '../../theme';
 
 type Props = {

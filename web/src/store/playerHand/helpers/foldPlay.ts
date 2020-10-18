@@ -1,20 +1,3 @@
-import {
-  PassPlay,
-  UnoPlay,
-  DrawPlay,
-  NumberCardPlay,
-  PlusTwoPlay,
-  BlockPlay,
-  ReversePlay,
-  SwapPlay,
-  SwapAllPlay,
-  ColorPlay,
-  PlusFourPlay,
-  PlayWithId,
-  Play,
-} from '../../../model/Play';
-import { ID } from '../../../model/Session';
-
 const foldPlayDefault = {
   whenPassPlay: () => {
     throw new Error('No PassPlay');

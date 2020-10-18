@@ -5,7 +5,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getSessionValue } from '../../../../store/session/selectors';
 import { getPlayerIdValue, isCurrentPlayerAdmin } from '../../../../store/playerHand/selector';
-import { SessionPlayer } from '../../../../model/Player';
 import { LobbyPlayerCard } from '../../../../components/LobbyPlayerCard';
 import { AdminPlayer, CurrentPlayer, PlayersWrapper } from './styles';
 

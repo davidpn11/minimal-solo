@@ -2,6 +2,7 @@ import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
 import { random } from 'faker';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
+import { createAvatar } from 'solo-lib/lib/player';
 
 import { HistoryItem } from './';
 import {
@@ -16,10 +17,7 @@ import {
   createSwapAllPlay,
   createSwapPlay,
   createUnoPlay,
-  Play,
 } from '../../model/Play';
-import { createAvatar, SessionPlayerWithId } from '../../model/Player';
-import { UnionExclude } from '../../model/types';
 
 const avatar = createAvatar();
 

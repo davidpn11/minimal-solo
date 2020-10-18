@@ -4,7 +4,6 @@ import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { getSessionValue } from '../store/session/selectors';
-import { LocalSessionWithId } from '../model/Session';
 import { setGameSession } from '../store/session/actions';
 import { setSentrySessionTags } from '../utils/sentry';
 import { getSessionRef } from '../api/firebase';

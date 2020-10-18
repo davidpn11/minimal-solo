@@ -1,7 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { Player } from '../../model/Player';
-import { Normalized } from '../../model/Session';
+
 import { ThunkResult } from '../types';
+import { Normalized } from '../../model/Session';
 import { requestGetPlayerHand } from '../../api/db/gameSession';
 
 export const SET_PLAYER = 'SET_PLAYER' as const;

@@ -1,7 +1,7 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+
 import { ReduxStore } from '../../rootReducer';
-import { LocalNoGameSessionWithId, LocalGameSessionWithId } from '../../../model/Session';
 import { NoGameSessionError, NoLoadingSessionError, GameSessionError } from '../../../model/Error';
 
 type FoldParams<B = void> = {
@@ -43,7 +43,7 @@ export const foldGameSession = <B>({
             break;
           case 'STARTED':
           case 'FINISHED':
-            if (whenGameStarted) return whenGameStarted(session as LocalGameSessionWithId);
+            if (whenGameStarted) return whenGameStarted(session);
             break;
           default:
             throw new Error('No Status found');

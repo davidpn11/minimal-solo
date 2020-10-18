@@ -5,17 +5,9 @@ import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import { ReduxStore } from '../rootReducer';
-import {
-  LocalSessionWithId,
-  Normalized,
-  LocalGameSession,
-  LocalGameSessionWithId,
-  LocalNoGameSessionWithId,
-} from '../../model/Session';
-import { SessionPlayer, SessionPlayerWithId } from '../../model/Player';
+import { Normalized } from '../../model/Session';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';
 import { PlayerActions, initialPlayerActions } from './helpers/types';
-import { Play, PlayWithId } from '../../model/Play';
 import { getPlayerValue } from '../playerHand/selector';
 import { foldGameSession, getOrThrow } from './helpers/foldSession';
 

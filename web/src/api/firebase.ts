@@ -7,9 +7,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 
 import { firebaseConfig } from './config';
 import { normalizeQuery } from './helpers';
-import { LocalSession, LocalSessionWithId } from '../model/Session';
 import { SessionNotFoundError } from '../model/Error';
-import { SessionPlayer } from '../model/Player';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
