@@ -1,11 +1,13 @@
 import { RequestHandler } from "express";
 import * as O from "fp-ts/lib/Option";
+import * as T from "fp-ts/lib/Task";
 import * as A from "fp-ts/lib/Array";
-import { pipe } from "fp-ts/pipeable";
+import { pipe } from "fp-ts/lib/function";
+
 import { buyCards } from "../../cards/api/postBuyCards";
 import { getSessionById } from "../../../db/session";
 
-export const postStartSessions: RequestHandler<{ id: string }> = async (
+export const postStartGame: RequestHandler<{ id: string }> = async (
   req,
   res
 ) => {
@@ -17,6 +19,9 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
       data: sessionData,
       id: sessionId,
     } = await getSessionById(id);
+
+    // notify users the process started
+    await sessionRef.update({ status: "STARTING" });
 
     const playersRef = sessionRef.collection("players");
     const playersDoc = await playersRef.get();
@@ -30,19 +35,11 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
     // Filter only cards that can start the game, and get just the top one.
     const availableCardDoc = await sessionRef
       .collection("deck")
-      .where("VALUE", "not-in", [
-        "REVERSE",
-        "PLUS_TWO",
-        "SWAP",
-        "BLOCK",
-        "PLUS_FOUR",
-        "SWAP_ALL",
-        "COLOR",
-      ])
-      .limit(1)
+      .where("type", "==", "COMMON")
       .get();
 
     const [currentCardDoc] = availableCardDoc.docs;
+    console.log(availableCardDoc.size);
 
     if (!currentCardDoc.exists) {
       res
@@ -51,12 +48,16 @@ export const postStartSessions: RequestHandler<{ id: string }> = async (
     }
 
     // Deal cards
-    const playersIds = playersDoc.docs.map((doc) => doc.id);
-    const queries = pipe(
-      playersIds,
-      A.map((playerId: string) => buyCards(sessionId, playerId, 7))
+    const tasks = pipe(
+      playersDoc.docs,
+      A.map((doc) => doc.id),
+      A.map<string, T.Task<{ id: string; hand: string[] }>>((id) => () =>
+        buyCards(sessionId, id, 7)
+      )
     );
-    await Promise.all(queries);
+    const dealCardsSeq = A.array.sequence(T.taskSeq)(tasks);
+
+    await dealCardsSeq();
 
     // Set the new session data
     const newSession = {

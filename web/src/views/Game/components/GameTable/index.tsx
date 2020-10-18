@@ -5,7 +5,6 @@ import { TableWrapper } from './styles';
 import { PlayerDeck } from '../../../../components/PlayerDeck';
 import { ActionArea } from '../../../../components/ActionArea';
 import { SessionPlayerWithId } from '../../../../model/Player';
-import { Card } from '../../../../model/Card';
 
 type Props = {
   players: SessionPlayerWithId[];

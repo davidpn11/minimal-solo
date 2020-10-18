@@ -7,7 +7,7 @@ import { PlayingCard } from '../PlayingCard';
 import { Solo } from '../Solo';
 import { SoloButtonStates } from '../Solo/styles';
 import { Pass, PassButtonStates } from '../Pass';
-import { Card, CardWithId } from '../../model/Card';
+import { Normalized } from '../../model/Session';
 
 type Props = {
   solo: SoloButtonStates;

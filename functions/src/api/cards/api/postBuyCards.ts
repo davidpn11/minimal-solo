@@ -12,12 +12,10 @@ export async function buyCards(
   playerId: string,
   amount: number
 ) {
+  const batch = admin.firestore().batch();
   const sessionDoc = admin.firestore().collection("session").doc(sessionId);
 
-  // Get list of cards from deck
   const cardsToTake = await sessionDoc.collection("deck").limit(amount).get();
-
-  const batch = admin.firestore().batch();
 
   cardsToTake.forEach((card) => {
     // add to active cards

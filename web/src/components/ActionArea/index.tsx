@@ -5,7 +5,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { AreaWrapper, LogoWrapper, SectionWrapper } from './styles';
 import { Logo } from '../Logo';
 import { CardDeck } from '../CardDeck';
-import { Card } from '../../model/Card';
 import { PlayingCard } from '../PlayingCard';
 import { unitJSX } from '../../utils/unit';
 import { useSelector } from 'react-redux';

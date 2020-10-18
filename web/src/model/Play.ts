@@ -1,6 +1,5 @@
 import { SessionPlayerWithId } from './Player';
-import { Card, CommonCard, Color, CardWithId, ActionCard } from './Card';
-import { GameDirection } from './Session';
+import { ID, GameDirection } from './Session';
 
 export type PassPlay = {
   type: 'PASS_PLAY';
@@ -68,7 +67,7 @@ export type SwapAllPlay = {
 export type ColorPlay = {
   type: 'COLOR_PLAY';
   card: Card;
-  color: Color;
+  color: CardColor;
   player: SessionPlayerWithId;
   position: number;
 };
@@ -84,7 +83,7 @@ export type PlusFourPlay = {
 export type CompoundPlay = {
   type: 'COMPOUND_PLAY';
   player: SessionPlayerWithId;
-  playStack: UnionExclude<Play, CompoundPlay>;
+  playStack: Exclude<Play, CompoundPlay>;
   position: number;
 };
 
@@ -203,7 +202,7 @@ export function createSwapPlay(
 }
 export function createSwapAllPlay(
   player: SessionPlayerWithId,
-  card: ActionCard,
+  card: SpecialCard,
   position: number,
 ): SwapAllPlay {
   return {
@@ -217,7 +216,7 @@ export function createSwapAllPlay(
 export function createColorPlay(
   player: SessionPlayerWithId,
   card: CardWithId,
-  color: Color,
+  color: CardColor,
   position: number,
 ): ColorPlay {
   return {
@@ -231,7 +230,7 @@ export function createColorPlay(
 
 export function createPlusFourPlay(
   player: SessionPlayerWithId,
-  card: ActionCard,
+  card: SpecialCard,
   target: SessionPlayerWithId,
   position: number,
 ): PlusFourPlay {

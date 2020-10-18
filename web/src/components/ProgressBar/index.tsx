@@ -1,14 +1,30 @@
 import React from 'react';
-import { Progress, ProgressWrapper } from './styles';
+import { InfiniteProgress, Progress, ProgressWrapper } from './styles';
 
-type Props = {
+type InfiniteLoaderProps = {
+  type: 'infinite-loading';
+};
+
+type ProgressLoaderProps = {
+  type: 'progress-loader';
   progress: number;
 };
 
+type Props = InfiniteLoaderProps | ProgressLoaderProps;
+
 export function ProgressBar(props: Props) {
-  return (
-    <ProgressWrapper>
-      <Progress progress={props.progress} />
-    </ProgressWrapper>
-  );
+  switch (props.type) {
+    case 'infinite-loading':
+      return (
+        <ProgressWrapper>
+          <InfiniteProgress />
+        </ProgressWrapper>
+      );
+    case 'progress-loader':
+      return (
+        <ProgressWrapper>
+          <Progress progress={props.progress} />
+        </ProgressWrapper>
+      );
+  }
 }

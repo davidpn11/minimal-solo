@@ -5,7 +5,8 @@ import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
 
 import { PlayerHand } from './index';
-import { buildOne, Card, sortDeck } from '../../model/Card';
+import { buildDeck, sortDeck } from '../../model/Card';
+import { Normalized } from '../../model/Session';
 import { SoloButtonStates } from '../Solo/styles';
 import { PassButtonStates } from '../Pass';
 
@@ -22,7 +23,7 @@ const PASS_STATES: Record<string, PassButtonStates> = {
   CannotPass: 'CANNOT_PASS',
 };
 
-const deck = sortDeck(buildOne());
+const deck = sortDeck(buildDeck());
 export function PlayerHandStory() {
   const cardAmount = number('Card Amount', 7);
   const soloStatesKnob = select('Solo State', SOLO_STATES, 'CANNOT_SOLO');

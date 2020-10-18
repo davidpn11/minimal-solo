@@ -1,9 +1,7 @@
-import { DocumentSnapshot, QuerySnapshot } from '../model/Firebase';
-import { Card, CardStatus } from '../model/Card';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
-import * as R from 'fp-ts/lib/Record';
+
+import { DocumentSnapshot, QuerySnapshot } from '../model/Firebase';
+import { Normalized } from '../model/Session';
 
 export function extractDocumentData<T>(doc: DocumentSnapshot): O.Option<T> {
   if (doc.exists) {
@@ -37,18 +35,4 @@ export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
   } else {
     return {};
   }
-}
-
-export function popDeckCards(deck: Normalized<Card>, status: CardStatus = 'HAND', nCards = 1) {
-  const keys = pipe(deck, R.keys, A.takeLeft(nCards));
-  const getCard = (acc: Normalized<Card>, key: string) => {
-    const card: Card = { ...deck[key], status };
-    return { ...acc, [key]: card };
-  };
-
-  const cards = pipe(keys, A.reduce({}, getCard));
-  return {
-    keys,
-    cards,
-  };
 }

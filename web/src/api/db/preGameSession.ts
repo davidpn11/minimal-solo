@@ -1,21 +1,12 @@
 import axios from 'axios';
 import * as O from 'fp-ts/lib/Option';
-import * as R from 'fp-ts/lib/Record';
-import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { database, getSessionRef, getSessionRefByCode } from '../firebase';
-import { LocalSessionWithId, LocalGameSession } from '../../model/Session';
+import { getSessionRef, getSessionRefByCode } from '../firebase';
+import { Normalized, LocalSessionWithId, LocalGameSession, ID } from '../../model/Session';
 import { QuerySnapshot } from '../../model/Firebase';
-import {
-  SessionPlayer,
-  PlayerStatus,
-  SessionPlayerWithId,
-  createAvatar,
-  getSessionPlayerByPosition,
-} from '../../model/Player';
-import { buyCard, Card } from '../../model/Card';
-import { normalizeQuery, popDeckCards, extractDocumentData } from '../helpers';
+import { SessionPlayer, PlayerStatus, SessionPlayerWithId, createAvatar } from '../../model/Player';
+import { normalizeQuery, extractDocumentData } from '../helpers';
 import { SessionNotFoundError } from '../../model/Error';
 import { firebaseConfig } from '../config';
 

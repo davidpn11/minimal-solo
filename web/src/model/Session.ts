@@ -1,14 +1,16 @@
 import { SessionPlayer } from './Player';
-import { Card } from './Card';
 import { Option } from 'fp-ts/lib/Option';
 import { Play } from './Play';
 
 export type SessionStatus = 'INITIAL' | 'STARTING' | 'STARTED' | 'FINISHED';
 export type GameDirection = 'LEFT' | 'RIGHT';
+export type ID = { id: string };
+
+export type Normalized<T> = Record<string, T>;
 
 export type NoGameSession = {
   code: string;
-  status: UnionExclude<SessionStatus, 'STARTED' | 'FINISHED'>;
+  status: Exclude<SessionStatus, 'STARTED' | 'FINISHED'>;
   admin: string;
   deck: Normalized<Card>;
   players: Normalized<SessionPlayer>;
@@ -18,7 +20,7 @@ export type NoGameSession = {
 export type LocalNoGameSession = Omit<NoGameSession, 'deck'>;
 export type GameSession = {
   code: string;
-  status: UnionExclude<SessionStatus, 'INITIAL' | 'STARTING'>;
+  status: Exclude<SessionStatus, 'INITIAL' | 'STARTING'>;
   admin: string;
   deck: Normalized<Card>;
   activeCards: Normalized<Card>;

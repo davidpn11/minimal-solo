@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { CardValue, CardWrapper } from '../PlayingCard/styles';
+import { CardValueElement, CardWrapper } from '../PlayingCard/styles';
 
 export const CardsWrapper = styled.div<{ isCurrentPlayer: boolean }>`
   margin-top: -40px;
@@ -17,7 +17,7 @@ export const CardsWrapper = styled.div<{ isCurrentPlayer: boolean }>`
     margin: auto;
     margin-bottom: -165px;
 
-    ${CardValue} {
+    ${CardValueElement} {
       svg {
         width: 64px;
         height: 64px;
