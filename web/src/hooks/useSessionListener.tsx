@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-import { getSessionValue } from '../store/session/selectors';
+import { getSession } from '../store/session/selectors';
 import { setGameSession } from '../store/session/actions';
 import { setSentrySessionTags } from '../utils/sentry';
 import { getSessionRef } from '../api/firebase';
@@ -11,7 +11,7 @@ import { extractDocumentData } from '../api/helpers';
 import { noop } from '../utils/unit';
 
 export function useSessionListener() {
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const dispatch = useDispatch();
 
   useEffect(function syncSession() {

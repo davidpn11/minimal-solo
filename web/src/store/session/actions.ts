@@ -1,8 +1,8 @@
 import { batch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
-import * as O from 'fp-ts/lib/Option';
 import axios from 'axios';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 import {
   requestCreateSession,
@@ -16,6 +16,7 @@ import { ReduxStore } from '../rootReducer';
 import { requestAddPlay } from '../../api/db/gameSession';
 import { captureLog } from '../../utils/sentry';
 import { firebaseConfig } from '../../api/config';
+import { foldGameSession } from './helpers/foldSession';
 
 export const SET_SESSION = 'SET_SESSION' as const;
 export const SET_PLAYERS = 'SET_PLAYERS' as const;
@@ -151,12 +152,16 @@ export function startGameSession(sessionId: string) {
 export function addPlay(play: Play) {
   return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
     try {
-      const state = getState();
-
-      if (O.isNone(state.session)) throw new Error('Cannot add a play without a session.');
-
-      const result = await requestAddPlay(state.session.value.id, play);
-      console.log({ result });
+      const { session } = getState();
+      pipe(
+        session,
+        foldGameSession({
+          whenGameStarted: async s => {
+            const result = await requestAddPlay(s.id, play);
+            console.log(result);
+          },
+        }),
+      );
     } catch (error) {
       console.error(error);
     }

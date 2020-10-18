@@ -1,4 +1,3 @@
-import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 import {
@@ -11,68 +10,65 @@ import {
   SET_CURRENT_PLAYER,
   SET_CURRENT_CARD,
 } from './actions';
+import { foldGameSession } from './helpers/foldSession';
 
-const initialState: O.Option<LocalSessionWithId> = O.none;
+const initialState: NoSession = {
+  status: 'INITIAL',
+};
 
-export function sessionReducer(
-  stateO = initialState,
-  action: SessionActionTypes,
-): O.Option<LocalSessionWithId> {
+export function sessionReducer(state = initialState, action: SessionActionTypes): SessionStore {
   switch (action.type) {
     case SET_SESSION:
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case SET_GAME_PROGRESSION:
       return pipe(
-        stateO,
-        O.fold<LocalSessionWithId, O.Option<LocalSessionWithId>>(
-          () => O.some(action.payload),
-          state => {
-            return O.some({
+        state,
+        foldGameSession({
+          whenGameStarted() {
+            return {
               ...state,
-              ...action.payload,
-            });
+              progression: action.payload,
+            };
           },
-        ),
+        }),
+      );
+    case SET_PLAYERS:
+      const mergePlayers = () => ({ ...state, players: action.payload });
+      return pipe(
+        state,
+        foldGameSession({
+          whenLobbySession: mergePlayers,
+          whenGameStarted: mergePlayers,
+          whenLoadingSession: mergePlayers,
+        }),
+      );
+    case SET_CURRENT_PLAY:
+      return pipe(
+        state,
+        foldGameSession({
+          whenGameStarted: () => ({ ...state, currentPlay: action.payload }),
+        }),
+      );
+    case SET_CURRENT_PLAYER:
+      return pipe(
+        state,
+        foldGameSession({
+          whenGameStarted: () => ({ ...state, currentPlayer: action.payload }),
+        }),
+      );
+    case SET_CURRENT_CARD:
+      return pipe(
+        state,
+        foldGameSession({
+          whenGameStarted: () => ({ ...state, currentCard: action.payload }),
+        }),
       );
     case CLEAR_SESSION:
       return initialState;
-    case SET_GAME_PROGRESSION:
-      if (O.isNone(stateO)) throw new Error('Cannot set progression to unexistent session.');
-
-      return O.some({
-        ...stateO.value,
-        progression: action.payload,
-      });
-    case SET_PLAYERS:
-      if (O.isNone(stateO)) throw new Error('Cannot add player to unexistent session.');
-
-      return O.some({
-        ...stateO.value,
-        players: {
-          ...stateO.value.players,
-          ...action.payload,
-        },
-      });
-    case SET_CURRENT_PLAY:
-      if (O.isNone(stateO)) throw new Error('Cannot set current play on unexistent session.');
-
-      return O.some({
-        ...stateO.value,
-        currentPlay: action.payload,
-      });
-    case SET_CURRENT_PLAYER:
-      if (O.isNone(stateO)) throw new Error('Cannot set current player on unexistent session.');
-
-      return O.some({
-        ...stateO.value,
-        currentPlayer: action.payload,
-      });
-    case SET_CURRENT_CARD:
-      if (O.isNone(stateO)) throw new Error('Cannot set current player on unexistent session.');
-
-      return O.some({
-        ...stateO.value,
-        currentCard: action.payload,
-      });
     default:
-      return stateO;
+      return state;
   }
 }

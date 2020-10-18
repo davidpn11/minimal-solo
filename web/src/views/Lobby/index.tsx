@@ -12,12 +12,12 @@ import { ProgressBar } from '../../components/ProgressBar';
 import {
   allPlayersReady,
   getCurrentSessionPlayer,
-  getSessionValue,
+  getSession,
 } from '../../store/session/selectors';
 import { isCurrentPlayerAdmin, getPlayerIdValue } from '../../store/playerHand/selector';
 
 export function Lobby() {
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const isAllPlayersReady = useSelector(allPlayersReady);
   const currentPlayerId = useSelector(getPlayerIdValue);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayer);

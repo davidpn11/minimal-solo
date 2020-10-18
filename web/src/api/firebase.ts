@@ -27,13 +27,13 @@ export const getSessionRef = (id: string) => database.collection('session').doc(
 export const getSessionRefByCode = (code: string) =>
   database.collection('session').where('code', '==', code);
 
-export const getFullSessionByCode: (code: string) => Promise<LocalSessionWithId> = async (
+export const getFullSessionByCode: (code: string) => Promise<SessionQueryResult> = async (
   code: string,
 ) => {
   const sessionByCode = await getSessionRefByCode(code).get();
   return pipe(
-    normalizeQuery<LocalSession>(sessionByCode),
-    R.reduceWithIndex<string, LocalSession, O.Option<LocalSessionWithId>>(
+    normalizeQuery<SessionQueryResult>(sessionByCode),
+    R.reduceWithIndex<string, SessionQueryResult, O.Option<SessionQueryResult & ID>>(
       O.none,
       (id, acc, localSession) =>
         O.some({

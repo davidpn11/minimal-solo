@@ -7,8 +7,18 @@ interface Some<A> {
 }
 type Option<A> = None | Some<A>;
 
-declare type SessionStatus = "INITIAL" | "STARTING" | "STARTED" | "FINISHED";
+declare type SessionStatus =
+  | "INITIAL"
+  | "LOBBY"
+  | "STARTING"
+  | "STARTED"
+  | "FINISHED";
+
 declare type GameDirection = "LEFT" | "RIGHT";
+
+declare type NoSession = {
+  status: "INITIAL";
+};
 
 declare type LocalNoGameSession = {
   admin: string;
@@ -18,7 +28,7 @@ declare type LocalNoGameSession = {
   currentPlayer: string;
   direction: GameDirection;
   players: Record<string, SessionPlayer>;
-  status: "INITIAL" | "STARTING";
+  status: "LOBBY" | "STARTING";
   winner: Option<string>;
 };
 declare type LocalNoGameSessionWithId = LocalNoGameSession & ID;
@@ -51,5 +61,8 @@ declare type LocalGameSession = {
 };
 declare type LocalGameSessionWithId = LocalGameSession & ID;
 
+declare type SessionStore =
+  | NoSession
+  | ((LocalGameSession | LocalNoGameSession) & ID);
 declare type LocalSession = LocalGameSession | LocalNoGameSession;
 declare type LocalSessionWithId = LocalSession & ID;

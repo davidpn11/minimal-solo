@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
@@ -11,7 +11,7 @@ import { unitJSX } from '../../utils/unit';
 import { getFullSessionByCode, getUniqueId } from '../../api/firebase';
 import { safeSetItem } from '../../utils/storage';
 import { captureLog, setSentryUserContext } from '../../utils/sentry';
-import { getSession } from '../session/selectors';
+import { getSessionState } from '../session/selectors';
 import { getPlayer } from '../playerHand/selector';
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function PersistGate(props: Props) {
-  const sessionO = useSelector(getSession);
+  const session = useSelector(getSessionState);
   const playerO = useSelector(getPlayer);
   const isReady = O.isSome(playerO);
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export function PersistGate(props: Props) {
 
   function rehydrateSession(code: string) {
     getFullSessionByCode(code)
-      .then(session => dispatch(setGameSession(session)))
+      .then(session => dispatch(setGameSession(session as LocalSessionWithId)))
       .catch(err => {
         captureLog(err);
         return history.push('/');
@@ -62,8 +62,8 @@ export function PersistGate(props: Props) {
   );
 
   useEffect(() => {
-    loadSessionFromCache().then(sessionO => {
-      pipe(sessionO, O.fold(setNewStorage, rehydrateSessionFromStorage));
+    loadSessionFromCache().then(session => {
+      pipe(session, O.fold(setNewStorage, rehydrateSessionFromStorage));
     });
   }, [setNewStorage, rehydrateSessionFromStorage, dispatch]);
 
@@ -71,7 +71,7 @@ export function PersistGate(props: Props) {
     return unitJSX;
   }
 
-  if (match && O.isNone(sessionO)) {
+  if (match && session.status === 'INITIAL') {
     return unitJSX;
   }
 

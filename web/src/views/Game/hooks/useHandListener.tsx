@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { isBlockCard, isCommonCard } from 'solo-lib/lib/card';
 
 import {
-  getCurrentCardValue,
+  getCurrentCard,
   getCurrentPlayer,
   getCurrentSessionPlayerValue,
   getLastPlayPosition,
   getNextPlayer,
   getPlayerActions,
-  getSessionValue,
+  getSession,
 } from '../../../store/session/selectors';
 import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
 import { getPlayerHand } from '../../../store/playerHand/actions';
@@ -23,10 +23,10 @@ export function useHandListener() {
   const playerHand = useSelector(getPlayerHandIds);
   const playerActions = useSelector(getPlayerActions);
   const lastPlayPosition = useSelector(getLastPlayPosition);
-  const currentCard = useSelector(getCurrentCardValue);
+  const currentCard = useSelector(getCurrentCard);
   const currentPlayer = useSelector(getCurrentPlayer);
   const nextPlayer = useSelector(getNextPlayer);
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayerValue);
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
   const isYourTurn = useMemo<boolean>(() => player.id === currentPlayer, [player, currentPlayer]);

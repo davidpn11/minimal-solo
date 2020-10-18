@@ -24,7 +24,7 @@ export default function App() {
   );
 
   switch (currentSession.status) {
-    case 'INITIAL':
+    case 'LOBBY':
     case 'STARTING':
       return <Lobby />;
     case 'STARTED':

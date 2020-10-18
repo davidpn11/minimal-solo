@@ -32,6 +32,13 @@ export const NoGameSessionError = createErrorClass(
   Severity.Fatal,
 );
 
+export const NoLobbySessionError = createErrorClass(
+  'NoLobbySession',
+  'Should not have "No Lobby Session"',
+  false,
+  Severity.Fatal,
+);
+
 export const NoLoadingSessionError = createErrorClass(
   'NoLoadingSession',
   'Should not have "LoadingSession"',

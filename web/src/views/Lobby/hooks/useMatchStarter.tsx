@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getSessionValue } from '../../../store/session/selectors';
+import { getSession } from '../../../store/session/selectors';
 import {
   requestSessionPlayersListener,
   requestTogglePlayerStatus,
@@ -9,7 +9,7 @@ import {
 import { setPlayers, clearSession, startGameSession } from '../../../store/session/actions';
 
 export function useMatchStarter() {
-  const currentSession = useSelector(getSessionValue);
+  const currentSession = useSelector(getSession);
   const dispatch = useDispatch();
   const [hasListener, setHasListener] = useState<boolean>(false);
   const isStarting = currentSession.status === 'STARTING';

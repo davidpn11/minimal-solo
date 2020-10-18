@@ -1,18 +1,23 @@
-import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
-
-import { ReduxStore } from '../../rootReducer';
-import { NoGameSessionError, NoLoadingSessionError, GameSessionError } from '../../../model/Error';
+import {
+  NoGameSessionError,
+  NoLoadingSessionError,
+  GameSessionError,
+  NoLobbySessionError,
+} from '../../../model/Error';
 
 type FoldParams<B = void> = {
-  whenNoGameSession?: (s: LocalNoGameSessionWithId) => B | void;
-  whenLoadingSession?: (s: LocalNoGameSessionWithId) => B | void;
-  whenGameStarted?: (s: LocalGameSessionWithId) => B | void;
+  whenNoGameSession?: (s: NoSession) => B;
+  whenLobbySession?: (s: LocalNoGameSessionWithId) => B;
+  whenLoadingSession?: (s: LocalNoGameSessionWithId) => B;
+  whenGameStarted?: (s: LocalGameSessionWithId) => B;
 };
 
 const foldGameSessionDefault = {
   whenNoGameSession: () => {
     throw new NoGameSessionError();
+  },
+  whenLobbySession: () => {
+    throw new NoLobbySessionError();
   },
   whenLoadingSession: () => {
     throw new NoLoadingSessionError();
@@ -22,35 +27,28 @@ const foldGameSessionDefault = {
   },
 };
 
-export const foldGameSession = <B>({
-  whenNoGameSession,
-  whenLoadingSession,
-  whenGameStarted,
-}: FoldParams<B> = foldGameSessionDefault) => (state: ReduxStore): B | void =>
-  pipe(
-    state.session,
-    O.fold(
-      () => {
-        throw new Error("Get Session Value can only be used when there's a session");
-      },
-      session => {
-        switch (session.status) {
-          case 'INITIAL':
-            if (whenNoGameSession) return whenNoGameSession(session);
-            break;
-          case 'STARTING':
-            if (whenLoadingSession) return whenLoadingSession(session);
-            break;
-          case 'STARTED':
-          case 'FINISHED':
-            if (whenGameStarted) return whenGameStarted(session);
-            break;
-          default:
-            throw new Error('No Status found');
-        }
-      },
-    ),
-  );
+export function foldGameSession<B>({
+  whenNoGameSession = foldGameSessionDefault.whenNoGameSession,
+  whenLobbySession = foldGameSessionDefault.whenLobbySession,
+  whenLoadingSession = foldGameSessionDefault.whenLoadingSession,
+  whenGameStarted = foldGameSessionDefault.whenGameStarted,
+}: FoldParams<B>) {
+  return (session: SessionStore): B => {
+    switch (session.status) {
+      case 'INITIAL':
+        return whenNoGameSession(session);
+      case 'LOBBY':
+        return whenLobbySession(session);
+      case 'STARTING':
+        return whenLoadingSession(session);
+      case 'STARTED':
+      case 'FINISHED':
+        return whenGameStarted(session);
+      default:
+        throw new Error('No Status found');
+    }
+  };
+}
 
 //required to handle void return cases if necessary
 export const getOrThrow = <T>(p: T | void) => {
