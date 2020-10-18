@@ -2,7 +2,7 @@ import * as R from 'fp-ts/lib/Record';
 import * as O from 'fp-ts/lib/Option';
 
 import { Play } from '../../../model/Play';
-import { ID, LocalGameSession } from '../../../model/Session';
+import { LocalGameSession } from '../../../model/Session';
 import { getSessionPlayerByPosition, SessionPlayerWithId } from '../../../model/Player';
 import { getNextPosition } from '../../../store/session/selectors';
 

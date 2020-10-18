@@ -7,6 +7,8 @@ import { Logo } from '../Logo';
 import { CardDeck } from '../CardDeck';
 import { PlayingCard } from '../PlayingCard';
 import { unitJSX } from '../../utils/unit';
+import { useSelector } from 'react-redux';
+import { isCurrentPlayerSelector } from '../../store/playerHand/selector';
 
 type Props = {
   currentCard: O.Option<Card>;
@@ -14,6 +16,9 @@ type Props = {
 };
 
 export function ActionArea(props: Props) {
+  const isCurrentPlayer = useSelector(isCurrentPlayerSelector);
+
+  const onClick = () => isCurrentPlayer && props.onDeckClick();
   return (
     <AreaWrapper>
       <LogoWrapper>
@@ -35,7 +40,7 @@ export function ActionArea(props: Props) {
           ),
         )}
       </SectionWrapper>
-      <SectionWrapper aria-label="Card Deck" onClick={props.onDeckClick}>
+      <SectionWrapper aria-label="Card Deck" onClick={onClick}>
         <CardDeck />
       </SectionWrapper>
     </AreaWrapper>

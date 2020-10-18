@@ -14,7 +14,6 @@ export type UnoPlay = {
 };
 export type DrawPlay = {
   type: 'DRAW_PLAY';
-  card: Card;
   player: SessionPlayerWithId;
   position: number;
 };
@@ -81,6 +80,13 @@ export type PlusFourPlay = {
   position: number;
 };
 
+export type CompoundPlay = {
+  type: 'COMPOUND_PLAY';
+  player: SessionPlayerWithId;
+  playStack: Exclude<Play, CompoundPlay>;
+  position: number;
+};
+
 export type Play =
   | PassPlay
   | UnoPlay
@@ -92,7 +98,8 @@ export type Play =
   | SwapPlay
   | SwapAllPlay
   | ColorPlay
-  | PlusFourPlay;
+  | PlusFourPlay
+  | CompoundPlay;
 
 export type PlayWithId = Play & ID;
 
@@ -156,15 +163,10 @@ export function createReversePlay(
   };
 }
 
-export function createDrawPlay(
-  player: SessionPlayerWithId,
-  card: CardWithId,
-  position: number,
-): DrawPlay {
+export function createDrawPlay(player: SessionPlayerWithId, position: number): DrawPlay {
   return {
     player,
     type: 'DRAW_PLAY',
-    card: card,
     position,
   };
 }

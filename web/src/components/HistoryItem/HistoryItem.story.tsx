@@ -19,7 +19,6 @@ import {
   Play,
 } from '../../model/Play';
 import { createAvatar, SessionPlayerWithId } from '../../model/Player';
-import { UnionExclude } from '../../model/types';
 
 const avatar = createAvatar();
 
@@ -119,7 +118,7 @@ export function HistoryItemStory() {
       case 'COLOR_PLAY':
         return createColorPlay(player, commonCard, 'RED', 0);
       case 'DRAW_PLAY':
-        return createDrawPlay(player, commonCard, 0);
+        return createDrawPlay(player, 0);
       case 'NUMBER_CARD_PLAY':
         return createCommonNumberPlay(player, commonCard, 0);
       case 'PLUS_TWO_PLAY':

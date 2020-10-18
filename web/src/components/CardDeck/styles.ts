@@ -1,8 +1,16 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { CardValueElement, CardWrapper } from '../PlayingCard/styles';
 
-export const CardsWrapper = styled.div`
+export const CardsWrapper = styled.div<{ isCurrentPlayer: boolean }>`
   margin-top: -40px;
+
+  ${({ isCurrentPlayer }) =>
+    isCurrentPlayer &&
+    css`
+      :hover {
+        cursor: pointer;
+      }
+    `}
 
   ${CardWrapper} {
     position: relative;

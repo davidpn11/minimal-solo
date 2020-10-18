@@ -1,5 +1,4 @@
 import { getSessionRef } from '../firebase';
-import { Normalized } from '../../model/Session';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { normalizeDocument, normalizeQuery, extractDocumentData } from '../helpers';
 import * as A from 'fp-ts/lib/Array';

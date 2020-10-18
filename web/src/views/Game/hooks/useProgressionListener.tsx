@@ -17,11 +17,10 @@ import {
   setCurrentPlayer,
   setGameProgression,
 } from '../../../store/session/actions';
-import { PlayWithId, BlockPlay, NumberCardPlay } from '../../../model/Play';
+import { PlayWithId, BlockPlay, NumberCardPlay, DrawPlay, Play } from '../../../model/Play';
 import { noop } from '../../../utils/unit';
 import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
-import { ID } from '../../../model/Session';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 
 export function useProgressionListener() {
@@ -54,8 +53,26 @@ export function useProgressionListener() {
         runNextEffect(play);
       }
 
+      function runDrawCardPlayEffect(play: DrawPlay & ID) {
+        //TODO Will be useful for animations
+        // dispatch(setCurrentPlay(play.id));
+        /**
+         * StorePlay
+         */
+        // dispatch(addPlay(play));
+        // runNextEffect(play);
+      }
+
       function runPostPlayHook(play: PlayWithId) {
-        pipe(play, foldPlayWithId(runNextEffect, runNumberCardPlayEffect, runBlockCardEffect));
+        pipe(
+          play,
+          foldPlayWithId(
+            runNextEffect,
+            runNumberCardPlayEffect,
+            runBlockCardEffect,
+            runDrawCardPlayEffect,
+          ),
+        );
       }
 
       runPostPlayHook(play);
