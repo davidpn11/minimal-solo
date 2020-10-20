@@ -1,29 +1,11 @@
 import axios from 'axios';
-import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { createAvatar } from 'solo-lib/lib/player';
-import { QuerySnapshot } from 'solo-lib/lib/utils/firebase';
 
-import { getSessionRef, getSessionRefByCode } from '../firebase';
+import { getFullSessionByCode, getSessionRef } from '../firebase';
 import { firebaseConfig } from '../config';
-import { SessionNotFoundError } from 'solo-lib/lib/session';
 
 export const MAX_ROOM_SIZE = 10;
 export const MIN_ROOM_SIZE = 2;
-
-function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
-  if (!doc.empty && doc.size === 1) {
-    const head = doc.docs[0];
-
-    const data = {
-      id: head.id,
-      ...head.data(),
-    };
-    return head.exists ? O.some(data as T & ID) : O.none;
-  } else {
-    return O.none;
-  }
-}
 
 export async function requestCreateSession(
   playerName: string,
@@ -45,26 +27,22 @@ export async function requestCreateSession(
 
 export async function requestJoinSession(
   sessionCode: string,
-): Promise<{ session: LocalSessionWithId; playersCount: number }> {
-  const sessionRef = await getSessionRefByCode(sessionCode).get();
-  const session = getQueryHead<LocalGameSession>(sessionRef);
+): Promise<{
+  session: LocalSessionWithId;
+  playersCount: number;
+}> {
+  const session = await getFullSessionByCode(sessionCode);
 
-  return pipe(
+  const size = Object.keys(session.players).length;
+
+  if (size >= MAX_ROOM_SIZE) {
+    throw new Error('ROOM IS FULL');
+  }
+
+  return {
     session,
-    O.fold(
-      () => {
-        const SessionNotFound = SessionNotFoundError(sessionCode);
-        throw new SessionNotFound();
-      },
-      async (s: LocalSessionWithId) => {
-        const size = (await getSessionRef(s.id).collection('players').get()).size;
-        if (size >= MAX_ROOM_SIZE) {
-          throw new Error('ROOM IS FULL');
-        }
-        return { session: s, playersCount: size };
-      },
-    ),
-  );
+    playersCount: size,
+  };
 }
 
 export async function requestTogglePlayerStatus(

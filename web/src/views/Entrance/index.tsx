@@ -13,7 +13,12 @@ import { safeClearItem, safeSetItem } from '../../utils/storage';
 import { ReduxThunkDispatch } from '../../store/rootReducer';
 import { getPlayerIdValue } from '../../store/playerHand/selector';
 import { setPlayerId } from '../../store/playerHand/actions';
-import { createGameSession, joinGameSession, clearSession } from '../../store/session/actions';
+import {
+  createGameSession,
+  joinGameSession,
+  clearSession,
+  setGameSession,
+} from '../../store/session/actions';
 
 export default function Entrance() {
   const dispatch = useDispatch<ReduxThunkDispatch>();
@@ -34,6 +39,9 @@ export default function Entrance() {
 
   function joinSession(session: LocalSessionWithId) {
     safeSetItem('sessionId', session.id);
+    batch(() => {
+      dispatch(setGameSession(session));
+    });
     history.push(`/room/${session.code}`);
   }
 

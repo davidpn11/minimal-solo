@@ -12,7 +12,7 @@ import { GlobalStyles } from './styles';
 import App from './views/App';
 import Entrance from './views/Entrance';
 import { PersistGate } from './store/persistStore';
-import {ErrorBoundary} from "./components/ErrorBoundary";
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export const ENTRANCE_ROUTE = '/' as const;
 

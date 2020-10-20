@@ -62,3 +62,17 @@ export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
     return {};
   }
 }
+
+export function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
+  if (!doc.empty && doc.size === 1) {
+    const head = doc.docs[0];
+
+    const data = {
+      id: head.id,
+      ...head.data(),
+    };
+    return head.exists ? O.some(data as T & ID) : O.none;
+  } else {
+    return O.none;
+  }
+}

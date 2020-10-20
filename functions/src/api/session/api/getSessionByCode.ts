@@ -1,8 +1,9 @@
 import { RequestHandler } from "express";
 import * as admin from "firebase-admin";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { foldGameSession } from "solo-lib/lib/session";
-import { normalizeQuery } from "solo-lib/lib/utils/firebase";
+import { getQueryHead, normalizeQuery } from "solo-lib/lib/utils/firebase";
 
 type ReqParams = {
   code: string;
@@ -18,50 +19,55 @@ export const getSessionByCode: RequestHandler<ReqParams> = async (req, res) => {
       .where("code", "==", code)
       .get();
 
-    const [sessionDoc] = sessionByCode.docs;
-    const sessionId = sessionDoc.id;
+    return pipe(
+      getQueryHead<SessionQueryResult>(sessionByCode),
+      O.fold(
+        () => {
+          res
+            .status(404)
+            .send({ message: `Session with code ${code} not found.` });
+        },
+        async (session) => {
+          const sessionRef = admin
+            .firestore()
+            .collection("session")
+            .doc(session.id);
 
-    if (!sessionDoc.exists) {
-      res.status(404).send({ message: `Session with code ${code} not found.` });
-      return;
-    }
+          const playersDoc = await sessionRef.collection("players").get();
+          const players = normalizeQuery<SessionPlayer>(playersDoc);
 
-    const session = sessionDoc.data();
-    const sessionRef = admin.firestore().collection("session").doc(sessionId);
+          function returnSimpleSession() {
+            res.send({ ...session, players });
+          }
 
-    const playersDoc = await sessionRef.collection("players").get();
-    const players = normalizeQuery<SessionPlayer>(playersDoc);
+          async function returnGameSession() {
+            const progressionDoc = await sessionRef
+              .collection("progression")
+              .get();
+            const progression = normalizeQuery<Progression>(progressionDoc);
 
-    function returnSimpleSession() {
-      res.send({ ...session, id: sessionId, players });
-    }
+            const cemeteryDoc = await sessionRef.collection("cemetery").get();
+            const cemetery = normalizeQuery<Cemetery>(cemeteryDoc);
 
-    async function returnGameSession() {
-      const players = normalizeQuery<SessionPlayer>(playersDoc);
-      const progressionDoc = await sessionRef.collection("progression").get();
+            return res.send({
+              ...session,
+              players,
+              progression,
+              cemetery,
+            });
+          }
 
-      const progression = normalizeQuery<Progression>(progressionDoc);
-      const cemeteryDoc = await sessionRef.collection("cemetery").get();
-
-      const cemetery = normalizeQuery<Cemetery>(cemeteryDoc);
-
-      return res.send({
-        ...session,
-        id: sessionId,
-        players,
-        progression,
-        cemetery,
-      });
-    }
-
-    pipe(
-      session as SessionStore,
-      foldGameSession({
-        whenNoGameSession: returnSimpleSession,
-        whenLobbySession: returnSimpleSession,
-        whenLoadingSession: returnSimpleSession,
-        whenGameStarted: await returnGameSession,
-      })
+          pipe(
+            session as SessionStore,
+            foldGameSession({
+              whenNoGameSession: returnSimpleSession,
+              whenLobbySession: returnSimpleSession,
+              whenLoadingSession: returnSimpleSession,
+              whenGameStarted: await returnGameSession,
+            })
+          );
+        }
+      )
     );
   } catch (e) {
     console.error(e);

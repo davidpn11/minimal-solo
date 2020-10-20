@@ -19,8 +19,6 @@ if (window.location.hostname === 'localhost') {
 
 export const database = firebase.firestore();
 export const getSessionRef = (id: string) => database.collection('session').doc(id);
-export const getSessionRefByCode = (code: string) =>
-  database.collection('session').where('code', '==', code);
 
 export async function getFullSessionByCode(code: string): Promise<LocalSessionWithId> {
   try {
