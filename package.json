@@ -6,6 +6,6 @@
   "scripts": {
     "start:web": "yarn --cwd web start",
     "start:emulators": "firebase emulators:start",
-    "build:functions": "cd functions && npm run build"
+    "build:functions": "yarn --cwd functions build"
   }
 }
