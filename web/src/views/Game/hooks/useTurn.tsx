@@ -45,7 +45,7 @@ export function useTurn() {
 
   const dispatch = useDispatch();
 
-  const cardClickGen = useCallback(
+  const createCardClickHandler = useCallback(
     (callback: (card: CardWithId) => Play) => {
       const makeCardPlay = (card: CardWithId) => {
         const play = callback(card);
@@ -78,16 +78,16 @@ export function useTurn() {
     [currentCard, isYourTurn],
   );
 
-  const handleCommon = cardClickGen(card =>
+  const handleCommonClick = createCardClickHandler(card =>
     createCommonNumberPlay(currentSessionPlayerWithId, card, lastPlayPosition + 1),
   );
-  const handleBlock = cardClickGen(card =>
+  const handleBlockClick = createCardClickHandler(card =>
     createBlockPlay(currentSessionPlayerWithId, nextPlayer, card, lastPlayPosition + 1),
   );
 
   function handleCardClick(card: CardWithId) {
-    if (isCommonCard(card)) return handleCommon(card as CommonCardWithId);
-    if (isBlockCard(card)) return handleBlock(card);
+    if (isCommonCard(card)) return handleCommonClick(card as CommonCardWithId);
+    if (isBlockCard(card)) return handleBlockClick(card);
   }
 
   async function handleDrawCard() {
