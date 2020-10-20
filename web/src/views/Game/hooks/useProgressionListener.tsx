@@ -85,14 +85,17 @@ export function useProgressionListener() {
     [dispatch, currentSession],
   );
 
-  useEffect(function syncProgression() {
-    getSessionRef(currentSession.id)
+  useEffect(() => {
+    const unsubscribe = getSessionRef(currentSession.id)
       .collection('progression')
       .onSnapshot(querySnapshot => {
         const progression = normalizeQuery<Play>(querySnapshot);
         dispatch(setGameProgression(progression));
       });
-  }, []);
+    return () => {
+      unsubscribe();
+    };
+  }, [currentSession.id, dispatch]);
 
   useEffect(() => {
     return pipe(
