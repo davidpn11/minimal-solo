@@ -1,36 +1,42 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  getCurrentCard,
-  getCurrentPlayer,
-  getCurrentSessionPlayerValue,
-  getLastPlayPosition,
-  getNextPlayer,
-  getPlayerActions,
-  getSession,
-} from '../../../store/session/selectors';
-import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
+import * as O from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { extractDocumentData } from 'solo-lib/lib/utils/firebase';
+import { getSessionRef } from '../../../api/firebase';
 import { getPlayerHand } from '../../../store/playerHand/actions';
-import { requestPlayerHandListener } from '../../../api/db/gameSession';
+import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
+import { getPlayerActions, getSession } from '../../../store/session/selectors';
+
 export function useHandListener() {
   const player = useSelector(getPlayerValue);
   const playerHand = useSelector(getPlayerHandIds);
   const playerActions = useSelector(getPlayerActions);
   const currentSession = useSelector(getSession);
-  const [hasListener, setHasListener] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  //Player hand listener
   useEffect(() => {
-    if (currentSession.id && !hasListener) {
-      setHasListener(true);
-      if (player) {
-        requestPlayerHandListener(player.id, currentSession.id, hand => {
-          dispatch(getPlayerHand(currentSession.id, hand));
-        });
-      }
-    }
-  }, [currentSession.id, hasListener, player, dispatch]);
+    const unsubscribe = getSessionRef(currentSession.id)
+      .collection('players')
+      .doc(player.id)
+      .onSnapshot(documentSnapshot => {
+        const player = extractDocumentData<SessionPlayer>(documentSnapshot);
+        pipe(
+          player,
+          O.fold(
+            () => {
+              throw new Error('No Player');
+            },
+            p => {
+              dispatch(getPlayerHand(currentSession.id, p.hand));
+            },
+          ),
+        );
+      });
+    return () => {
+      unsubscribe();
+    };
+  }, [currentSession.id, player, dispatch]);
 
   return { playerHand, playerActions };
 }
