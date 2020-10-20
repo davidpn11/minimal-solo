@@ -28,10 +28,12 @@ export type CollectionReference = admin.firestore.CollectionReference<
   admin.firestore.DocumentData
 >;
 
-export function extractDocumentData<T>(doc: DocumentSnapshot): O.Option<T> {
+export function extractDocumentData<T>(
+  doc: DocumentSnapshot
+): O.Option<T & ID> {
   if (doc.exists) {
     const data = doc.data() as T;
-    return O.fromNullable(data);
+    return O.fromNullable({ ...data, id: doc.id });
   } else {
     return O.none;
   }
