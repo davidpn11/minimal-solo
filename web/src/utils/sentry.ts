@@ -1,11 +1,9 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import * as R from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
 
-import { sentryConfig } from '../api/config';
-
-function beforeBreadcrumb(
+export function beforeBreadcrumb(
   breadcrumb: Sentry.Breadcrumb,
   hintP?: Sentry.BreadcrumbHint,
 ): Sentry.Breadcrumb | null {
@@ -92,9 +90,3 @@ export function captureLog(
     Sentry.captureException(error);
   });
 }
-
-Sentry.init({
-  dsn: sentryConfig.dsn,
-  release: process.env.REACT_APP_VERSION,
-  beforeBreadcrumb,
-});
