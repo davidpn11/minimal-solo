@@ -107,24 +107,13 @@ export function joinGameSession(
     try {
       const { session, playersCount } = await requestJoinSession(sessionCode);
       await requestAddPlayer(session.id, name, playerId, playersCount);
+
       return E.right(session);
     } catch (error) {
       captureLog(error);
       return E.left(error);
     }
   };
-}
-
-export async function togglePlayerStatus(
-  sessionId: string,
-  playerId: string,
-  playerStatus: PlayerStatus,
-) {
-  try {
-    await requestTogglePlayerStatus(sessionId, playerId, playerStatus);
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 export function startGameSession(sessionId: string) {
@@ -151,7 +140,7 @@ export function addPlay(play: Play) {
         session,
         foldGameSession({
           whenGameStarted: async s => {
-            const result = await requestAddPlay(s.id, play);
+            await requestAddPlay(s.id, play);
           },
         }),
       );

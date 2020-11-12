@@ -28,10 +28,12 @@ export type CollectionReference = admin.firestore.CollectionReference<
   admin.firestore.DocumentData
 >;
 
-export function extractDocumentData<T>(doc: DocumentSnapshot): O.Option<T> {
+export function extractDocumentData<T>(
+  doc: DocumentSnapshot
+): O.Option<T & ID> {
   if (doc.exists) {
     const data = doc.data() as T;
-    return O.fromNullable(data);
+    return O.fromNullable({ ...data, id: doc.id });
   } else {
     return O.none;
   }
@@ -60,5 +62,19 @@ export function normalizeQuery<T>(doc: QuerySnapshot): Normalized<T> {
     return data;
   } else {
     return {};
+  }
+}
+
+export function getQueryHead<T>(doc: QuerySnapshot): O.Option<T & ID> {
+  if (!doc.empty && doc.size === 1) {
+    const head = doc.docs[0];
+
+    const data = {
+      id: head.id,
+      ...head.data(),
+    };
+    return head.exists ? O.some(data as T & ID) : O.none;
+  } else {
+    return O.none;
   }
 }
