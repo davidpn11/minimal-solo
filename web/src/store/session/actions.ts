@@ -8,7 +8,6 @@ import {
   requestCreateSession,
   requestJoinSession,
   requestAddPlayer,
-  requestTogglePlayerStatus,
 } from '../../api/db/preGameSession';
 import { ThunkResult } from '../types';
 import { ReduxStore } from '../rootReducer';

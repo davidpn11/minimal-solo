@@ -33,10 +33,11 @@ export function useHandListener() {
           ),
         );
       });
+
     return () => {
       unsubscribe();
     };
-  }, [currentSession.id, player, dispatch]);
+  }, []);
 
   return { playerHand, playerActions };
 }
