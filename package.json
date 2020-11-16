@@ -4,8 +4,8 @@
   "private": true,
   "workspaces": ["functions", "web", "solo"],
   "scripts": {
-    "start:web": "yarn --cwd web start",
+    "start:web": "yarn workspace web start",
     "start:emulators": "firebase emulators:start",
-    "build:functions": "yarn --cwd functions build"
+    "build:functions": "yarn workspace functions build"
   }
 }

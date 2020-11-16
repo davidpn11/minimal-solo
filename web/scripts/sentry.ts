@@ -13,6 +13,8 @@ async function createReleaseAndUpload() {
     return;
   }
 
+  console.log(token);
+
   const release = `minimal-solo@${process.env.npm_package_version}`;
   const cli = new SentryCli();
   try {
@@ -20,7 +22,7 @@ async function createReleaseAndUpload() {
     await cli.releases.new(release);
     console.log("Uploading source maps");
     await cli.releases.uploadSourceMaps(release, {
-      include: ["build/static/js"],
+      include: ["web/build/static/js"],
       urlPrefix: "~/static/js",
       rewrite: false,
     });

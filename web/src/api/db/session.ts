@@ -1,5 +1,5 @@
 import * as O from 'fp-ts/lib/Option';
-import { extractDocumentData, normalizeQuery } from 'solo-lib/lib/utils/firebase';
+import { extractDocumentData, normalizeQuery } from '@mikelfcosta/solo-lib/lib/utils/firebase';
 
 import { getSessionRef } from '../firebase';
 

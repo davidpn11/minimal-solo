@@ -1,9 +1,9 @@
 import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Record';
+import { foldGameSession } from '@mikelfcosta/solo-lib/lib/session';
 
 import { ReduxStore } from '../rootReducer';
-import { foldGameSession } from 'solo-lib/lib/session';
 
 export const getPlayer = (state: ReduxStore): O.Option<Player> => state.player;
 

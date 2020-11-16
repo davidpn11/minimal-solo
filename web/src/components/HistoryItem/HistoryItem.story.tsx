@@ -2,7 +2,7 @@ import { boolean, select, text, withKnobs } from '@storybook/addon-knobs';
 import { random } from 'faker';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { createAvatar } from 'solo-lib/lib/player';
+import { createAvatar } from '@mikelfcosta/solo-lib/lib/player';
 
 import { HistoryItem } from './';
 import {

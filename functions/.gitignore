@@ -1,8 +1,12 @@
 ## Compiled JavaScript files
-**/*.js
-**/*.js.map
+src/**/*.js
+src/**/*.js.map
+
+## build
+lib
 
 # Typescript v1 declaration files
 typings/
 
 node_modules/
+/.npmrc

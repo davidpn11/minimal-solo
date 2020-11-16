@@ -3,7 +3,7 @@ import { useSelector, useDispatch, batch } from 'react-redux';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as A from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
-import { normalizeQuery } from 'solo-lib/lib/utils/firebase';
+import { normalizeQuery } from '@mikelfcosta/solo-lib/lib/utils/firebase';
 
 import {
   getCurrentPlay,

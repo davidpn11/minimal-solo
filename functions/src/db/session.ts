@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import * as io from "io-ts";
 import { option } from "io-ts-types";
 import { pipe } from "fp-ts/function";
-import { runTypeDecoder } from "solo-lib/lib/utils/dto";
+import { runTypeDecoder } from "@mikelfcosta/solo-lib/lib/utils/dto";
 import { SessionPlayerSchema } from "./player";
 
 import DocumentReference = admin.firestore.DocumentReference;

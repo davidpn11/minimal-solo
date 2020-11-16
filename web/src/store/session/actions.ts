@@ -2,7 +2,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import * as E from 'fp-ts/lib/Either';
 import axios from 'axios';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { foldGameSession } from 'solo-lib/lib/session';
+import { foldGameSession } from '@mikelfcosta/solo-lib/lib/session';
 
 import {
   requestCreateSession,

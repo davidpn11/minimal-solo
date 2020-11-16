@@ -2,8 +2,11 @@ import { RequestHandler } from "express";
 import * as admin from "firebase-admin";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { foldGameSession } from "solo-lib/lib/session";
-import { getQueryHead, normalizeQuery } from "solo-lib/lib/utils/firebase";
+import { foldGameSession } from "@mikelfcosta/solo-lib/lib/session";
+import {
+  getQueryHead,
+  normalizeQuery,
+} from "@mikelfcosta/solo-lib/lib/utils/firebase";
 
 type ReqParams = {
   code: string;

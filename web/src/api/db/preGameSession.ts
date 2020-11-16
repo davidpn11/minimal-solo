@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createAvatar } from 'solo-lib/lib/player';
+import { createAvatar } from '@mikelfcosta/solo-lib/lib/player';
 
 import { getFullSessionByCode, getSessionRef } from '../firebase';
 import { firebaseConfig } from '../config';

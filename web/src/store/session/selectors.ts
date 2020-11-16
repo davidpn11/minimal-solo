@@ -4,8 +4,8 @@ import * as A from 'fp-ts/lib/Array';
 import * as F from 'fp-ts/lib/function';
 import { Ord, ordNumber, contramap } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { foldGameSession } from 'solo-lib/lib/session';
-import { getOrThrow } from 'solo-lib/lib/utils';
+import { foldGameSession } from '@mikelfcosta/solo-lib/lib/session';
+import { getOrThrow } from '@mikelfcosta/solo-lib/lib/utils';
 
 import { ReduxStore } from '../rootReducer';
 import { MIN_ROOM_SIZE } from '../../api/db/preGameSession';

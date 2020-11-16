@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
-import { createAvatar } from 'solo-lib/lib/player';
+import { createAvatar } from '@mikelfcosta/solo-lib/lib/player';
 
 import { PlayerCard } from './index';
 

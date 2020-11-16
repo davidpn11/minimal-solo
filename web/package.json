@@ -1,6 +1,6 @@
 {
   "name": "minimal-solo-app",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.11",
@@ -18,16 +18,17 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "solo-lib": "0.1.0",
+    "@mikelfcosta/solo-lib": "0.1.0",
     "styled-components": "^5.1.0",
     "yup": "^0.28.5"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:withTag": "(yarn build && ts-node scripts/sentry.ts)",
+    "build": "REACT_APP_ENV=production rm -rf build && react-scripts build",
+    "build:tag": "ts-node scripts/sentry.ts",
+    "build:withTag": "(yarn build && yarn build:tag)",
     "deploy": "yarn build && firebase deploy",
-    "release": "yarn build:withTag && firebase deploy",
+    "release": "yarn build:withTag && firebase deploy --hosting",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
