@@ -8,6 +8,7 @@ solo/node_modules
 /.pnp
 .pnp.js
 .npmrc
+.firebase
 
 # testing
 /coverage
