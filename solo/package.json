@@ -1,6 +1,6 @@
 {
   "name": "@mikelfcosta/solo-lib",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Minimal Solo's shared functions and utilities.",
   "repository": "git://github.com/mikelfcosta/solo-lib",
   "main": "lib/index.js",
