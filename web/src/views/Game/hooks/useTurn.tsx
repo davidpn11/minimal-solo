@@ -9,6 +9,7 @@ import {
   getPlayerActions,
   getCurrentCard,
   getSession,
+  getCurrentDirection,
 } from '../../../store/session/selectors';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import {
@@ -16,10 +17,11 @@ import {
   createCommonNumberPlay,
   createDrawPlay,
   createPassPlay,
+  createReversePlay,
 } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
-import { isBlockCard, isCommonCard } from '@mikelfcosta/solo-lib/lib/card';
+import { isBlockCard, isCommonCard, isReverseCard } from '@mikelfcosta/solo-lib/lib/card';
 import { buyCard } from '../../../api/functions/card';
 
 export function useTurn() {
@@ -31,6 +33,7 @@ export function useTurn() {
   const nextPlayer = useSelector(getNextPlayer);
   const currentSession = useSelector(getSession);
   const currentSessionPlayer = useSelector(getCurrentSessionPlayerValue);
+  const direction = useSelector(getCurrentDirection);
 
   const currentSessionPlayerWithId = { ...currentSessionPlayer, id: player.id };
 
@@ -84,10 +87,14 @@ export function useTurn() {
   const handleBlockClick = createCardClickHandler(card =>
     createBlockPlay(currentSessionPlayerWithId, nextPlayer, card, lastPlayPosition + 1),
   );
+  const handleReverseClick = createCardClickHandler(card =>
+    createReversePlay(currentSessionPlayerWithId, card, direction, lastPlayPosition + 1),
+  );
 
   function handleCardClick(card: CardWithId) {
     if (isCommonCard(card)) return handleCommonClick(card as CommonCardWithId);
     if (isBlockCard(card)) return handleBlockClick(card);
+    if (isReverseCard(card)) return handleReverseClick(card);
   }
 
   async function handleDrawCard() {

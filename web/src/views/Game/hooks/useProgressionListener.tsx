@@ -12,6 +12,7 @@ import {
   getStartedSession,
 } from '../../../store/session/selectors';
 import {
+  reverseGameDirection,
   setCurrentCard,
   setCurrentPlay,
   setCurrentPlayer,
@@ -62,6 +63,12 @@ export function useProgressionListener() {
         // runNextEffect(play);
       }
 
+      function reverseCardPlayEffect(play: ReversePlay & ID) {
+        dispatch(setCurrentCard(play.card));
+        dispatch(reverseGameDirection());
+        runNextEffect(play);
+      }
+
       function runPostPlayHook(play: PlayWithId) {
         pipe(
           play,
@@ -70,6 +77,7 @@ export function useProgressionListener() {
             runNumberCardPlayEffect,
             runBlockCardEffect,
             runDrawCardPlayEffect,
+            reverseCardPlayEffect,
           ),
         );
       }

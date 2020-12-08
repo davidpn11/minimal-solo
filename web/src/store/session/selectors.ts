@@ -245,3 +245,7 @@ export const getCurrentPlayer = (state: ReduxStore): string => {
 export const getCurrentPlay = (state: ReduxStore): string => {
   return pipe(getStartedSession(state), session => session.currentPlay);
 };
+
+export const getCurrentDirection = (state: ReduxStore): GameDirection => {
+  return pipe(getStartedSession(state), session => session.direction);
+};

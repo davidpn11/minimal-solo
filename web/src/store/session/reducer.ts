@@ -10,6 +10,7 @@ import {
   SET_CURRENT_PLAY,
   SET_CURRENT_PLAYER,
   SET_CURRENT_CARD,
+  SET_GAME_DIRECTION,
 } from './actions';
 
 const initialState: NoSession = {
@@ -68,6 +69,13 @@ export function sessionReducer(state = initialState, action: SessionActionTypes)
         state,
         foldGameSession({
           whenGameStarted: () => ({ ...state, currentCard: action.payload }),
+        }),
+      );
+    case SET_GAME_DIRECTION:
+      return pipe(
+        state,
+        foldGameSession({
+          whenGameStarted: () => ({ ...state, currentDirection: action.payload }),
         }),
       );
     case CLEAR_SESSION:

@@ -23,6 +23,7 @@ export const SET_GAME_PROGRESSION = 'SET_GAME_PROGRESSION' as const;
 export const SET_CURRENT_PLAYER = 'SET_CURRENT_PLAYER' as const;
 export const SET_CURRENT_PLAY = 'SET_CURRENT_PLAY' as const;
 export const SET_CURRENT_CARD = 'SET_CURRENT_CARD' as const;
+export const SET_GAME_DIRECTION = 'SET_GAME_DIRECTION' as const;
 
 export type SessionThunkDispatch = ThunkDispatch<LocalSessionWithId, {}, SessionActionTypes>;
 export type SessionThunkResult<T> = ThunkResult<T, LocalSessionWithId, SessionActionTypes>;
@@ -78,6 +79,13 @@ export function setCurrentCard(card: Card) {
   return {
     type: SET_CURRENT_CARD,
     payload: card,
+  };
+}
+
+export function setGameDirection(direction: GameDirection) {
+  return {
+    type: SET_GAME_DIRECTION,
+    payload: direction,
   };
 }
 
@@ -149,6 +157,25 @@ export function addPlay(play: Play) {
   };
 }
 
+export function reverseGameDirection() {
+  return async (dispatch: SessionThunkDispatch, getState: () => ReduxStore) => {
+    try {
+      const { session } = getState();
+      pipe(
+        session,
+        foldGameSession({
+          whenGameStarted: async s => {
+            const nextDirection: GameDirection = s.direction === 'LEFT' ? 'RIGHT' : 'LEFT';
+            dispatch(setGameDirection(nextDirection));
+          },
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
+
 export type SessionActionTypes = ReturnType<
   | typeof setGameSession
   | typeof setPlayers
@@ -158,4 +185,5 @@ export type SessionActionTypes = ReturnType<
   | typeof setCurrentPlayer
   | typeof setCurrentPlay
   | typeof setCurrentCard
+  | typeof setGameDirection
 >;
