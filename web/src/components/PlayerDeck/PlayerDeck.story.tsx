@@ -2,7 +2,7 @@ import React from 'react';
 import { number, text, withKnobs } from '@storybook/addon-knobs';
 import * as A from 'fp-ts/lib/Array';
 import { random } from 'faker';
-import { createAvatar } from 'solo-lib/lib/player';
+import { createAvatar } from '@mikelfcosta/solo-lib/lib/player';
 
 import { PlayerDeck } from './index';
 

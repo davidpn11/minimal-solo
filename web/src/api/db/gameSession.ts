@@ -1,6 +1,6 @@
 import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { normalizeDocument } from 'solo-lib/lib/utils/firebase';
+import { normalizeDocument } from '@mikelfcosta/solo-lib/lib/utils/firebase';
 import { getSessionRef } from '../firebase';
 
 export async function requestGetPlayerHand(

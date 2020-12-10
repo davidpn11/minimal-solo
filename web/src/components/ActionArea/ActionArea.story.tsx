@@ -1,6 +1,6 @@
 import React from 'react';
 import { number, select, withKnobs } from '@storybook/addon-knobs';
-import { buildDeck } from 'solo-lib/lib/card';
+import { buildDeck } from '@mikelfcosta/solo-lib/lib/card';
 
 import { ActionArea } from './index';
 

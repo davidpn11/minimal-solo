@@ -1,34 +1,53 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import { createBrowserHistory } from 'history';
 
 import * as serviceWorker from './serviceWorker';
-import './utils/sentry';
+import { beforeBreadcrumb } from './utils/sentry';
+import { sentryConfig } from './api/config';
 import store from './store';
 import { THEME } from './theme';
 import { GlobalStyles } from './styles';
 import App from './views/App';
 import Entrance from './views/Entrance';
 import { PersistGate } from './store/persistStore';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { UnknownError } from './components/UnknownError';
 
-export const ENTRANCE_ROUTE = '/' as const;
+const history = createBrowserHistory();
+
+Sentry.init({
+  dsn: sentryConfig.dsn,
+  release: process.env.REACT_APP_VERSION,
+  environment: process.env.NODE_ENV,
+  integrations: [
+    new Integrations.BrowserTracing({
+      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    }),
+  ],
+  tracesSampleRate: 1.0,
+  beforeBreadcrumb,
+});
+
+const SentryRoute = Sentry.withSentryRouting(Route);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
+      <Router history={history}>
         <PersistGate>
           <ThemeProvider theme={THEME}>
             <GlobalStyles />
-            <ErrorBoundary>
+            <Sentry.ErrorBoundary fallback={UnknownError} showDialog>
               <Switch>
-                <Route path={ENTRANCE_ROUTE} exact component={Entrance} />
-                <Route path="/room/:code" component={App} />
+                <SentryRoute path="/" exact component={Entrance} />
+                <SentryRoute path="/room/:code" component={App} />
               </Switch>
-            </ErrorBoundary>
+            </Sentry.ErrorBoundary>
           </ThemeProvider>
         </PersistGate>
       </Router>

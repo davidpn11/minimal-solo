@@ -2,7 +2,7 @@ import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { extractDocumentData } from 'solo-lib/lib/utils/firebase';
+import { extractDocumentData } from '@mikelfcosta/solo-lib/lib/utils/firebase';
 import { getSessionRef } from '../../../api/firebase';
 import { getPlayerHand } from '../../../store/playerHand/actions';
 import { getPlayerHandIds, getPlayerValue } from '../../../store/playerHand/selector';
@@ -33,10 +33,11 @@ export function useHandListener() {
           ),
         );
       });
+
     return () => {
       unsubscribe();
     };
-  }, [currentSession.id, player, dispatch]);
+  }, []);
 
   return { playerHand, playerActions };
 }

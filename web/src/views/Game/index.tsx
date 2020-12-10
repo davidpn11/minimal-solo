@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { BoardWrapper, GameWrapper, Main } from './styles';
 import GameTable from './components/GameTable';

@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { foldGameSession } from 'solo-lib/lib/session';
+import { foldGameSession } from '@mikelfcosta/solo-lib/lib/session';
 
 import {
   SET_PLAYERS,

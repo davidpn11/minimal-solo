@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/pipeable';
-import { getOrThrow } from 'solo-lib/lib/utils';
+import { getOrThrow } from '@mikelfcosta/solo-lib/lib/utils';
 
 import { foldPlay } from '../../../store/playerHand/helpers/foldPlay';
 

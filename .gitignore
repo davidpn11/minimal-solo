@@ -7,6 +7,8 @@ functions/node_modules
 solo/node_modules
 /.pnp
 .pnp.js
+.npmrc
+.firebase
 
 # testing
 /coverage
@@ -19,6 +21,7 @@ web/build
 # key
 web/src/api/config.ts
 web/.sentryclirc
+solo/.npmrc
 
 # misc
 .DS_Store

@@ -19,7 +19,7 @@ import {
 } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
-import { isBlockCard, isCommonCard } from 'solo-lib/lib/card';
+import { isBlockCard, isCommonCard } from '@mikelfcosta/solo-lib/lib/card';
 import { buyCard } from '../../../api/functions/card';
 
 export function useTurn() {

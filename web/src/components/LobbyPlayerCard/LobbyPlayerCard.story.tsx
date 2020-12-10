@@ -1,6 +1,6 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs';
 import React from 'react';
-import { createAvatar } from 'solo-lib/lib/player';
+import { createAvatar } from '@mikelfcosta/solo-lib/lib/player';
 
 import { LobbyPlayerCard } from './index';
 
