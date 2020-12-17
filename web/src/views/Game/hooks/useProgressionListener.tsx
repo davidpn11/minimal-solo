@@ -22,6 +22,7 @@ import { isOwnerOfPlay, getNextPlayerByPlay } from '../helpers/plays';
 import { getPlayerValue } from '../../../store/playerHand/selector';
 import { foldPlayWithId } from '../../../store/playerHand/helpers/foldPlay';
 import { getSessionRef } from '../../../api/firebase';
+import { buyCard } from '../../../api/functions/card';
 
 export function useProgressionListener() {
   const player = useSelector(getPlayerValue);
@@ -52,6 +53,13 @@ export function useProgressionListener() {
         runNextEffect(play);
       }
 
+      async function runPlusTwoCardPlayEffect(play: PlusTwoPlay & ID) {
+        if (play.target.id === player.id) {
+          await buyCard(currentSession.id, player.id, 2);
+        }
+        runNextEffect(play);
+      }
+
       function runDrawCardPlayEffect(play: DrawPlay & ID) {
         //TODO Will be useful for animations
         // dispatch(setCurrentPlay(play.id));
@@ -70,6 +78,7 @@ export function useProgressionListener() {
             runNumberCardPlayEffect,
             runBlockCardEffect,
             runDrawCardPlayEffect,
+            runPlusTwoCardPlayEffect,
           ),
         );
       }

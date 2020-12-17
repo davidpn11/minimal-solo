@@ -6,6 +6,7 @@
   "scripts": {
     "start:web": "yarn workspace web start",
     "start:emulators": "firebase emulators:start",
-    "build:functions": "yarn workspace functions build"
+    "build:functions": "yarn workspace functions build",
+    "build:lib": "yarn workspace @mikelfcosta/solo-lib build"
   }
 }
