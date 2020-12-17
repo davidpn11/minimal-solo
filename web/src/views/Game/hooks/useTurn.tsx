@@ -16,10 +16,11 @@ import {
   createCommonNumberPlay,
   createDrawPlay,
   createPassPlay,
+  createPlusTwoPlay,
 } from '../../../model/Play';
 import { addPlay } from '../../../store/session/actions';
 import { requestRemoveCardFromHand } from '../../../api/db/preGameSession';
-import { isBlockCard, isCommonCard } from '@mikelfcosta/solo-lib/lib/card';
+import { isBlockCard, isCommonCard, isPlusTwoCard } from '@mikelfcosta/solo-lib/lib/card';
 import { buyCard } from '../../../api/functions/card';
 
 export function useTurn() {
@@ -63,8 +64,9 @@ export function useTurn() {
         if (isYourTurn) {
           if (isSameCardValue || isSameCardColor) {
             makeCardPlay(card);
+          } else {
+            console.error('invalidCard');
           }
-          console.error('invalidCard');
         } else {
           if (isSameCard) {
             makeCardPlay(card);
@@ -85,9 +87,16 @@ export function useTurn() {
     createBlockPlay(currentSessionPlayerWithId, nextPlayer, card, lastPlayPosition + 1),
   );
 
+  const handlePlusTwoClick = createCardClickHandler(card => {
+    buyCard(currentSession.id, currentSessionPlayerWithId.id);
+    buyCard(currentSession.id, currentSessionPlayerWithId.id);
+    return createPlusTwoPlay(currentSessionPlayerWithId, card, nextPlayer, lastPlayPosition + 1);
+  });
+
   function handleCardClick(card: CardWithId) {
-    if (isCommonCard(card)) return handleCommonClick(card as CommonCardWithId);
+    if (isCommonCard(card)) return handleCommonClick(card);
     if (isBlockCard(card)) return handleBlockClick(card);
+    if (isPlusTwoCard(card)) return handlePlusTwoClick(card);
   }
 
   async function handleDrawCard() {
