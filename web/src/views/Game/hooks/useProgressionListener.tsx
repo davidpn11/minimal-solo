@@ -53,14 +53,11 @@ export function useProgressionListener() {
         runNextEffect(play);
       }
 
-      function runPlusTwoCardPlayEffect(play: PlusTwoPlay & ID) {
-        if (play.player.id === player.id) {
-          // runNextEffect(play);
-        } else if (play.target.id === player.id) {
-          // await buyCard(currentSession.id, player.id);
-          // await buyCard(currentSession.id, player.id);
-          console.log('TARGET PLAYER', play);
+      async function runPlusTwoCardPlayEffect(play: PlusTwoPlay & ID) {
+        if (play.target.id === player.id) {
+          await buyCard(currentSession.id, player.id, 2);
         }
+        runNextEffect(play);
       }
 
       function runDrawCardPlayEffect(play: DrawPlay & ID) {
